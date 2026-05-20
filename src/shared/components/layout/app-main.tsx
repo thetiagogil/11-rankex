@@ -15,8 +15,8 @@ export function AppMain({
   return (
     <main
       className={cn(
-        "w-full px-6 pt-10",
-        constrained && "mx-auto max-w-6xl",
+        "w-full pt-8 sm:pt-10",
+        constrained && "mx-auto max-w-6xl px-4 sm:px-6 lg:px-8",
         className,
       )}
       {...props}

@@ -1,5 +1,6 @@
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
+import { AppContainer } from "@/shared/components/layout/app-container";
 import { AppLogo } from "@/shared/components/layout/app-logo";
 import { cn } from "@/shared/utils/cn";
 
@@ -21,14 +22,14 @@ export function AppHeader({
   return (
     <header
       className={cn(
-        "relative z-40 w-full px-6 pt-10",
+        "relative z-40 w-full pt-5 sm:pt-6",
         className,
       )}
       {...props}
     >
-      <div
+      <AppContainer
         className={cn(
-          "mx-auto grid max-w-6xl grid-cols-[1fr_auto] items-center gap-3 md:grid-cols-[1fr_auto_1fr]",
+          "grid grid-cols-[1fr_auto] items-center gap-3 md:grid-cols-[1fr_auto_1fr]",
           innerClassName,
         )}
       >
@@ -36,7 +37,7 @@ export function AppHeader({
           {leading ?? <AppLogo href="/" />}
         </div>
         {center ? (
-          <nav className="hidden items-center justify-center gap-1 md:flex">
+          <nav className="hidden items-center justify-center gap-1 rounded-2xl border border-border bg-card/70 p-1 shadow-elevated md:flex">
             {center}
           </nav>
         ) : (
@@ -47,7 +48,7 @@ export function AppHeader({
             {actions}
           </nav>
         ) : null}
-      </div>
+      </AppContainer>
     </header>
   );
 }

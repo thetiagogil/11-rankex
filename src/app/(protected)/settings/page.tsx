@@ -1,8 +1,9 @@
-import { Settings } from "lucide-react";
+import { Settings, UserRound } from "lucide-react";
 
 import { ProfileSettingsForm } from "@/features/settings/components/profile-settings-form";
 import { AppMain } from "@/shared/components/layout/app-main";
-import { Card } from "@/shared/components/ui/card";
+import { PageHeader } from "@/shared/components/layout/page-header";
+import { ButtonLink } from "@/shared/components/ui/button-link";
 import { requireUser } from "@/shared/server/auth";
 
 export default async function SettingsPage() {
@@ -10,23 +11,21 @@ export default async function SettingsPage() {
 
   return (
     <AppMain className="pb-20">
-      <section className="mx-auto max-w-3xl">
-        <div className="flex items-center gap-3">
-          <Settings className="size-6 text-primary" />
-          <h1 className="font-display text-3xl font-black sm:text-4xl">
-            Settings
-          </h1>
-        </div>
-        <p className="mt-3 leading-7 text-muted-foreground">
-          Edit the shared profile fields Rankex uses on public lists and account
-          surfaces.
-        </p>
+      <PageHeader
+        actions={
+          <ButtonLink href="/profile" variant="outline">
+            <UserRound data-icon="inline-start" />
+            View profile
+          </ButtonLink>
+        }
+        description="Tune the curator identity that appears on Rankex lists, profile pages, and the public Explore surface."
+        eyebrow="Curator controls"
+        icon={<Settings className="size-6" />}
+        title="Settings"
+      />
 
-        <Card as="section" className="mt-8 bg-card p-5 sm:p-7">
-          <div className="relative">
-            <ProfileSettingsForm currentUser={currentUser} />
-          </div>
-        </Card>
+      <section className="mt-10">
+        <ProfileSettingsForm currentUser={currentUser} />
       </section>
     </AppMain>
   );

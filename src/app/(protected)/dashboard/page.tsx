@@ -27,9 +27,9 @@ export default async function DashboardPage() {
           </em>
           .
         </h1>
-        <p className="mt-4 text-lg leading-8 text-muted-foreground">
-          Curate your canon, keep private drafts moving, and publish the lists
-          that are ready to stand on their own.
+        <p className="text-muted-foreground mt-4 text-lg leading-8">
+          Curate your canon, share with the community, and see what others are
+          ranking.
         </p>
       </section>
 
@@ -60,11 +60,11 @@ export default async function DashboardPage() {
         ) : (
           <Card
             as="section"
-            className="flex flex-col items-center justify-center border-dashed bg-card/30 px-6 py-20 text-center"
+            className="bg-card/30 flex flex-col items-center justify-center border-dashed px-6 py-20 text-center"
           >
-            <ListPlus className="size-10 text-muted-foreground" />
-            <h2 className="mt-4 font-display text-xl">No lists yet</h2>
-            <p className="mt-1 max-w-md text-sm leading-6 text-muted-foreground">
+            <ListPlus className="text-muted-foreground size-10" />
+            <h2 className="font-display mt-4 text-xl">No lists yet</h2>
+            <p className="text-muted-foreground mt-1 max-w-md text-sm leading-6">
               Create your first ranking. You can keep it private while drafting
               and make it public when it is ready.
             </p>
@@ -80,11 +80,11 @@ export default async function DashboardPage() {
 
 function Metric({ label, value }: { label: string; value: number }) {
   return (
-    <Card as="article" className="bg-card/60 p-5">
-      <p className="font-mono text-xs tracking-widest text-muted-foreground uppercase">
+    <Card as="article" className="bg-card/60 gap-0 p-5">
+      <p className="text-muted-foreground font-mono text-xs tracking-widest uppercase">
         {label}
       </p>
-      <p className="mt-1 font-display text-3xl font-bold text-gradient-gold">
+      <p className="font-display text-gradient-gold mt-1 text-3xl font-bold">
         {value}
       </p>
     </Card>

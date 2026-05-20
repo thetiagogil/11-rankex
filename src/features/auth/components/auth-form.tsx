@@ -1,8 +1,19 @@
 "use client";
 
-import { ArrowLeft, Loader2, LockKeyhole, Trophy } from "lucide-react";
+import {
+  ArrowLeft,
+  AtSign,
+  KeyRound,
+  Loader2,
+  LockKeyhole,
+  LogIn,
+  Mail,
+  Trophy,
+  UserPlus,
+  UserRound,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
-import { type FormEvent, useMemo, useState } from "react";
+import { type FormEvent, type ReactNode, useMemo, useState } from "react";
 
 import { AuthFeedback } from "@/features/auth/components/auth-feedback";
 import { AppHeader } from "@/shared/components/layout/app-header";
@@ -14,6 +25,7 @@ import { Card } from "@/shared/components/ui/card";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
 import { createClient } from "@/lib/supabase/browser";
+import { cn } from "@/shared/utils/cn";
 
 type AuthMode = "signin" | "signup";
 
@@ -137,153 +149,242 @@ export function AuthForm({
         }
       />
 
-      <AppMain className="flex flex-1 items-center justify-center pb-20">
-        <div className="w-full max-w-md">
-          <Card className="bg-card p-8">
-            <div className="relative">
-              <div className="mb-2 flex items-center gap-2 font-mono text-xs tracking-widest text-primary uppercase">
-                <LockKeyhole className="size-3.5" />
-                {isSignup ? "new curator" : "returning curator"}
-              </div>
-              <h1 className="mb-6 font-display text-3xl font-black">
-                {isSignup ? "Create account" : "Sign in"}
-              </h1>
+      <AppMain className="grid min-h-[calc(100dvh-8rem)] items-center gap-10 pb-20 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
+        <section className="max-w-xl">
+          <span className="border-primary/30 bg-primary/10 text-primary inline-flex items-center gap-2 rounded-full border px-3 py-1 font-mono text-xs tracking-widest uppercase">
+            <LockKeyhole className="size-3.5" />
+            Rankex access
+          </span>
+          <h1 className="font-display mt-4 text-5xl leading-tight font-black text-balance sm:text-6xl">
+            Keep your rankings tied to one curator identity.
+          </h1>
+          <p className="text-muted-foreground mt-5 max-w-lg text-base leading-8">
+            Sign in to manage private drafts, publish public lists, and keep
+            your profile connected to every ranking you ship.
+          </p>
+          <div className="mt-8 grid gap-3 sm:grid-cols-3">
+            <AuthValue icon={<Trophy />} label="Demo ready" />
+            <AuthValue icon={<AtSign />} label="Profile linked" />
+            <AuthValue icon={<KeyRound />} label="SSR auth" />
+          </div>
+        </section>
 
-              {error ? <AuthFeedback tone="error">{error}</AuthFeedback> : null}
-              {message ? (
-                <AuthFeedback tone="success">{message}</AuthFeedback>
-              ) : null}
+        <Card className="bg-card/75 shadow-elevated p-5 sm:p-7">
+          <div className="border-border bg-background/40 mb-6 grid grid-cols-2 rounded-2xl border p-1">
+            <ModeButton
+              active={!isSignup}
+              icon={<LogIn />}
+              label="Sign in"
+              onClick={() => switchMode("signin")}
+            />
+            <ModeButton
+              active={isSignup}
+              icon={<UserPlus />}
+              label="Sign up"
+              onClick={() => switchMode("signup")}
+            />
+          </div>
 
-              <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-                {isSignup ? (
-                  <div className="grid gap-1.5">
-                    <Label
-                      htmlFor="displayName"
-                      required
-                    >
-                      Display name
-                    </Label>
-                    <Input
-                      autoComplete="name"
-                      disabled={pending}
-                      id="displayName"
-                      maxLength={80}
-                      onChange={(event) => setDisplayName(event.target.value)}
-                      placeholder="Your name"
-                      required
-                      type="text"
-                      value={displayName}
-                    />
-                  </div>
-                ) : null}
+          <div className="mb-6">
+            <p className="text-primary font-mono text-xs tracking-widest uppercase">
+              {isSignup ? "new curator" : "returning curator"}
+            </p>
+            <h2 className="font-display mt-1 text-3xl font-black">
+              {isSignup ? "Create your Rankex profile" : "Enter Rankex"}
+            </h2>
+          </div>
 
-                <div className="grid gap-1.5">
-                  <Label
-                    htmlFor="email"
-                    required
-                  >
-                    Email
-                  </Label>
-                  <Input
-                    autoComplete="email"
-                    disabled={pending}
-                    id="email"
-                    onChange={(event) => setEmail(event.target.value)}
-                    placeholder="you@rankex.local"
-                    required
-                    type="email"
-                    value={email}
-                  />
-                </div>
+          {error ? <AuthFeedback tone="error">{error}</AuthFeedback> : null}
+          {message ? (
+            <AuthFeedback tone="success">{message}</AuthFeedback>
+          ) : null}
 
-                <div className="grid gap-1.5">
-                  <Label
-                    htmlFor="password"
-                    required
-                  >
-                    Password
-                  </Label>
-                  <Input
-                    autoComplete={
-                      isSignup ? "new-password" : "current-password"
-                    }
-                    disabled={pending}
-                    id="password"
-                    minLength={minimumPasswordLength}
-                    onChange={(event) => setPassword(event.target.value)}
-                    placeholder="Enter your password"
-                    required
-                    type="password"
-                    value={password}
-                  />
-                </div>
-
-                {isSignup ? (
-                  <div className="grid gap-1.5">
-                    <Label
-                      htmlFor="confirmPassword"
-                      required
-                    >
-                      Confirm password
-                    </Label>
-                    <Input
-                      autoComplete="new-password"
-                      disabled={pending}
-                      id="confirmPassword"
-                      minLength={minimumPasswordLength}
-                      onChange={(event) =>
-                        setConfirmPassword(event.target.value)
-                      }
-                      placeholder="Confirm your password"
-                      required
-                      type="password"
-                      value={confirmPassword}
-                    />
-                  </div>
-                ) : null}
-
-                <Button className="w-full" disabled={pending} type="submit">
-                  {pending ? (
-                    <Loader2 className="animate-spin" data-icon="inline-start" />
-                  ) : null}
-                  {isSignup ? "Create account" : "Log in"}
-                </Button>
-              </form>
-
-              <div className="my-6 flex items-center gap-3 font-mono text-xs tracking-widest text-muted-foreground uppercase">
-                <div className="h-px flex-1 bg-border" />
-                <span>or</span>
-                <div className="h-px flex-1 bg-border" />
-              </div>
-
-              <form action="/api/auth/demo" method="post">
-                <input name="next" type="hidden" value={next} />
-                <Button
-                  className="w-full"
+          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+            {isSignup ? (
+              <AuthField
+                htmlFor="displayName"
+                icon={<UserRound />}
+                label="Display name"
+                required
+              >
+                <Input
+                  autoComplete="name"
                   disabled={pending}
-                  size="lg"
-                  type="submit"
-                  variant="outline"
-                >
-                  <Trophy data-icon="inline-start" />
-                  Use demo account
-                </Button>
-              </form>
+                  id="displayName"
+                  maxLength={80}
+                  onChange={(event) => setDisplayName(event.target.value)}
+                  placeholder="Your name"
+                  required
+                  type="text"
+                  value={displayName}
+                />
+              </AuthField>
+            ) : null}
 
-              <div className="mt-4 text-center text-sm text-muted-foreground">
-                {isSignup ? "Already have an account?" : "No account yet?"}{" "}
-                <button
-                  className="text-primary underline-offset-4 hover:underline"
-                  onClick={() => switchMode(isSignup ? "signin" : "signup")}
-                  type="button"
-                >
-                  {isSignup ? "Sign in" : "Sign up"}
-                </button>
-              </div>
-            </div>
-          </Card>
-        </div>
+            <AuthField htmlFor="email" icon={<Mail />} label="Email" required>
+              <Input
+                autoComplete="email"
+                disabled={pending}
+                id="email"
+                onChange={(event) => setEmail(event.target.value)}
+                placeholder="you@rankex.local"
+                required
+                type="email"
+                value={email}
+              />
+            </AuthField>
+
+            <AuthField
+              htmlFor="password"
+              icon={<KeyRound />}
+              label="Password"
+              required
+            >
+              <Input
+                autoComplete={isSignup ? "new-password" : "current-password"}
+                disabled={pending}
+                id="password"
+                minLength={minimumPasswordLength}
+                onChange={(event) => setPassword(event.target.value)}
+                placeholder="Enter your password"
+                required
+                type="password"
+                value={password}
+              />
+            </AuthField>
+
+            {isSignup ? (
+              <AuthField
+                htmlFor="confirmPassword"
+                icon={<KeyRound />}
+                label="Confirm password"
+                required
+              >
+                <Input
+                  autoComplete="new-password"
+                  disabled={pending}
+                  id="confirmPassword"
+                  minLength={minimumPasswordLength}
+                  onChange={(event) => setConfirmPassword(event.target.value)}
+                  placeholder="Confirm your password"
+                  required
+                  type="password"
+                  value={confirmPassword}
+                />
+              </AuthField>
+            ) : null}
+
+            <Button className="mt-1 w-full" disabled={pending} type="submit">
+              {pending ? (
+                <Loader2 className="animate-spin" data-icon="inline-start" />
+              ) : isSignup ? (
+                <UserPlus data-icon="inline-start" />
+              ) : (
+                <LogIn data-icon="inline-start" />
+              )}
+              {isSignup ? "Create profile" : "Log in"}
+            </Button>
+          </form>
+
+          <div className="text-muted-foreground my-6 flex items-center gap-3 font-mono text-xs tracking-widest uppercase">
+            <div className="bg-border h-px flex-1" />
+            <span>or</span>
+            <div className="bg-border h-px flex-1" />
+          </div>
+
+          <form action="/api/auth/demo" method="post">
+            <input name="next" type="hidden" value={next} />
+            <Button
+              className="w-full"
+              disabled={pending}
+              size="lg"
+              type="submit"
+              variant="outline"
+            >
+              <Trophy data-icon="inline-start" />
+              Try demo account
+            </Button>
+          </form>
+
+          <p className="text-muted-foreground mt-4 text-center text-sm">
+            {isSignup ? "Already ranking here?" : "New to Rankex?"}{" "}
+            <button
+              className="text-primary font-medium underline-offset-4 hover:underline"
+              onClick={() => switchMode(isSignup ? "signin" : "signup")}
+              type="button"
+            >
+              {isSignup ? "Sign in" : "Create an account"}
+            </button>
+          </p>
+        </Card>
       </AppMain>
     </AppShell>
+  );
+}
+
+function AuthField({
+  children,
+  htmlFor,
+  icon,
+  label,
+  required = false,
+}: {
+  children: ReactNode;
+  htmlFor: string;
+  icon: ReactNode;
+  label: string;
+  required?: boolean;
+}) {
+  return (
+    <div className="grid gap-1.5">
+      <Label
+        className="[&_svg]:text-primary inline-flex items-center gap-2 [&_svg]:size-3.5"
+        htmlFor={htmlFor}
+        required={required}
+      >
+        {icon}
+        {label}
+      </Label>
+      {children}
+    </div>
+  );
+}
+
+function ModeButton({
+  active,
+  icon,
+  label,
+  onClick,
+}: {
+  active: boolean;
+  icon: ReactNode;
+  label: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      className={cn(
+        "flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold transition [&_svg]:size-4",
+        active
+          ? "bg-secondary text-foreground shadow-elevated"
+          : "text-muted-foreground hover:text-foreground",
+      )}
+      onClick={onClick}
+      type="button"
+    >
+      {icon}
+      {label}
+    </button>
+  );
+}
+
+function AuthValue({ icon, label }: { icon: ReactNode; label: string }) {
+  return (
+    <div className="border-border bg-card/55 rounded-2xl border p-3">
+      <div className="text-primary mb-2 [&_svg]:size-4">{icon}</div>
+      <p className="text-muted-foreground font-mono text-xs tracking-widest uppercase">
+        {label}
+      </p>
+    </div>
   );
 }

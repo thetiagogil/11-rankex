@@ -5,6 +5,10 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { protectedNavLinks } from "@/shared/constants/navigation";
+import {
+  isProtectedNavActive,
+  ProtectedNavLinkIcon,
+} from "@/shared/components/layout/protected-nav-links";
 import { Button } from "@/shared/components/ui/button";
 import {
   DropdownMenu,
@@ -13,15 +17,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
+import type { CurrentUser } from "@/shared/types";
 import { cn } from "@/shared/utils/cn";
 
 type ProfileMenuProps = {
+  currentUser: CurrentUser;
   isPending: boolean;
   onSignOut: () => void;
   pathname: string;
 };
 
 export function ProfileMenu({
+  currentUser,
   isPending,
   onSignOut,
   pathname,
@@ -34,20 +41,30 @@ export function ProfileMenu({
         <Button
           aria-label={open ? "Close account menu" : "Open account menu"}
           className={cn(
-            "text-primary hover:border-primary/50 h-10 w-10 rounded-full",
+            "size-10 rounded-full text-primary hover:border-primary/50",
             open && "border-primary/50",
           )}
           disabled={isPending}
           variant="outline"
         >
-          <UserRound className="h-5 w-5" />
+          <UserRound />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-44" align="end">
+      <DropdownMenuContent className="w-56" align="end">
+        <div className="px-2 py-1.5">
+          <p className="truncate text-sm font-semibold">
+            {currentUser.profile.displayName}
+          </p>
+          <p className="truncate font-mono text-xs text-muted-foreground">
+            {currentUser.profile.username
+              ? `@${currentUser.profile.username}`
+              : currentUser.email}
+          </p>
+        </div>
+        <DropdownMenuSeparator />
         <div className="md:hidden">
           {protectedNavLinks.map((link) => {
-            const active =
-              pathname === link.href || pathname.startsWith(`${link.href}/`);
+            const active = isProtectedNavActive(pathname, link.href);
 
             return (
               <DropdownMenuItem asChild key={link.href}>
@@ -55,6 +72,7 @@ export function ProfileMenu({
                   aria-current={active ? "page" : undefined}
                   href={link.href}
                 >
+                  <ProtectedNavLinkIcon icon={link.icon} />
                   {link.label}
                 </Link>
               </DropdownMenuItem>
@@ -64,7 +82,7 @@ export function ProfileMenu({
         </div>
         <DropdownMenuItem asChild>
           <Link href="/settings">
-            <Settings className="h-4 w-4" />
+            <Settings />
             Settings
           </Link>
         </DropdownMenuItem>
@@ -78,9 +96,9 @@ export function ProfileMenu({
           variant="destructive"
         >
           {isPending ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2 className="animate-spin" />
           ) : (
-            <LogOut className="h-4 w-4" />
+            <LogOut />
           )}
           Log out
         </DropdownMenuItem>

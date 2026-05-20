@@ -42,6 +42,23 @@ export async function getPublicListSummaries(
   return buildSummaries(client, data ?? []);
 }
 
+export async function getPublicListSummariesByUser(
+  client: AppSupabaseClient,
+  userId: string,
+): Promise<RankedListSummary[]> {
+  const { data, error } = await rankex(client)
+    .from("lists")
+    .select("*")
+    .eq("user_id", userId)
+    .eq("is_public", true)
+    .order("updated_at", { ascending: false })
+    .order("id", { ascending: false });
+
+  if (error) throw new Error(error.message);
+
+  return buildSummaries(client, data ?? []);
+}
+
 export async function getListById(
   client: AppSupabaseClient,
   listId: number,

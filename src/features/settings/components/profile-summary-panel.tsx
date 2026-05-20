@@ -1,6 +1,6 @@
-import { Mail, User } from "lucide-react";
+import { AtSign, Mail, UserRound } from "lucide-react";
 
-import { getProfileInitials } from "@/features/settings/lib/profile-formatting";
+import { getProfileInitials } from "@/shared/utils/profile";
 
 type ProfileSummaryPanelProps = {
   bio: string;
@@ -16,31 +16,45 @@ export function ProfileSummaryPanel({
   username,
 }: ProfileSummaryPanelProps) {
   return (
-    <section className="flex items-center gap-5 rounded-2xl border border-border bg-card/70 p-5 sm:p-6">
-      <div className="grid size-20 shrink-0 place-items-center rounded-full bg-gradient-gold font-display text-2xl font-bold text-primary-foreground shadow-glow">
-        {getProfileInitials(displayName)}
-      </div>
-      <div className="min-w-0">
-        <p className="mb-1 flex items-center gap-2 font-semibold">
-          <User className="size-4 text-primary" />
-          {displayName}
-        </p>
-        <p className="flex items-center gap-2 truncate text-sm text-muted-foreground">
-          <Mail className="size-4 text-primary" />
-          {email ?? "No email available"}
-        </p>
-        <p className="mt-1 font-mono text-xs text-primary">
-          {username ? `@${username}` : "No username set"}
-        </p>
-        <p className="mt-2 line-clamp-2 text-sm leading-6 text-muted-foreground">
-          {bio ? (
-            bio.trim()
-          ) : (
-            <span className="text-muted-foreground/40 italic">
-              Add a short bio for your ranking profile.
+    <section className="overflow-hidden rounded-2xl border border-border bg-card/75 shadow-elevated">
+      <div className="h-2 bg-gradient-gold" />
+      <div className="p-5 sm:p-6">
+        <div className="flex items-center gap-4">
+          <div className="grid size-20 shrink-0 place-items-center rounded-2xl bg-gradient-gold font-display text-2xl font-black text-primary-foreground shadow-glow">
+            {getProfileInitials(displayName)}
+          </div>
+          <div className="min-w-0">
+            <p className="font-mono text-xs tracking-widest text-primary uppercase">
+              Live curator card
+            </p>
+            <p className="mt-1 truncate font-display text-2xl font-bold">
+              {displayName}
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-5 flex flex-col gap-2 text-sm text-muted-foreground">
+          <p className="flex items-center gap-2 truncate">
+            <AtSign className="size-4 text-primary" />
+            {username || "No username set"}
+          </p>
+          <p className="flex items-center gap-2 truncate">
+            <Mail className="size-4 text-primary" />
+            {email ?? "No email available"}
+          </p>
+          <p className="flex items-start gap-2 leading-6">
+            <UserRound className="mt-1 size-4 shrink-0 text-primary" />
+            <span className="line-clamp-3">
+              {bio ? (
+                bio.trim()
+              ) : (
+                <span className="text-muted-foreground/50 italic">
+                  Add a short bio for your ranking profile.
+                </span>
+              )}
             </span>
-          )}
-        </p>
+          </p>
+        </div>
       </div>
     </section>
   );

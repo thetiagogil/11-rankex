@@ -1,8 +1,9 @@
-import { Compass } from "lucide-react";
+import { Compass, Search, UsersRound } from "lucide-react";
 
 import { ExploreView } from "@/app/(protected)/explore/_components/explore-view";
 import { getPublicListSummaries } from "@/features/lists/server/queries";
 import { AppMain } from "@/shared/components/layout/app-main";
+import { PageHeader } from "@/shared/components/layout/page-header";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function ExplorePage() {
@@ -11,18 +12,24 @@ export default async function ExplorePage() {
 
   return (
     <AppMain className="pb-20">
-      <section className="mt-2">
-        <header className="flex items-center gap-3">
-          <Compass className="size-7 text-primary" />
-          <h1 className="font-display text-4xl font-black sm:text-5xl">
-            Explore
-          </h1>
-        </header>
-        <p className="mt-3 max-w-xl leading-7 text-muted-foreground">
-          See what Rankex curators are ranking. Filter public lists by topic and
-          open any ranking for the full ordered view.
-        </p>
-      </section>
+      <PageHeader
+        description="Browse public rankings, discover curators, and follow the topics that keep showing up in the community canon."
+        eyebrow="Public canon"
+        icon={<Compass className="size-6" />}
+        meta={
+          <>
+            <span className="inline-flex items-center gap-2 rounded-xl border border-border bg-card/65 px-3 py-2 text-sm text-muted-foreground">
+              <Search className="size-4 text-primary" />
+              Filter by topic
+            </span>
+            <span className="inline-flex items-center gap-2 rounded-xl border border-border bg-card/65 px-3 py-2 text-sm text-muted-foreground">
+              <UsersRound className="size-4 text-primary" />
+              Curators included
+            </span>
+          </>
+        }
+        title="Explore"
+      />
 
       <ExploreView lists={lists} />
     </AppMain>
