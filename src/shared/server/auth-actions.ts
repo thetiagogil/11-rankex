@@ -1,0 +1,34 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+
+import { isSupabaseConfigured } from "@/lib/env";
+import { createClient } from "@/lib/supabase/server";
+import type { ActionResult } from "./action-result";
+
+export async function signOutAction(): Promise<ActionResult<void>> {
+  if (!isSupabaseConfigured()) {
+    return { ok: false, error: "Supabase is not configured." };
+  }
+
+  try {
+    const client = await createClient();
+    const { error } = await client.auth.signOut();
+
+    if (error) {
+      return { ok: false, error: error.message };
+    }
+
+    revalidatePath("/");
+    revalidatePath("/dashboard");
+    revalidatePath("/explore");
+    revalidatePath("/settings");
+
+    return { ok: true, data: undefined };
+  } catch (error) {
+    return {
+      ok: false,
+      error: error instanceof Error ? error.message : "Sign out failed.",
+    };
+  }
+}
