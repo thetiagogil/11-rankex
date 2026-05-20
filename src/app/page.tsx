@@ -1,41 +1,98 @@
 import {
-  Compass,
+  ArrowUpRight,
+  Clapperboard,
+  Coffee,
+  Gamepad2,
   GripVertical,
   LayoutGrid,
   ListOrdered,
-  Sparkles,
+  LockKeyhole,
+  Music,
+  type LucideIcon,
 } from "lucide-react";
 import { redirect } from "next/navigation";
 
 import { AppHeader } from "@/shared/components/layout/app-header";
 import { AppMain } from "@/shared/components/layout/app-main";
 import { AppShell } from "@/shared/components/layout/app-shell";
+import { Badge } from "@/shared/components/ui/badge";
 import { ButtonLink } from "@/shared/components/ui/button-link";
-import { Card } from "@/shared/components/ui/card";
+import {
+  Card,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/shared/components/ui/card";
 import { getCurrentUser } from "@/shared/server/auth";
 
-const featureCards = [
+type FeatureCard = {
+  description: string;
+  icon: LucideIcon;
+  title: string;
+};
+
+type TrendingList = {
+  description: string;
+  entries: number;
+  icon: LucideIcon;
+  title: string;
+  topic: string;
+};
+
+const featureCards: FeatureCard[] = [
   {
+    description: "Create lists for movies, albums, restaurants, books, games, or anything else worth ordering.",
     icon: ListOrdered,
     title: "Ranked lists",
-    description: "Build ordered lists with notes, scores, and clear ownership.",
   },
   {
+    description: "Switch from exact order to S/A/B/C/D tiers when the comparison gets less precise.",
     icon: LayoutGrid,
     title: "Tier view",
-    description: "Switch from exact order to S/A/B/C/D tiers when ranking gets fuzzy.",
   },
   {
+    description: "Move entries quickly and keep the final order synced to your account.",
     icon: GripVertical,
     title: "Drag reorder",
-    description: "Move entries quickly and preserve the final order in Supabase.",
   },
   {
-    icon: Compass,
-    title: "Explore feed",
-    description: "Browse public rankings by topic without social-feed complexity.",
+    description: "Keep drafts private, then publish the lists you want other people to browse.",
+    icon: LockKeyhole,
+    title: "Visibility",
   },
-] as const;
+];
+
+const trendingLists: TrendingList[] = [
+  {
+    description: "Quiet classics, dense visuals, and the kind of films that reward a second watch.",
+    entries: 4,
+    icon: Clapperboard,
+    title: "Comfort films worth revisiting",
+    topic: "Movies",
+  },
+  {
+    description: "Reliable counters, strong coffee, and places worth crossing town for.",
+    entries: 3,
+    icon: Coffee,
+    title: "Lisbon coffee counters",
+    topic: "Food",
+  },
+  {
+    description: "Low-friction picks that work when everyone at the table has a different taste.",
+    entries: 3,
+    icon: Gamepad2,
+    title: "Board games for mixed groups",
+    topic: "Games",
+  },
+  {
+    description: "No-skip records, focus playlists, and albums that still feel durable.",
+    entries: 8,
+    icon: Music,
+    title: "Albums that hold up",
+    topic: "Music",
+  },
+];
 
 export default async function LandingPage() {
   const currentUser = await getCurrentUser();
@@ -48,54 +105,122 @@ export default async function LandingPage() {
     <AppShell>
       <AppHeader
         actions={
-          <>
-            <ButtonLink href="/auth" variant="ghost">
-              Log in
-            </ButtonLink>
-            <ButtonLink href="/auth?mode=signup">Get started</ButtonLink>
-          </>
+          <ButtonLink className="[box-shadow:none]" href="/auth" size="lg">
+            Log in
+          </ButtonLink>
         }
       />
 
       <AppMain className="pb-20">
-        <section className="mt-20 max-w-3xl">
-          <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-3 py-1 font-mono text-xs tracking-widest text-primary uppercase">
-            <Sparkles className="size-3" />
-            Ranked-list workspace
-          </span>
-          <h1 className="mt-4 font-display text-5xl leading-[0.95] font-black text-balance sm:text-7xl">
-            Rank <em className="text-gradient-gold not-italic">what matters</em>.
-            <br />
-            Share what holds up.
-          </h1>
-          <p className="mt-5 max-w-xl text-lg leading-8 text-muted-foreground">
-            Build top lists for anything worth ordering: films, albums,
-            restaurants, games, books, places, and personal canon.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <ButtonLink href="/auth?mode=signup" size="lg">
-              Start ranking
-            </ButtonLink>
-            <ButtonLink href="/auth" size="lg" variant="outline">
-              Use demo account
-            </ButtonLink>
+        <section className="pt-16 sm:pt-20 lg:pt-24">
+          <div className="max-w-3xl">
+            <h1 className="font-display text-5xl leading-[0.95] font-black text-balance sm:text-7xl">
+              Rank{" "}
+              <em className="text-gradient-gold not-italic">what matters</em>.
+            </h1>
+            <p className="mt-5 max-w-xl text-lg leading-8 text-muted-foreground">
+              Build top lists for anything worth ordering: films, albums,
+              restaurants, games, books, places, and personal canon.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <ButtonLink href="/auth?mode=signup" size="lg">
+                Get started
+              </ButtonLink>
+              <ButtonLink href="/auth" size="lg" variant="outline">
+                Test with demo account
+              </ButtonLink>
+            </div>
           </div>
         </section>
 
-        <section className="mt-24 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {featureCards.map((feature) => (
-            <Card as="article" className="bg-card/60 p-6" key={feature.title}>
-              <feature.icon className="size-6 text-primary" />
-              <h2 className="mt-4 font-display text-lg font-bold">
-                {feature.title}
+        <section className="mt-16">
+          <div className="max-w-2xl">
+            <h2 className="font-display text-3xl font-bold">
+              A straightforward place for ranked lists
+            </h2>
+            <p className="mt-3 text-muted-foreground">
+              Rankex keeps the first version focused: create lists, add items,
+              reorder them, switch views, and decide what should be public.
+            </p>
+          </div>
+
+          <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            {featureCards.map((feature) => (
+              <FeatureCard key={feature.title} feature={feature} />
+            ))}
+          </div>
+        </section>
+
+        <section className="mt-16">
+          <div className="mb-5 flex items-end justify-between gap-3">
+            <div>
+              <h2 className="font-display text-3xl font-bold">
+                Trending rankings
               </h2>
-              <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                {feature.description}
+              <p className="mt-2 text-muted-foreground">
+                A preview of public lists people can browse by topic.
               </p>
-            </Card>
-          ))}
+            </div>
+            <ButtonLink href="/auth" size="sm" variant="link">
+              Explore
+              <ArrowUpRight data-icon="inline-end" />
+            </ButtonLink>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            {trendingLists.map((list) => (
+              <TrendingListCard key={list.title} list={list} />
+            ))}
+          </div>
         </section>
       </AppMain>
     </AppShell>
+  );
+}
+
+function FeatureCard({ feature }: { feature: FeatureCard }) {
+  const Icon = feature.icon;
+
+  return (
+    <Card as="article" className="bg-card/70" size="sm">
+      <CardHeader className="gap-3">
+        <div className="flex items-center gap-3">
+          <span className="grid size-9 shrink-0 place-items-center rounded-lg border border-primary/35 bg-primary/10 text-primary">
+            <Icon className="size-4" />
+          </span>
+          <CardTitle className="text-base">{feature.title}</CardTitle>
+        </div>
+        <CardDescription className="leading-6">
+          {feature.description}
+        </CardDescription>
+      </CardHeader>
+    </Card>
+  );
+}
+
+function TrendingListCard({ list }: { list: TrendingList }) {
+  const Icon = list.icon;
+
+  return (
+    <Card as="article" className="bg-card/70" interactive size="sm">
+      <CardHeader className="gap-4">
+        <div className="flex items-center justify-between gap-3">
+          <span className="grid size-9 shrink-0 place-items-center rounded-lg border border-border bg-secondary text-primary">
+            <Icon className="size-4" />
+          </span>
+          <Badge variant="surface">{list.topic}</Badge>
+        </div>
+        <div>
+          <CardTitle className="line-clamp-2">{list.title}</CardTitle>
+          <CardDescription className="mt-2 line-clamp-2 leading-6">
+            {list.description}
+          </CardDescription>
+        </div>
+      </CardHeader>
+      <CardFooter className="justify-between gap-3 text-xs text-muted-foreground">
+        <span>Public ranking</span>
+        <span>{list.entries} entries</span>
+      </CardFooter>
+    </Card>
   );
 }

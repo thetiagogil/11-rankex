@@ -1,0 +1,165 @@
+"use client";
+
+import { ListPlus, Search } from "lucide-react";
+import { useMemo, useState } from "react";
+
+import { ListCard } from "@/features/lists/components/list-card";
+import { ListFormDialog } from "@/features/lists/components/list-form-dialog";
+import type { RankedListSummary } from "@/features/lists/types";
+import { Button } from "@/shared/components/ui/button";
+import { Card } from "@/shared/components/ui/card";
+import { Input } from "@/shared/components/ui/input";
+import { cn } from "@/shared/utils/cn";
+
+type DashboardListBrowserProps = {
+  lists: RankedListSummary[];
+};
+
+type VisibilityFilter = "all" | "public" | "private";
+type SortMode = "updated" | "title" | "items";
+
+const visibilityOptions = [
+  { label: "All", value: "all" },
+  { label: "Public", value: "public" },
+  { label: "Private", value: "private" },
+] as const;
+
+export function DashboardListBrowser({ lists }: DashboardListBrowserProps) {
+  const [query, setQuery] = useState("");
+  const [visibility, setVisibility] = useState<VisibilityFilter>("all");
+  const [sort, setSort] = useState<SortMode>("updated");
+
+  const filteredLists = useMemo(() => {
+    const normalizedQuery = query.trim().toLowerCase();
+
+    return [...lists]
+      .filter((list) => {
+        const matchesVisibility =
+          visibility === "all" ||
+          (visibility === "public" && list.isPublic) ||
+          (visibility === "private" && !list.isPublic);
+        const matchesQuery =
+          !normalizedQuery ||
+          [list.title, list.topic, list.description]
+            .filter(Boolean)
+            .join(" ")
+            .toLowerCase()
+            .includes(normalizedQuery);
+
+        return matchesVisibility && matchesQuery;
+      })
+      .sort((first, second) => {
+        if (sort === "title") {
+          return first.title.localeCompare(second.title);
+        }
+
+        if (sort === "items") {
+          return (
+            second.itemCount - first.itemCount ||
+            second.updatedAt.localeCompare(first.updatedAt)
+          );
+        }
+
+        return second.updatedAt.localeCompare(first.updatedAt);
+      });
+  }, [lists, query, sort, visibility]);
+
+  if (!lists.length) {
+    return (
+      <Card
+        as="section"
+        className="bg-card/30 flex flex-col items-center justify-center border-dashed px-6 py-20 text-center"
+      >
+        <ListPlus className="size-10 text-muted-foreground" />
+        <h2 className="mt-4 font-display text-xl">No lists yet</h2>
+        <p className="mt-1 max-w-md text-sm leading-6 text-muted-foreground">
+          Create your first ranking. You can keep it private while drafting and
+          make it public when it is ready.
+        </p>
+        <div className="mt-6">
+          <ListFormDialog redirectToList />
+        </div>
+      </Card>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-3 rounded-2xl border border-border bg-card/35 p-3 lg:flex-row lg:items-stretch lg:justify-between">
+        <label className="relative block min-w-0 flex-1">
+          <span className="sr-only">Search your lists</span>
+          <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            className="h-9 pl-9"
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Search by title, topic, or description..."
+            value={query}
+          />
+        </label>
+
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
+          <div className="flex h-9 items-stretch overflow-hidden rounded-xl border border-border bg-background/45">
+            {visibilityOptions.map((option) => (
+              <button
+                className={cn(
+                  "h-9 px-3 font-mono text-xs tracking-widest uppercase transition",
+                  visibility === option.value
+                    ? "bg-secondary text-foreground shadow-elevated"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+                key={option.value}
+                onClick={() => setVisibility(option.value)}
+                type="button"
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+
+          <label className="grid min-w-44">
+            <span className="sr-only">Sort lists</span>
+            <select
+              className="h-9 rounded-lg border border-border bg-card/65 px-3 text-sm font-medium text-foreground outline-none transition focus:border-ring focus:ring-3 focus:ring-ring/50"
+              onChange={(event) => setSort(event.target.value as SortMode)}
+              value={sort}
+            >
+              <option value="updated">Recently updated</option>
+              <option value="title">Title A-Z</option>
+              <option value="items">Most items</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      {filteredLists.length ? (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredLists.map((list) => (
+            <ListCard key={list.id} list={list} />
+          ))}
+        </div>
+      ) : (
+        <Card
+          as="section"
+          className="bg-card/30 flex flex-col items-center justify-center border-dashed px-6 py-16 text-center"
+        >
+          <p className="font-display text-xl">No lists match that view</p>
+          <p className="mt-2 max-w-md text-sm leading-6 text-muted-foreground">
+            Adjust the search, filter, or sort controls to bring more lists
+            back into view.
+          </p>
+          <Button
+            className="mt-5"
+            onClick={() => {
+              setQuery("");
+              setVisibility("all");
+              setSort("updated");
+            }}
+            variant="outline"
+          >
+            Reset filters
+          </Button>
+        </Card>
+      )}
+    </div>
+  );
+}

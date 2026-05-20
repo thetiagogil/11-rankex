@@ -1,5 +1,5 @@
+import Image from "next/image";
 import Link from "next/link";
-import { Trophy } from "lucide-react";
 
 import { cn } from "@/shared/utils/cn";
 
@@ -10,9 +10,13 @@ type AppLogoProps = {
 export function AppLogo({ href }: AppLogoProps) {
   const content = (
     <span className="group/logo flex items-center gap-2.5">
-      <span className="flex size-9 items-center justify-center rounded-xl bg-gradient-gold text-primary-foreground shadow-glow transition-transform duration-500 group-hover/logo:-translate-y-0.5">
-        <Trophy className="size-5" />
-      </span>
+      <Image
+        alt=""
+        className="size-9 rounded-xl transition-transform duration-500 group-hover/logo:-translate-y-0.5"
+        height={36}
+        src="/favicon.svg"
+        width={36}
+      />
       <span className={cn("font-display text-xl font-bold tracking-normal")}>
         Rank<span className="text-primary">ex</span>
       </span>

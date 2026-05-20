@@ -10,17 +10,12 @@ import { AppShell } from "@/shared/components/layout/app-shell";
 import { ProfileMenu } from "@/shared/components/layout/profile-menu";
 import { ProtectedNavLinks } from "@/shared/components/layout/protected-nav-links";
 import { signOutAction } from "@/shared/server/auth-actions";
-import type { CurrentUser } from "@/shared/types";
 
 type ProtectedAppShellProps = {
   children: ReactNode;
-  currentUser: CurrentUser;
 };
 
-export function ProtectedAppShell({
-  children,
-  currentUser,
-}: ProtectedAppShellProps) {
+export function ProtectedAppShell({ children }: ProtectedAppShellProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [feedback, setFeedback] = useState<string | null>(null);
@@ -48,7 +43,6 @@ export function ProtectedAppShell({
         center={<ProtectedNavLinks pathname={pathname} />}
         actions={
           <ProfileMenu
-            currentUser={currentUser}
             isPending={isPending}
             onSignOut={signOut}
             pathname={pathname}

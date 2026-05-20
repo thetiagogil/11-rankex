@@ -160,7 +160,7 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     scrollbar-color: color-mix(in oklch, var(--color-primary) 60%, var(--color-border))
-      transparent;
+      color-mix(in oklch, var(--color-background) 86%, black);
     scrollbar-width: thin;
   }
 
@@ -217,7 +217,7 @@
 
   html::-webkit-scrollbar-track,
   body::-webkit-scrollbar-track {
-    background: transparent;
+    background: color-mix(in oklch, var(--color-background) 86%, black);
   }
 
   html::-webkit-scrollbar-thumb,
@@ -311,7 +311,7 @@
 
   .scrollbar-themed {
     scrollbar-color: color-mix(in oklch, var(--color-primary) 72%, var(--color-border))
-      color-mix(in oklch, var(--color-surface) 82%, transparent);
+      color-mix(in oklch, var(--color-background) 88%, black);
     scrollbar-width: thin;
   }
 
@@ -329,7 +329,7 @@
   }
 
   .scrollbar-themed::-webkit-scrollbar-track {
-    background-color: color-mix(in oklch, var(--color-surface) 82%, transparent);
+    background-color: color-mix(in oklch, var(--color-background) 88%, black);
     border-radius: 9999px;
   }
 

@@ -17,18 +17,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
-import type { CurrentUser } from "@/shared/types";
 import { cn } from "@/shared/utils/cn";
 
 type ProfileMenuProps = {
-  currentUser: CurrentUser;
   isPending: boolean;
   onSignOut: () => void;
   pathname: string;
 };
 
 export function ProfileMenu({
-  currentUser,
   isPending,
   onSignOut,
   pathname,
@@ -50,18 +47,7 @@ export function ProfileMenu({
           <UserRound />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end">
-        <div className="px-2 py-1.5">
-          <p className="truncate text-sm font-semibold">
-            {currentUser.profile.displayName}
-          </p>
-          <p className="truncate font-mono text-xs text-muted-foreground">
-            {currentUser.profile.username
-              ? `@${currentUser.profile.username}`
-              : currentUser.email}
-          </p>
-        </div>
-        <DropdownMenuSeparator />
+      <DropdownMenuContent className="w-44 shadow-none" align="end">
         <div className="md:hidden">
           {protectedNavLinks.map((link) => {
             const active = isProtectedNavActive(pathname, link.href);
@@ -81,8 +67,14 @@ export function ProfileMenu({
           <DropdownMenuSeparator />
         </div>
         <DropdownMenuItem asChild>
+          <Link href="/profile">
+            <UserRound data-icon="inline-start" />
+            Profile
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
           <Link href="/settings">
-            <Settings />
+            <Settings data-icon="inline-start" />
             Settings
           </Link>
         </DropdownMenuItem>
@@ -96,9 +88,9 @@ export function ProfileMenu({
           variant="destructive"
         >
           {isPending ? (
-            <Loader2 className="animate-spin" />
+            <Loader2 className="animate-spin" data-icon="inline-start" />
           ) : (
-            <LogOut />
+            <LogOut data-icon="inline-start" />
           )}
           Log out
         </DropdownMenuItem>

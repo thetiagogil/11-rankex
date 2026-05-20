@@ -10,9 +10,7 @@ type ProtectedLayoutProps = {
 export default async function ProtectedLayout({
   children,
 }: ProtectedLayoutProps) {
-  const currentUser = await requireUser();
+  await requireUser();
 
-  return (
-    <ProtectedAppShell currentUser={currentUser}>{children}</ProtectedAppShell>
-  );
+  return <ProtectedAppShell>{children}</ProtectedAppShell>;
 }

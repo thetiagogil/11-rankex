@@ -7,12 +7,10 @@ import {
   MessageSquareText,
   RotateCcw,
   Save,
-  ShieldCheck,
   UserRound,
 } from "lucide-react";
 import { type FormEvent, type ReactNode, useState, useTransition } from "react";
 
-import { ProfileSummaryPanel } from "@/features/settings/components/profile-summary-panel";
 import { updateProfileSettingsAction } from "@/features/settings/server/actions";
 import { Alert } from "@/shared/components/ui/alert";
 import { Button } from "@/shared/components/ui/button";
@@ -70,38 +68,14 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
   };
 
   return (
-    <form
-      className="grid gap-6 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.25fr)]"
-      onSubmit={submit}
-    >
-      <aside className="flex flex-col gap-4 lg:sticky lg:top-24 lg:self-start">
-        <ProfileSummaryPanel
-          bio={bio}
-          displayName={displayName}
-          email={currentUser.email}
-          username={username}
-        />
-        <div className="rounded-2xl border border-primary/25 bg-primary/10 p-4">
-          <div className="flex items-center gap-2 font-mono text-xs tracking-widest text-primary uppercase">
-            <ShieldCheck className="size-4" />
-            Shared profile
-          </div>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            Rankex uses this identity for list ownership, curator cards, and
-            profile pages. Your demo credentials and auth secrets stay off the
-            UI.
-          </p>
-        </div>
-      </aside>
-
+    <form className="max-w-3xl" onSubmit={submit}>
       <Card as="section" className="bg-card/70 p-5 sm:p-7">
         <div className="flex flex-col gap-7">
           <SettingsBlock
             description="The name and handle people see before they open one of your rankings."
-            icon={<UserRound />}
             title="Public curator card"
           >
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-4">
               <FieldShell
                 htmlFor="displayName"
                 icon={<UserRound />}
@@ -139,7 +113,6 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
 
           <SettingsBlock
             description="A short line that gives your rankings a recognizable point of view."
-            icon={<MessageSquareText />}
             title="Ranking voice"
           >
             <FieldShell htmlFor="bio" icon={<MessageSquareText />} label="Bio">
@@ -159,8 +132,7 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
           </SettingsBlock>
 
           <SettingsBlock
-            description="Used only for sign-in and account recovery. It is not shown on public Rankex pages."
-            icon={<Mail />}
+            description="Used only for logging in and account recovery. It is not shown on public Rankex pages."
             title="Account anchor"
           >
             <FieldShell htmlFor="email" icon={<Mail />} label="Email">
@@ -200,26 +172,19 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
 function SettingsBlock({
   children,
   description,
-  icon,
   title,
 }: {
   children: ReactNode;
   description: string;
-  icon: ReactNode;
   title: string;
 }) {
   return (
     <section className="flex flex-col gap-4">
-      <div className="flex gap-3">
-        <div className="mt-0.5 grid size-9 shrink-0 place-items-center rounded-xl border border-border bg-secondary/55 text-primary [&_svg]:size-4">
-          {icon}
-        </div>
-        <div>
-          <h2 className="font-display text-xl font-bold">{title}</h2>
-          <p className="mt-1 text-sm leading-6 text-muted-foreground">
-            {description}
-          </p>
-        </div>
+      <div>
+        <h2 className="font-display text-xl font-bold">{title}</h2>
+        <p className="mt-1 text-sm leading-6 text-muted-foreground">
+          {description}
+        </p>
       </div>
       {children}
     </section>
@@ -240,9 +205,9 @@ function FieldShell({
   required?: boolean;
 }) {
   return (
-    <div className="grid gap-1.5">
+    <div className="flex w-full flex-col gap-1.5">
       <Label
-        className="inline-flex items-center gap-2 [&_svg]:size-3.5 [&_svg]:text-primary"
+        className="inline-flex w-full items-center gap-2 [&_svg]:size-3.5 [&_svg]:text-primary"
         htmlFor={htmlFor}
         required={required}
       >

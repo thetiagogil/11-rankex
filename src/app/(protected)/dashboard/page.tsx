@@ -1,10 +1,7 @@
-import { ListPlus } from "lucide-react";
-
+import { DashboardListBrowser } from "@/app/(protected)/dashboard/_components/dashboard-list-browser";
 import { ListFormDialog } from "@/features/lists/components/list-form-dialog";
-import { ListCard } from "@/features/lists/components/list-card";
 import { getUserListSummaries } from "@/features/lists/server/queries";
 import { AppMain } from "@/shared/components/layout/app-main";
-import { ButtonLink } from "@/shared/components/ui/button-link";
 import { Card } from "@/shared/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/shared/server/auth";
@@ -43,36 +40,10 @@ export default async function DashboardPage() {
       <section className="mt-16">
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="font-display text-2xl font-bold">Your lists</h2>
-          <div className="flex items-center gap-3">
-            <ButtonLink href="/explore" variant="link">
-              Browse Explore
-            </ButtonLink>
-            <ListFormDialog redirectToList />
-          </div>
+          <ListFormDialog redirectToList />
         </div>
 
-        {lists.length ? (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {lists.map((list) => (
-              <ListCard key={list.id} list={list} />
-            ))}
-          </div>
-        ) : (
-          <Card
-            as="section"
-            className="bg-card/30 flex flex-col items-center justify-center border-dashed px-6 py-20 text-center"
-          >
-            <ListPlus className="text-muted-foreground size-10" />
-            <h2 className="font-display mt-4 text-xl">No lists yet</h2>
-            <p className="text-muted-foreground mt-1 max-w-md text-sm leading-6">
-              Create your first ranking. You can keep it private while drafting
-              and make it public when it is ready.
-            </p>
-            <div className="mt-6">
-              <ListFormDialog redirectToList />
-            </div>
-          </Card>
-        )}
+        <DashboardListBrowser lists={lists} />
       </section>
     </AppMain>
   );

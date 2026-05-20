@@ -22,7 +22,7 @@ export function AppHeader({
   return (
     <header
       className={cn(
-        "relative z-40 w-full pt-5 sm:pt-6",
+        "relative z-40 mb-2 w-full pt-5 sm:mb-3 sm:pt-6",
         className,
       )}
       {...props}
@@ -37,14 +37,14 @@ export function AppHeader({
           {leading ?? <AppLogo href="/" />}
         </div>
         {center ? (
-          <nav className="hidden items-center justify-center gap-1 rounded-2xl border border-border bg-card/70 p-1 shadow-elevated md:flex">
+          <nav className="hidden items-center justify-center gap-6 md:flex">
             {center}
           </nav>
         ) : (
           <span className="hidden md:block" />
         )}
         {actions ? (
-          <nav className="flex items-center justify-end gap-2 justify-self-end">
+          <nav className="flex items-center justify-end gap-2 justify-self-end [&_a]:shadow-none [&_button]:shadow-none">
             {actions}
           </nav>
         ) : null}

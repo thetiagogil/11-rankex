@@ -1,9 +1,7 @@
-import { Edit3, ListChecks, Settings, Sparkles, Trophy } from "lucide-react";
-import type { ReactNode } from "react";
+import { Settings, Trophy } from "lucide-react";
 
 import { ListCard } from "@/features/lists/components/list-card";
 import type { ProfileOverview } from "@/features/profile/types";
-import { PageHeader } from "@/shared/components/layout/page-header";
 import { ButtonLink } from "@/shared/components/ui/button-link";
 import { Card } from "@/shared/components/ui/card";
 import { getProfileInitials } from "@/shared/utils/profile";
@@ -24,46 +22,65 @@ export function ProfilePageView({
 
   return (
     <div className="flex flex-col gap-10">
-      <PageHeader
-        actions={
-          isCurrentUser ? (
-            <ButtonLink href="/settings" variant="outline">
-              <Settings data-icon="inline-start" />
-              Edit profile
-            </ButtonLink>
-          ) : null
-        }
-        description={
-          profile.bio ||
-          "A Rankex curator building ordered lists, tiers, and personal canon."
-        }
-        eyebrow={profile.username ? `@${profile.username}` : "Rankex profile"}
-        icon={
-          <span className="font-display text-xl font-black">
+      <section className="rounded-3xl border border-border bg-card/45 p-5 shadow-elevated sm:p-7">
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
+          <div className="grid size-32 shrink-0 place-items-center rounded-2xl bg-gradient-gold font-display text-4xl font-black text-primary-foreground shadow-glow sm:size-36">
             {getProfileInitials(profile.displayName)}
-          </span>
-        }
-        meta={
-          <>
-            <ProfileMetric
-              icon={<ListChecks />}
-              label={isCurrentUser ? "Lists" : "Public lists"}
-              value={stats.listCount}
-            />
-            <ProfileMetric
-              icon={<Sparkles />}
-              label="Ranked items"
-              value={stats.itemCount}
-            />
-            <ProfileMetric
-              icon={<Trophy />}
-              label="Topics"
-              value={stats.topics.length}
-            />
-          </>
-        }
-        title={profile.displayName}
-      />
+          </div>
+
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div className="min-w-0">
+                <h1 className="truncate font-display text-3xl leading-tight font-black sm:text-4xl">
+                  {profile.displayName}
+                </h1>
+                <p className="mt-1 truncate font-mono text-sm text-primary">
+                  {profile.username
+                    ? `@${profile.username}`
+                    : "Rankex profile"}
+                </p>
+              </div>
+
+              {isCurrentUser ? (
+                <ButtonLink
+                  className="shrink-0 self-start"
+                  href="/settings"
+                  variant="outline"
+                >
+                  <Settings data-icon="inline-start" />
+                  Edit profile
+                </ButtonLink>
+              ) : null}
+            </div>
+
+            <p className="mt-5 max-w-2xl text-base leading-7 text-muted-foreground">
+              {profile.bio ||
+                "A Rankex curator building ordered lists, tiers, and personal canon."}
+            </p>
+
+            <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">
+              <span>
+                <strong className="font-display text-lg text-foreground">
+                  {stats.listCount}
+                </strong>{" "}
+                {isCurrentUser ? "lists" : "public lists"}
+              </span>
+              <span>
+                <strong className="font-display text-lg text-foreground">
+                  {stats.itemCount}
+                </strong>{" "}
+                ranked items
+              </span>
+              <span>
+                <strong className="font-display text-lg text-foreground">
+                  {stats.topics.length}
+                </strong>{" "}
+                topics
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {stats.topics.length ? (
         <section className="flex flex-wrap gap-2">
@@ -79,21 +96,8 @@ export function ProfilePageView({
       ) : null}
 
       <section>
-        <div className="mb-5 flex items-center justify-between gap-3">
-          <div>
-            <p className="font-mono text-xs tracking-widest text-primary uppercase">
-              Published canon
-            </p>
-            <h2 className="mt-1 font-display text-2xl font-bold">
-              Ranked lists
-            </h2>
-          </div>
-          {isCurrentUser ? (
-            <ButtonLink href="/dashboard" variant="ghost">
-              <Edit3 data-icon="inline-start" />
-              Manage lists
-            </ButtonLink>
-          ) : null}
+        <div className="mb-5">
+          <h2 className="font-display text-2xl font-bold">Ranked lists</h2>
         </div>
 
         {lists.length ? (
@@ -116,25 +120,5 @@ export function ProfilePageView({
         )}
       </section>
     </div>
-  );
-}
-
-function ProfileMetric({
-  icon,
-  label,
-  value,
-}: {
-  icon: ReactNode;
-  label: string;
-  value: number;
-}) {
-  return (
-    <span className="inline-flex items-center gap-2 rounded-xl border border-border bg-card/65 px-3 py-2 text-sm text-muted-foreground">
-      <span className="[&_svg]:size-4 [&_svg]:text-primary">{icon}</span>
-      <span className="font-display text-lg font-bold text-foreground">
-        {value}
-      </span>
-      {label}
-    </span>
   );
 }

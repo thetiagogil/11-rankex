@@ -1,15 +1,18 @@
 "use client";
 
-import { ListFilter, Search, UsersRound } from "lucide-react";
+import { ListFilter, Search, UserPlus } from "lucide-react";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import { ListCard } from "@/features/lists/components/list-card";
 import type { RankedListSummary } from "@/features/lists/types";
-import { ProfileCard } from "@/features/profile/components/profile-card";
 import type { ProfileListStats } from "@/features/profile/types";
+import { Button } from "@/shared/components/ui/button";
+import { Card } from "@/shared/components/ui/card";
 import { Input } from "@/shared/components/ui/input";
 import type { Profile } from "@/shared/types";
 import { cn } from "@/shared/utils/cn";
+import { getProfileHref, getProfileInitials } from "@/shared/utils/profile";
 
 type ExploreViewProps = {
   lists: RankedListSummary[];
@@ -17,6 +20,7 @@ type ExploreViewProps = {
 
 export function ExploreView({ lists }: ExploreViewProps) {
   const [query, setQuery] = useState("");
+  const [userQuery, setUserQuery] = useState("");
   const [topic, setTopic] = useState("All");
   const curators = useMemo(() => buildCuratorCards(lists), [lists]);
   const topics = useMemo(
@@ -28,6 +32,25 @@ export function ExploreView({ lists }: ExploreViewProps) {
     ],
     [lists],
   );
+
+  const filteredCurators = useMemo(() => {
+    const normalizedQuery = userQuery.trim().toLowerCase();
+
+    if (!normalizedQuery) return curators;
+
+    return curators.filter(({ profile, stats }) =>
+      [
+        profile.displayName,
+        profile.username,
+        profile.bio,
+        ...stats.topics,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase()
+        .includes(normalizedQuery),
+    );
+  }, [curators, userQuery]);
 
   const filteredLists = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -49,26 +72,43 @@ export function ExploreView({ lists }: ExploreViewProps) {
   return (
     <div className="mt-10 flex flex-col gap-12">
       <section>
-        <div className="mb-5 flex items-center gap-2">
-          <UsersRound className="size-5 text-primary" />
+        <div className="mb-5 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <h2 className="font-display text-2xl font-bold">
             Curators to browse
           </h2>
+          <label className="relative block w-full lg:max-w-xs">
+            <span className="sr-only">Search users</span>
+            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              className="h-9 pl-9"
+              onChange={(event) => setUserQuery(event.target.value)}
+              placeholder="Search users..."
+              value={userQuery}
+            />
+          </label>
         </div>
-        {curators.length ? (
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {curators.map((curator) => (
-              <ProfileCard
-                key={curator.profile.id}
-                profile={curator.profile}
-                stats={curator.stats}
-              />
-            ))}
+        {filteredCurators.length ? (
+          <div className="-mx-4 overflow-x-auto px-4 pb-3 scrollbar-themed sm:mx-0 sm:px-0">
+            <div className="flex min-w-max gap-4">
+              {filteredCurators.map((curator) => (
+                <ExploreUserCard
+                  key={curator.profile.id}
+                  profile={curator.profile}
+                  stats={curator.stats}
+                />
+              ))}
+            </div>
           </div>
         ) : (
           <EmptyExploreBlock
-            title="No curators published yet."
-            description="Public lists will surface curator cards here."
+            title={
+              curators.length ? "No curators match that search." : "No curators published yet."
+            }
+            description={
+              curators.length
+                ? "Try another name, handle, or topic."
+                : "Public lists will surface curator cards here."
+            }
           />
         )}
       </section>
@@ -79,12 +119,12 @@ export function ExploreView({ lists }: ExploreViewProps) {
           <h2 className="font-display text-2xl font-bold">Public lists</h2>
         </div>
 
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-stretch lg:justify-between">
+          <div className="flex flex-wrap items-stretch gap-1.5">
             {topics.map((topicOption) => (
               <button
                 className={cn(
-                  "rounded-full border px-3 py-1 font-mono text-xs tracking-widest uppercase transition",
+                  "h-9 rounded-full border px-3 font-mono text-xs tracking-widest uppercase transition",
                   topic === topicOption
                     ? "border-primary bg-primary/10 text-primary"
                     : "border-border text-muted-foreground hover:bg-secondary",
@@ -102,7 +142,7 @@ export function ExploreView({ lists }: ExploreViewProps) {
             <span className="sr-only">Search lists</span>
             <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
-              className="pl-9"
+              className="h-9 pl-9"
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Search public lists..."
               value={query}
@@ -124,6 +164,58 @@ export function ExploreView({ lists }: ExploreViewProps) {
         )}
       </section>
     </div>
+  );
+}
+
+function ExploreUserCard({
+  profile,
+  stats,
+}: {
+  profile: Profile;
+  stats: ProfileListStats;
+}) {
+  return (
+    <Card
+      as="article"
+      className="w-72 shrink-0 bg-card/65 p-4 transition hover:border-primary/45"
+    >
+      <div className="flex items-start gap-3">
+        <Link
+          className="grid size-14 shrink-0 place-items-center rounded-2xl bg-gradient-gold font-display text-lg font-black text-primary-foreground shadow-glow"
+          href={getProfileHref(profile)}
+        >
+          {getProfileInitials(profile.displayName)}
+        </Link>
+        <div className="min-w-0 flex-1">
+          <Link
+            className="block truncate font-display text-lg font-bold transition hover:text-primary"
+            href={getProfileHref(profile)}
+          >
+            {profile.displayName}
+          </Link>
+          <p className="truncate font-mono text-xs text-primary">
+            {profile.username ? `@${profile.username}` : "Rankex curator"}
+          </p>
+        </div>
+      </div>
+
+      <p className="mt-4 line-clamp-2 min-h-12 text-sm leading-6 text-muted-foreground">
+        {profile.bio || "Collecting rankings, tiers, and lists worth revisiting."}
+      </p>
+
+      <div className="mt-4 flex items-center justify-between gap-3 border-t border-border pt-4">
+        <p className="text-xs leading-5 text-muted-foreground">
+          <span className="font-display text-base font-bold text-foreground">
+            {stats.publicListCount}
+          </span>{" "}
+          public lists / {stats.itemCount} ranked
+        </p>
+        <Button size="sm" type="button" variant="outline">
+          <UserPlus data-icon="inline-start" />
+          Follow
+        </Button>
+      </div>
+    </Card>
   );
 }
 
@@ -172,8 +264,7 @@ function buildCuratorCards(lists: RankedListSummary[]) {
         b.stats.publicListCount - a.stats.publicListCount ||
         b.stats.itemCount - a.stats.itemCount ||
         a.profile.displayName.localeCompare(b.profile.displayName),
-    )
-    .slice(0, 6);
+    );
 }
 
 function buildStats(lists: RankedListSummary[]): ProfileListStats {

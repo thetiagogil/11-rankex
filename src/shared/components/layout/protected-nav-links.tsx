@@ -1,4 +1,4 @@
-import { Compass, LayoutDashboard, UserRound } from "lucide-react";
+import { Compass, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 
 import {
@@ -21,9 +21,9 @@ export function ProtectedNavLinks({ pathname }: ProtectedNavLinksProps) {
           <Link
             aria-current={active ? "page" : undefined}
             className={cn(
-              "relative inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-medium transition-colors",
+              "relative inline-flex h-9 items-center gap-1.5 text-sm font-medium transition-colors after:absolute after:-bottom-1 after:left-0 after:h-px after:w-full after:origin-center after:scale-x-0 after:bg-primary after:transition-transform",
               active
-                ? "bg-secondary text-foreground"
+                ? "text-primary after:scale-x-100"
                 : "text-muted-foreground hover:text-foreground",
             )}
             href={link.href}
@@ -39,10 +39,6 @@ export function ProtectedNavLinks({ pathname }: ProtectedNavLinksProps) {
 }
 
 export function isProtectedNavActive(pathname: string, href: string) {
-  if (href === "/profile") {
-    return pathname === href || pathname.startsWith("/u/");
-  }
-
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
@@ -59,5 +55,4 @@ export function ProtectedNavLinkIcon({
 const protectedNavIconMap = {
   dashboard: LayoutDashboard,
   explore: Compass,
-  profile: UserRound,
 } as const satisfies Record<ProtectedNavLink["icon"], typeof LayoutDashboard>;

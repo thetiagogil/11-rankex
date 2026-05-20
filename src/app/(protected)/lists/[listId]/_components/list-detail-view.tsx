@@ -18,7 +18,6 @@ import { ListFormDialog } from "@/features/lists/components/list-form-dialog";
 import { SortableItemList } from "@/features/lists/components/sortable-item-list";
 import { TierView } from "@/features/lists/components/tier-view";
 import { VisibilityBadge } from "@/features/lists/components/visibility-badge";
-import { getListEmoji } from "@/features/lists/lib/list-emoji";
 import { deleteListAction } from "@/features/lists/server/actions";
 import type { RankedList } from "@/features/lists/types";
 import { AppMain } from "@/shared/components/layout/app-main";
@@ -41,7 +40,6 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
   const [feedback, setFeedback] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const canEdit = list.ownerId === currentUserId;
-  const emoji = getListEmoji(list.emoji, list.topic);
 
   const deleteList = () => {
     setFeedback(null);
@@ -71,20 +69,19 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
 
       <section className="mt-6 flex flex-wrap items-end justify-between gap-5">
         <div className="min-w-0">
-          <div className="flex items-center gap-3">
-            <div className="text-5xl leading-none">{emoji}</div>
-            <div className="min-w-0">
-              <span className="font-mono text-xs tracking-widest text-primary uppercase">
-                {list.topic ?? "General"}
-              </span>
-              <h1 className="mt-1 font-display text-4xl leading-tight font-black sm:text-5xl">
-                {list.title}
-              </h1>
-            </div>
-          </div>
+          <h1 className="font-display text-4xl leading-tight font-black sm:text-5xl">
+            {list.title}
+          </h1>
+
+          {list.description ? (
+            <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
+              {list.description}
+            </p>
+          ) : null}
 
           <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
             <VisibilityBadge isPublic={list.isPublic} />
+            <span>{list.topic ?? "General"}</span>
             <span>
               {list.items.length}{" "}
               {list.items.length === 1 ? "entry" : "entries"}
@@ -97,16 +94,10 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
               </span>
             ) : null}
           </div>
-
-          {list.description ? (
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
-              {list.description}
-            </p>
-          ) : null}
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <div className="flex rounded-xl border border-border bg-card p-1">
+          <div className="flex h-9 overflow-hidden rounded-xl border border-border bg-card">
             <SegmentedButton
               active={view === "ranked"}
               icon={<ListOrdered />}
@@ -125,7 +116,7 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
               <ItemFormDialog
                 listId={list.id}
                 trigger={
-                  <Button size="sm">
+                  <Button size="lg">
                     <Plus data-icon="inline-start" />
                     Add item
                   </Button>
@@ -134,7 +125,7 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
               <ListFormDialog
                 initialList={list}
                 trigger={
-                  <Button size="sm" variant="outline">
+                  <Button size="lg" variant="outline">
                     <Pencil data-icon="inline-start" />
                     Edit
                   </Button>
@@ -142,7 +133,10 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
               />
               <button
                 aria-label={`Delete ${list.title}`}
-                className={buttonVariants({ size: "icon", variant: "ghost" })}
+                className={buttonVariants({
+                  size: "icon-lg",
+                  variant: "ghost",
+                })}
                 disabled={isPending}
                 onClick={() => setDeleteDialogOpen(true)}
                 type="button"
@@ -224,7 +218,7 @@ function SegmentedButton({
   return (
     <button
       className={cn(
-        "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium text-muted-foreground transition hover:text-foreground [&_svg]:size-4",
+        "flex h-9 items-center gap-1.5 px-3 text-sm font-medium text-muted-foreground transition hover:text-foreground [&_svg]:size-4",
         active && "bg-secondary text-foreground",
       )}
       onClick={onClick}

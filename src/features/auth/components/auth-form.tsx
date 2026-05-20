@@ -2,13 +2,10 @@
 
 import {
   ArrowLeft,
-  AtSign,
   KeyRound,
   Loader2,
-  LockKeyhole,
   LogIn,
   Mail,
-  Trophy,
   UserPlus,
   UserRound,
 } from "lucide-react";
@@ -122,7 +119,7 @@ export function AuthForm({
 
       if (isSignup && !result.data.session) {
         setMessage(
-          `Check ${emailValue} to confirm your account, then sign in.`,
+          `Check ${emailValue} to confirm your account, then log in.`,
         );
         return;
       }
@@ -151,22 +148,13 @@ export function AuthForm({
 
       <AppMain className="grid min-h-[calc(100dvh-8rem)] items-center gap-10 pb-20 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
         <section className="max-w-xl">
-          <span className="border-primary/30 bg-primary/10 text-primary inline-flex items-center gap-2 rounded-full border px-3 py-1 font-mono text-xs tracking-widest uppercase">
-            <LockKeyhole className="size-3.5" />
-            Rankex access
-          </span>
-          <h1 className="font-display mt-4 text-5xl leading-tight font-black text-balance sm:text-6xl">
+          <h1 className="font-display text-5xl leading-tight font-black text-balance sm:text-6xl">
             Keep your rankings tied to one curator identity.
           </h1>
           <p className="text-muted-foreground mt-5 max-w-lg text-base leading-8">
-            Sign in to manage private drafts, publish public lists, and keep
+            Log in to manage private drafts, publish public lists, and keep
             your profile connected to every ranking you ship.
           </p>
-          <div className="mt-8 grid gap-3 sm:grid-cols-3">
-            <AuthValue icon={<Trophy />} label="Demo ready" />
-            <AuthValue icon={<AtSign />} label="Profile linked" />
-            <AuthValue icon={<KeyRound />} label="SSR auth" />
-          </div>
         </section>
 
         <Card className="bg-card/75 shadow-elevated p-5 sm:p-7">
@@ -174,7 +162,7 @@ export function AuthForm({
             <ModeButton
               active={!isSignup}
               icon={<LogIn />}
-              label="Sign in"
+              label="Log in"
               onClick={() => switchMode("signin")}
             />
             <ModeButton
@@ -186,11 +174,8 @@ export function AuthForm({
           </div>
 
           <div className="mb-6">
-            <p className="text-primary font-mono text-xs tracking-widest uppercase">
-              {isSignup ? "new curator" : "returning curator"}
-            </p>
             <h2 className="font-display mt-1 text-3xl font-black">
-              {isSignup ? "Create your Rankex profile" : "Enter Rankex"}
+              {isSignup ? "Create your Rankex profile" : "Log in to Rankex"}
             </h2>
           </div>
 
@@ -301,21 +286,9 @@ export function AuthForm({
               type="submit"
               variant="outline"
             >
-              <Trophy data-icon="inline-start" />
-              Try demo account
+              Use demo account
             </Button>
           </form>
-
-          <p className="text-muted-foreground mt-4 text-center text-sm">
-            {isSignup ? "Already ranking here?" : "New to Rankex?"}{" "}
-            <button
-              className="text-primary font-medium underline-offset-4 hover:underline"
-              onClick={() => switchMode(isSignup ? "signin" : "signup")}
-              type="button"
-            >
-              {isSignup ? "Sign in" : "Create an account"}
-            </button>
-          </p>
         </Card>
       </AppMain>
     </AppShell>
@@ -375,16 +348,5 @@ function ModeButton({
       {icon}
       {label}
     </button>
-  );
-}
-
-function AuthValue({ icon, label }: { icon: ReactNode; label: string }) {
-  return (
-    <div className="border-border bg-card/55 rounded-2xl border p-3">
-      <div className="text-primary mb-2 [&_svg]:size-4">{icon}</div>
-      <p className="text-muted-foreground font-mono text-xs tracking-widest uppercase">
-        {label}
-      </p>
-    </div>
   );
 }
