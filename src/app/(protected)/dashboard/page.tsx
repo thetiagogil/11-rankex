@@ -14,43 +14,41 @@ export default async function DashboardPage() {
   const client = await createClient();
   const lists = await getUserListSummaries(client, currentUser.id);
   const publicCount = lists.filter((list) => list.isPublic).length;
+  const privateCount = lists.length - publicCount;
   const itemCount = lists.reduce((sum, list) => sum + list.itemCount, 0);
 
   return (
-    <AppMain className="pb-16">
-      <section className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-secondary font-mono text-[10px] tracking-[0.25em] uppercase">
-            dashboard
-          </p>
-          <h1 className="font-display mt-2 text-4xl leading-tight font-black sm:text-5xl">
-            Welcome back, {currentUser.profile.displayName.split(" ")[0]}.
-          </h1>
-          <p className="text-muted-foreground mt-3 max-w-2xl leading-7">
-            Manage your ranked lists, tune visibility, and keep the order
-            current as your taste changes.
-          </p>
-        </div>
-        <ListFormDialog redirectToList />
+    <AppMain className="pb-20">
+      <section className="mt-2 max-w-3xl">
+        <h1 className="font-display text-4xl leading-tight font-black sm:text-6xl">
+          Welcome back,{" "}
+          <em className="text-gradient-gold not-italic">
+            {currentUser.profile.displayName.split(" ")[0]}
+          </em>
+          .
+        </h1>
+        <p className="mt-4 text-lg leading-8 text-muted-foreground">
+          Curate your canon, keep private drafts moving, and publish the lists
+          that are ready to stand on their own.
+        </p>
       </section>
 
-      <section className="mt-8 grid gap-4 sm:grid-cols-3">
-        <Metric label="Lists" value={lists.length} />
+      <section className="mt-10 grid gap-4 sm:grid-cols-4">
+        <Metric label="My lists" value={lists.length} />
         <Metric label="Public" value={publicCount} />
-        <Metric label="Ranked items" value={itemCount} />
+        <Metric label="Private" value={privateCount} />
+        <Metric label="Entries" value={itemCount} />
       </section>
 
-      <section className="mt-12">
-        <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h2 className="font-display text-2xl font-bold">Your lists</h2>
-            <p className="text-muted-foreground mt-1 text-sm">
-              Private drafts and public rankings live together here.
-            </p>
+      <section className="mt-16">
+        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <h2 className="font-display text-2xl font-bold">Your lists</h2>
+          <div className="flex items-center gap-3">
+            <ButtonLink href="/explore" variant="link">
+              Browse Explore
+            </ButtonLink>
+            <ListFormDialog redirectToList />
           </div>
-          <ButtonLink href="/explore" variant="outline">
-            Browse Explore
-          </ButtonLink>
         </div>
 
         {lists.length ? (
@@ -62,13 +60,11 @@ export default async function DashboardPage() {
         ) : (
           <Card
             as="section"
-            className="flex flex-col items-center justify-center border-dashed px-6 py-16 text-center"
+            className="flex flex-col items-center justify-center border-dashed bg-card/30 px-6 py-20 text-center"
           >
-            <ListPlus className="text-muted-foreground h-10 w-10" />
-            <h2 className="font-display mt-4 text-2xl font-bold">
-              No lists yet
-            </h2>
-            <p className="text-muted-foreground mt-2 max-w-md text-sm leading-6">
+            <ListPlus className="size-10 text-muted-foreground" />
+            <h2 className="mt-4 font-display text-xl">No lists yet</h2>
+            <p className="mt-1 max-w-md text-sm leading-6 text-muted-foreground">
               Create your first ranking. You can keep it private while drafting
               and make it public when it is ready.
             </p>
@@ -84,11 +80,11 @@ export default async function DashboardPage() {
 
 function Metric({ label, value }: { label: string; value: number }) {
   return (
-    <Card as="article" className="p-5">
-      <p className="text-muted-foreground font-mono text-[10px] tracking-[0.2em] uppercase">
+    <Card as="article" className="bg-card/60 p-5">
+      <p className="font-mono text-xs tracking-widest text-muted-foreground uppercase">
         {label}
       </p>
-      <p className="font-display text-gradient-stage mt-2 text-4xl font-bold">
+      <p className="mt-1 font-display text-3xl font-bold text-gradient-gold">
         {value}
       </p>
     </Card>

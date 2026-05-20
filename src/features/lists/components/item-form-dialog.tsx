@@ -1,8 +1,8 @@
 "use client";
 
 import { Loader2, Plus, Save } from "lucide-react";
-import { FormEvent, ReactNode, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { type FormEvent, type ReactNode, useState, useTransition } from "react";
 
 import {
   createItemAction,
@@ -14,7 +14,14 @@ import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
 import { Modal } from "@/shared/components/ui/modal";
-import { Select } from "@/shared/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shared/components/ui/select";
 import { Textarea } from "@/shared/components/ui/textarea";
 
 type ItemFormDialogProps = {
@@ -85,7 +92,7 @@ export function ItemFormDialog({ item, listId, trigger }: ItemFormDialogProps) {
         </span>
       ) : (
         <Button onClick={openDialog} size="lg">
-          <Plus className="h-4 w-4" />
+          <Plus data-icon="inline-start" />
           Add item
         </Button>
       )}
@@ -96,7 +103,7 @@ export function ItemFormDialog({ item, listId, trigger }: ItemFormDialogProps) {
         open={open}
         title={isEditing ? "Edit item" : "Add item"}
       >
-        <form className="space-y-4" onSubmit={submit}>
+        <form className="flex flex-col gap-4 pt-5" onSubmit={submit}>
           {feedback ? <Alert tone="error">{feedback}</Alert> : null}
 
           <div className="grid gap-1.5">
@@ -148,15 +155,26 @@ export function ItemFormDialog({ item, listId, trigger }: ItemFormDialogProps) {
               <Label htmlFor="item-tier">Tier</Label>
               <Select
                 disabled={isPending}
-                id="item-tier"
                 onValueChange={(value) => setTier(value || "none")}
-                options={tierOptions}
                 value={tier}
-              />
+              >
+                <SelectTrigger className="w-full" id="item-tier">
+                  <SelectValue placeholder="No tier" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {tierOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
-          <div className="border-border flex justify-end gap-2 border-t pt-4">
+          <div className="flex justify-end gap-2 border-t border-border pt-4">
             <Button
               disabled={isPending}
               onClick={() => setOpen(false)}
@@ -167,9 +185,9 @@ export function ItemFormDialog({ item, listId, trigger }: ItemFormDialogProps) {
             </Button>
             <Button disabled={isPending} type="submit">
               {isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Loader2 className="animate-spin" data-icon="inline-start" />
               ) : (
-                <Save className="h-4 w-4" />
+                <Save data-icon="inline-start" />
               )}
               Save item
             </Button>

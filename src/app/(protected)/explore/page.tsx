@@ -10,23 +10,18 @@ export default async function ExplorePage() {
   const lists = await getPublicListSummaries(client);
 
   return (
-    <AppMain className="pb-16">
-      <section className="flex items-start gap-4">
-        <div className="bg-gradient-stage text-primary-foreground shadow-stage grid h-12 w-12 shrink-0 place-items-center rounded-lg">
-          <Compass className="h-6 w-6" />
-        </div>
-        <div>
-          <p className="text-secondary font-mono text-[10px] tracking-[0.25em] uppercase">
-            explore
-          </p>
-          <h1 className="font-display mt-2 text-4xl leading-tight font-black sm:text-5xl">
-            Public rankings
+    <AppMain className="pb-20">
+      <section className="mt-2">
+        <header className="flex items-center gap-3">
+          <Compass className="size-7 text-primary" />
+          <h1 className="font-display text-4xl font-black sm:text-5xl">
+            Explore
           </h1>
-          <p className="text-muted-foreground mt-3 max-w-2xl leading-7">
-            Browse public Rankex lists. The MVP keeps this discovery surface
-            focused on lists, topics, and curators.
-          </p>
-        </div>
+        </header>
+        <p className="mt-3 max-w-xl leading-7 text-muted-foreground">
+          See what Rankex curators are ranking. Filter public lists by topic and
+          open any ranking for the full ordered view.
+        </p>
       </section>
 
       <ExploreView lists={lists} />

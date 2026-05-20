@@ -75,7 +75,7 @@ export function ProfileMenu({
             event.preventDefault();
             onSignOut();
           }}
-          tone="danger"
+          variant="destructive"
         >
           {isPending ? (
             <Loader2 className="h-4 w-4 animate-spin" />

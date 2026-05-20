@@ -10,18 +10,18 @@ export function TierView({ items }: TierViewProps) {
   const untiered = items.filter((item) => !item.tier);
 
   return (
-    <div className="space-y-3">
+    <div className="flex flex-col gap-3">
       {TIERS.map((tier) => {
         const tierItems = items.filter((item) => item.tier === tier);
 
         return (
           <section
-            className="border-border bg-card/80 grid gap-3 rounded-lg border p-3 sm:grid-cols-[4rem_1fr]"
+            className="grid gap-3 rounded-2xl border border-border bg-card/80 p-3 shadow-elevated sm:grid-cols-[4rem_1fr]"
             key={tier}
           >
             <div className="flex items-center gap-3 sm:flex-col sm:justify-center">
               <TierBadge size="lg" tier={tier} />
-              <span className="text-muted-foreground text-xs">
+              <span className="text-xs text-muted-foreground">
                 {tierDescriptions[tier]}
               </span>
             </div>
@@ -29,19 +29,19 @@ export function TierView({ items }: TierViewProps) {
               {tierItems.length ? (
                 tierItems.map((item) => (
                   <span
-                    className="bg-surface-elevated rounded-md border px-3 py-2 text-sm"
+                    className="rounded-lg border border-border bg-secondary px-3 py-2 text-sm"
                     key={item.id}
                   >
                     {item.title}
                     {item.score !== null ? (
-                      <span className="text-secondary ml-2 font-mono text-xs">
+                      <span className="ml-2 font-mono text-xs text-accent">
                         {item.score}
                       </span>
                     ) : null}
                   </span>
                 ))
               ) : (
-                <span className="text-muted-foreground text-sm italic">
+                <span className="text-sm text-muted-foreground italic">
                   Empty
                 </span>
               )}
@@ -51,13 +51,13 @@ export function TierView({ items }: TierViewProps) {
       })}
 
       {untiered.length ? (
-        <section className="border-border bg-card/40 flex flex-wrap items-center gap-2 rounded-lg border border-dashed p-3">
-          <span className="text-muted-foreground mr-2 text-xs uppercase">
+        <section className="flex flex-wrap items-center gap-2 rounded-2xl border border-dashed border-border bg-card/40 p-3">
+          <span className="mr-2 text-xs text-muted-foreground uppercase">
             No tier
           </span>
           {untiered.map((item) => (
             <span
-              className="bg-surface-elevated rounded-md border px-3 py-2 text-sm"
+              className="rounded-lg border border-border bg-secondary px-3 py-2 text-sm"
               key={item.id}
             >
               {item.title}

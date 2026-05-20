@@ -2,7 +2,7 @@
 
 import { ArrowLeft, Loader2, LockKeyhole, Trophy } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { FormEvent, useMemo, useState } from "react";
+import { type FormEvent, useMemo, useState } from "react";
 
 import { AuthFeedback } from "@/features/auth/components/auth-feedback";
 import { AppHeader } from "@/shared/components/layout/app-header";
@@ -131,22 +131,22 @@ export function AuthForm({
       <AppHeader
         leading={
           <ButtonLink href="/" size="sm" variant="ghost">
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft data-icon="inline-start" />
             Back
           </ButtonLink>
         }
       />
 
-      <AppMain className="flex flex-1 items-center justify-center pb-12">
+      <AppMain className="flex flex-1 items-center justify-center pb-20">
         <div className="w-full max-w-md">
-          <Card className="p-8" gradient tone="primary">
+          <Card className="bg-card p-8">
             <div className="relative">
-              <div className="text-secondary mb-2 flex items-center gap-2 font-mono text-[10px] tracking-[0.25em] uppercase">
-                <LockKeyhole className="h-3.5 w-3.5" />
+              <div className="mb-2 flex items-center gap-2 font-mono text-xs tracking-widest text-primary uppercase">
+                <LockKeyhole className="size-3.5" />
                 {isSignup ? "new curator" : "returning curator"}
               </div>
-              <h1 className="font-display text-glow-primary mb-6 text-2xl">
-                {isSignup ? "CREATE ACCOUNT" : "SIGN IN"}
+              <h1 className="mb-6 font-display text-3xl font-black">
+                {isSignup ? "Create account" : "Sign in"}
               </h1>
 
               {error ? <AuthFeedback tone="error">{error}</AuthFeedback> : null}
@@ -154,11 +154,10 @@ export function AuthForm({
                 <AuthFeedback tone="success">{message}</AuthFeedback>
               ) : null}
 
-              <form className="space-y-4" onSubmit={handleSubmit}>
+              <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
                 {isSignup ? (
-                  <div className="space-y-1.5">
+                  <div className="grid gap-1.5">
                     <Label
-                      className="text-secondary font-mono text-[10px] tracking-wider uppercase"
                       htmlFor="displayName"
                       required
                     >
@@ -178,9 +177,8 @@ export function AuthForm({
                   </div>
                 ) : null}
 
-                <div className="space-y-1.5">
+                <div className="grid gap-1.5">
                   <Label
-                    className="text-secondary font-mono text-[10px] tracking-wider uppercase"
                     htmlFor="email"
                     required
                   >
@@ -198,9 +196,8 @@ export function AuthForm({
                   />
                 </div>
 
-                <div className="space-y-1.5">
+                <div className="grid gap-1.5">
                   <Label
-                    className="text-secondary font-mono text-[10px] tracking-wider uppercase"
                     htmlFor="password"
                     required
                   >
@@ -222,9 +219,8 @@ export function AuthForm({
                 </div>
 
                 {isSignup ? (
-                  <div className="space-y-1.5">
+                  <div className="grid gap-1.5">
                     <Label
-                      className="text-secondary font-mono text-[10px] tracking-wider uppercase"
                       htmlFor="confirmPassword"
                       required
                     >
@@ -248,16 +244,16 @@ export function AuthForm({
 
                 <Button className="w-full" disabled={pending} type="submit">
                   {pending ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <Loader2 className="animate-spin" data-icon="inline-start" />
                   ) : null}
-                  {isSignup ? "Create Account" : "Log in"}
+                  {isSignup ? "Create account" : "Log in"}
                 </Button>
               </form>
 
-              <div className="text-foreground my-6 flex items-center gap-3 font-mono text-[10px] tracking-[0.25em] uppercase">
-                <div className="bg-border h-px flex-1" />
+              <div className="my-6 flex items-center gap-3 font-mono text-xs tracking-widest text-muted-foreground uppercase">
+                <div className="h-px flex-1 bg-border" />
                 <span>or</span>
-                <div className="bg-border h-px flex-1" />
+                <div className="h-px flex-1 bg-border" />
               </div>
 
               <form action="/api/auth/demo" method="post">
@@ -269,15 +265,15 @@ export function AuthForm({
                   type="submit"
                   variant="outline"
                 >
-                  <Trophy className="h-4 w-4" />
+                  <Trophy data-icon="inline-start" />
                   Use demo account
                 </Button>
               </form>
 
-              <div className="text-muted-foreground mt-4 text-center font-mono text-xs">
+              <div className="mt-4 text-center text-sm text-muted-foreground">
                 {isSignup ? "Already have an account?" : "No account yet?"}{" "}
                 <button
-                  className="text-secondary underline-offset-4 hover:underline"
+                  className="text-primary underline-offset-4 hover:underline"
                   onClick={() => switchMode(isSignup ? "signin" : "signup")}
                   type="button"
                 >

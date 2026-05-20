@@ -8,10 +8,10 @@ export function RankBadge({ rank }: RankBadgeProps) {
   return (
     <span
       className={cn(
-        "font-display grid h-10 w-10 shrink-0 place-items-center rounded-lg border text-base font-bold",
+        "grid size-10 shrink-0 place-items-center rounded-lg border font-display text-lg font-bold",
         rank === 1
-          ? "bg-gradient-stage text-primary-foreground border-primary/40 shadow-stage"
-          : "bg-surface-elevated text-muted-foreground border-border",
+          ? "border-primary/40 bg-gradient-gold text-primary-foreground shadow-glow"
+          : "border-border bg-secondary text-muted-foreground",
       )}
     >
       {rank}

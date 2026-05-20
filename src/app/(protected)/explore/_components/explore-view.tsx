@@ -45,14 +45,14 @@ export function ExploreView({ lists }: ExploreViewProps) {
   return (
     <section className="mt-10">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1.5">
           {topics.map((topicOption) => (
             <button
               className={cn(
-                "rounded-md border px-3 py-2 font-mono text-[10px] tracking-[0.16em] uppercase transition",
+                "rounded-full border px-3 py-1 font-mono text-xs tracking-widest uppercase transition",
                 topic === topicOption
                   ? "border-primary bg-primary/10 text-primary"
-                  : "border-border text-muted-foreground hover:bg-surface",
+                  : "border-border text-muted-foreground hover:bg-secondary",
               )}
               key={topicOption}
               onClick={() => setTopic(topicOption)}
@@ -63,9 +63,9 @@ export function ExploreView({ lists }: ExploreViewProps) {
           ))}
         </div>
 
-        <label className="relative block w-full lg:max-w-sm">
+        <label className="relative block w-full lg:max-w-xs">
           <span className="sr-only">Search lists</span>
-          <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+          <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             className="pl-9"
             onChange={(event) => setQuery(event.target.value)}
@@ -76,15 +76,15 @@ export function ExploreView({ lists }: ExploreViewProps) {
       </div>
 
       {filteredLists.length ? (
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filteredLists.map((list) => (
             <ListCard key={list.id} list={list} showOwner />
           ))}
         </div>
       ) : (
-        <div className="border-border bg-card/40 mt-6 rounded-lg border border-dashed px-6 py-16 text-center">
+        <div className="mt-8 rounded-2xl border border-dashed border-border bg-card/30 px-6 py-16 text-center">
           <p className="font-display text-xl">No public lists match that view.</p>
-          <p className="text-muted-foreground mt-2 text-sm">
+          <p className="mt-2 text-sm text-muted-foreground">
             Try a different topic or search term.
           </p>
         </div>

@@ -21,14 +21,14 @@ export function AppHeader({
   return (
     <header
       className={cn(
-        "border-border/60 bg-background/70 sticky top-0 z-40 border-b backdrop-blur-xl",
+        "relative z-40 w-full px-6 pt-10",
         className,
       )}
       {...props}
     >
       <div
         className={cn(
-          "mx-auto grid min-h-16 max-w-6xl grid-cols-[1fr_auto] items-center gap-3 px-4 py-3 sm:px-6 md:grid-cols-[1fr_auto_1fr]",
+          "mx-auto grid max-w-6xl grid-cols-[1fr_auto] items-center gap-3 md:grid-cols-[1fr_auto_1fr]",
           innerClassName,
         )}
       >

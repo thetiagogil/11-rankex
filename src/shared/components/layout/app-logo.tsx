@@ -9,12 +9,12 @@ type AppLogoProps = {
 
 export function AppLogo({ href }: AppLogoProps) {
   const content = (
-    <span className="group/logo flex items-center gap-2">
-      <span className="bg-gradient-stage text-primary-foreground shadow-stage grid h-8 w-8 place-items-center rounded-lg transition-transform duration-500 group-hover/logo:-translate-y-0.5">
-        <Trophy className="h-4 w-4" />
+    <span className="group/logo flex items-center gap-2.5">
+      <span className="flex size-9 items-center justify-center rounded-xl bg-gradient-gold text-primary-foreground shadow-glow transition-transform duration-500 group-hover/logo:-translate-y-0.5">
+        <Trophy className="size-5" />
       </span>
-      <span className={cn("font-display text-xl font-bold")}>
-        Rank<span className="text-gradient-stage">ex</span>
+      <span className={cn("font-display text-xl font-bold tracking-normal")}>
+        Rank<span className="text-primary">ex</span>
       </span>
     </span>
   );

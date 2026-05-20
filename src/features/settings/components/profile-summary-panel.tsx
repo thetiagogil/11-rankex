@@ -16,23 +16,23 @@ export function ProfileSummaryPanel({
   username,
 }: ProfileSummaryPanelProps) {
   return (
-    <section className="border-border bg-card flex items-center gap-5 rounded-xl border p-5 sm:p-6">
-      <div className="bg-gradient-stage text-primary-foreground font-display shadow-stage grid h-20 w-20 shrink-0 place-items-center rounded-full text-2xl font-bold">
+    <section className="flex items-center gap-5 rounded-2xl border border-border bg-card/70 p-5 sm:p-6">
+      <div className="grid size-20 shrink-0 place-items-center rounded-full bg-gradient-gold font-display text-2xl font-bold text-primary-foreground shadow-glow">
         {getProfileInitials(displayName)}
       </div>
       <div className="min-w-0">
         <p className="mb-1 flex items-center gap-2 font-semibold">
-          <User className="text-primary h-4 w-4" />
+          <User className="size-4 text-primary" />
           {displayName}
         </p>
-        <p className="text-muted-foreground flex items-center gap-2 truncate text-sm">
-          <Mail className="text-primary h-4 w-4" />
+        <p className="flex items-center gap-2 truncate text-sm text-muted-foreground">
+          <Mail className="size-4 text-primary" />
           {email ?? "No email available"}
         </p>
-        <p className="text-secondary mt-1 font-mono text-xs">
+        <p className="mt-1 font-mono text-xs text-primary">
           {username ? `@${username}` : "No username set"}
         </p>
-        <p className="text-muted-foreground mt-2 line-clamp-2 text-sm leading-6">
+        <p className="mt-2 line-clamp-2 text-sm leading-6 text-muted-foreground">
           {bio ? (
             bio.trim()
           ) : (

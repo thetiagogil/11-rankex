@@ -1,13 +1,20 @@
 "use client";
 
-import { Globe2, ListPlus, Loader2, LockKeyhole, Save } from "lucide-react";
-import { FormEvent, ReactNode, useState, useTransition } from "react";
+import {
+  Globe2,
+  ListPlus,
+  Loader2,
+  LockKeyhole,
+  Save,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
+import { type FormEvent, type ReactNode, useState, useTransition } from "react";
 
 import {
   createListAction,
   updateListAction,
 } from "@/features/lists/server/actions";
+import { getListEmoji } from "@/features/lists/lib/list-emoji";
 import type { RankedList } from "@/features/lists/types";
 import { Alert } from "@/shared/components/ui/alert";
 import { Button } from "@/shared/components/ui/button";
@@ -46,7 +53,9 @@ export function ListFormDialog({
   const [title, setTitle] = useState(initialList?.title ?? "");
   const [topic, setTopic] = useState(initialList?.topic ?? "");
   const [description, setDescription] = useState(initialList?.description ?? "");
-  const [emoji, setEmoji] = useState(initialList?.emoji ?? "🏆");
+  const [emoji, setEmoji] = useState(
+    getListEmoji(initialList?.emoji ?? null, initialList?.topic ?? null),
+  );
   const [isPublic, setIsPublic] = useState(initialList?.isPublic ?? false);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -56,7 +65,7 @@ export function ListFormDialog({
     setTitle(initialList?.title ?? "");
     setTopic(initialList?.topic ?? "");
     setDescription(initialList?.description ?? "");
-    setEmoji(initialList?.emoji ?? "🏆");
+    setEmoji(getListEmoji(initialList?.emoji ?? null, initialList?.topic ?? null));
     setIsPublic(initialList?.isPublic ?? false);
     setFeedback(null);
     setOpen(true);
@@ -95,7 +104,7 @@ export function ListFormDialog({
         </span>
       ) : (
         <Button onClick={openDialog} size="lg">
-          <ListPlus className="h-4 w-4" />
+          <ListPlus data-icon="inline-start" />
           New list
         </Button>
       )}
@@ -104,14 +113,14 @@ export function ListFormDialog({
         description="Create or edit a ranked list."
         onClose={() => setOpen(false)}
         open={open}
-        title={isEditing ? "Edit list" : "New list"}
+        title={isEditing ? "Edit list" : "Start a new top list"}
       >
-        <form className="space-y-4" onSubmit={submit}>
+        <form className="flex flex-col gap-4 pt-5" onSubmit={submit}>
           {feedback ? <Alert tone="error">{feedback}</Alert> : null}
 
           <div className="grid gap-1.5">
             <Label htmlFor="list-title" required>
-              Title
+              List title
             </Label>
             <Input
               autoFocus
@@ -157,9 +166,9 @@ export function ListFormDialog({
                 <button
                   aria-label={`Use ${option} as list icon`}
                   className={cn(
-                    "border-border bg-surface grid h-10 w-10 place-items-center rounded-md border text-xl transition",
+                    "grid size-10 place-items-center rounded-lg border border-border bg-secondary/55 text-xl transition hover:bg-secondary",
                     emoji === option &&
-                      "border-primary bg-primary/10 shadow-stage scale-105",
+                      "scale-105 border-primary bg-primary/10 shadow-glow",
                   )}
                   disabled={isPending}
                   key={option}
@@ -178,21 +187,21 @@ export function ListFormDialog({
               <VisibilityOption
                 active={isPublic}
                 description="Shown in Explore."
-                icon={<Globe2 className="h-4 w-4" />}
+                icon={<Globe2 />}
                 label="Public"
                 onClick={() => setIsPublic(true)}
               />
               <VisibilityOption
                 active={!isPublic}
                 description="Only visible to you."
-                icon={<LockKeyhole className="h-4 w-4" />}
+                icon={<LockKeyhole />}
                 label="Private"
                 onClick={() => setIsPublic(false)}
               />
             </div>
           </div>
 
-          <div className="border-border flex justify-end gap-2 border-t pt-4">
+          <div className="flex justify-end gap-2 border-t border-border pt-4">
             <Button
               disabled={isPending}
               onClick={() => setOpen(false)}
@@ -203,9 +212,9 @@ export function ListFormDialog({
             </Button>
             <Button disabled={isPending} type="submit">
               {isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Loader2 className="animate-spin" data-icon="inline-start" />
               ) : (
-                <Save className="h-4 w-4" />
+                <Save data-icon="inline-start" />
               )}
               {isEditing ? "Save list" : "Create list"}
             </Button>
@@ -232,8 +241,8 @@ function VisibilityOption({
   return (
     <button
       className={cn(
-        "border-border bg-surface hover:bg-surface-elevated rounded-lg border p-3 text-left transition",
-        active && "border-primary bg-primary/10",
+        "rounded-xl border border-border bg-secondary/45 p-3 text-left transition hover:bg-secondary [&_svg]:size-4",
+        active && "border-primary bg-primary/10 text-primary",
       )}
       onClick={onClick}
       type="button"
@@ -242,7 +251,7 @@ function VisibilityOption({
         {icon}
         {label}
       </span>
-      <span className="text-muted-foreground mt-1 block text-xs">
+      <span className="mt-1 block text-xs text-muted-foreground">
         {description}
       </span>
     </button>

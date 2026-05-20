@@ -1,7 +1,7 @@
 "use client";
 
 import { Loader2, Save } from "lucide-react";
-import { FormEvent, useState, useTransition } from "react";
+import { type FormEvent, useState, useTransition } from "react";
 
 import { ProfileSummaryPanel } from "@/features/settings/components/profile-summary-panel";
 import { updateProfileSettingsAction } from "@/features/settings/server/actions";
@@ -60,7 +60,7 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
   };
 
   return (
-    <form className="space-y-8" onSubmit={submit}>
+    <form className="flex flex-col gap-8" onSubmit={submit}>
       <ProfileSummaryPanel
         bio={bio}
         displayName={displayName}
@@ -68,10 +68,10 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
         username={username}
       />
 
-      <section className="space-y-5">
+      <section className="flex flex-col gap-5">
         <div>
           <h2 className="font-display text-3xl font-bold">Profile</h2>
-          <p className="text-muted-foreground mt-2 text-sm leading-6">
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
             These details are stored in your shared core profile and can be
             reused across shared apps and public Rankex lists.
           </p>
@@ -108,7 +108,7 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
             placeholder="rank_curator"
             value={username}
           />
-          <p className="text-muted-foreground text-xs">
+          <p className="text-xs text-muted-foreground">
             Lowercase letters, numbers, and underscores. Leave blank to hide it.
           </p>
         </div>
@@ -124,7 +124,7 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
             rows={5}
             value={bio}
           />
-          <p className="text-muted-foreground text-right font-mono text-[10px]">
+          <p className="text-right font-mono text-[10px] text-muted-foreground">
             {bio.length}/160
           </p>
         </div>
@@ -132,7 +132,7 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
 
       {feedback ? <Alert tone={feedback.tone}>{feedback.message}</Alert> : null}
 
-      <div className="border-border flex items-center justify-end gap-3 border-t pt-4">
+      <div className="flex items-center justify-end gap-3 border-t border-border pt-4">
         <Button
           disabled={isPending}
           onClick={reset}
@@ -143,9 +143,9 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
         </Button>
         <Button disabled={isPending} type="submit">
           {isPending ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2 className="animate-spin" data-icon="inline-start" />
           ) : (
-            <Save className="h-4 w-4" />
+            <Save data-icon="inline-start" />
           )}
           Save profile
         </Button>

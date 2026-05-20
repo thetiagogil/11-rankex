@@ -31,6 +31,7 @@ import {
 import type { RankedItem } from "@/features/lists/types";
 import { Alert } from "@/shared/components/ui/alert";
 import { Button } from "@/shared/components/ui/button";
+import { Modal } from "@/shared/components/ui/modal";
 import { cn } from "@/shared/utils/cn";
 
 type SortableItemListProps = {
@@ -46,6 +47,9 @@ export function SortableItemList({
 }: SortableItemListProps) {
   const router = useRouter();
   const [feedback, setFeedback] = useState<string | null>(null);
+  const [itemPendingDelete, setItemPendingDelete] = useState<RankedItem | null>(
+    null,
+  );
   const [isPending, startTransition] = useTransition();
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -83,18 +87,25 @@ export function SortableItemList({
     });
   };
 
-  const deleteItem = (item: RankedItem) => {
-    if (!window.confirm(`Delete "${item.title}" from this list?`)) return;
+  const requestDeleteItem = (item: RankedItem) => {
+    setFeedback(null);
+    setItemPendingDelete(item);
+  };
 
+  const deleteItem = () => {
+    if (!itemPendingDelete) return;
+
+    const itemId = itemPendingDelete.id;
     setFeedback(null);
     startTransition(async () => {
-      const result = await deleteItemAction(listId, item.id);
+      const result = await deleteItemAction(listId, itemId);
 
       if (!result.ok) {
         setFeedback(result.error);
         return;
       }
 
+      setItemPendingDelete(null);
       router.refresh();
     });
   };
@@ -118,7 +129,7 @@ export function SortableItemList({
   }
 
   const content = (
-    <div className="space-y-3">
+    <div className="flex flex-col gap-3">
       {items.map((item, index) => (
         <SortableRow
           canEdit={canEdit}
@@ -126,7 +137,7 @@ export function SortableItemList({
           item={item}
           key={item.id}
           listId={listId}
-          onDelete={deleteItem}
+          onDelete={requestDeleteItem}
           rank={index + 1}
         />
       ))}
@@ -134,11 +145,12 @@ export function SortableItemList({
   );
 
   return (
-    <div className="space-y-3">
+    <div className="flex flex-col gap-3">
       {feedback ? <Alert tone="error">{feedback}</Alert> : null}
       {canEdit ? (
         <DndContext
           collisionDetection={closestCenter}
+          id={`rankex-sortable-${listId}`}
           onDragEnd={onDragEnd}
           sensors={sensors}
         >
@@ -152,6 +164,41 @@ export function SortableItemList({
       ) : (
         content
       )}
+      <Modal
+        description={
+          itemPendingDelete
+            ? `Delete ${itemPendingDelete.title} from this ranked list.`
+            : undefined
+        }
+        onClose={() => setItemPendingDelete(null)}
+        open={Boolean(itemPendingDelete)}
+        title="Delete this item?"
+      >
+        <div className="flex flex-col gap-5 pt-5">
+          <p className="text-sm leading-6 text-muted-foreground">
+            {itemPendingDelete
+              ? `This permanently removes "${itemPendingDelete.title}" from the ranking.`
+              : "This item will be removed from the ranking."}
+          </p>
+          <div className="flex justify-end gap-2 border-t border-border pt-4">
+            <Button
+              disabled={isPending}
+              onClick={() => setItemPendingDelete(null)}
+              variant="ghost"
+            >
+              Cancel
+            </Button>
+            <Button disabled={isPending} onClick={deleteItem} variant="danger">
+              {isPending ? (
+                <Loader2 className="animate-spin" data-icon="inline-start" />
+              ) : (
+                <Trash2 data-icon="inline-start" />
+              )}
+              Delete item
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
@@ -183,8 +230,10 @@ function SortableRow({
   return (
     <article
       className={cn(
-        "border-border bg-card group relative flex flex-col gap-3 rounded-lg border p-4 transition sm:flex-row sm:items-center",
-        isDragging && "border-primary shadow-stage z-30",
+        "group relative flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 shadow-elevated transition sm:flex-row sm:items-center",
+        isDragging
+          ? "z-30 border-primary ring-2 ring-primary/45"
+          : "hover:border-primary/40",
       )}
       ref={setNodeRef}
       style={{
@@ -196,16 +245,16 @@ function SortableRow({
         {canEdit ? (
           <button
             aria-label="Drag to reorder"
-            className="text-muted-foreground hover:text-foreground cursor-grab touch-none active:cursor-grabbing"
+            className="cursor-grab touch-none text-muted-foreground hover:text-foreground active:cursor-grabbing"
             disabled={disabled}
             type="button"
             {...attributes}
             {...listeners}
           >
             {disabled ? (
-              <Loader2 className="h-5 w-5 animate-spin" />
+              <Loader2 className="size-5 animate-spin" />
             ) : (
-              <GripVertical className="h-5 w-5" />
+              <GripVertical className="size-5" />
             )}
           </button>
         ) : null}
@@ -214,15 +263,17 @@ function SortableRow({
 
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
-          <h3 className="truncate text-base font-semibold">{item.title}</h3>
+          <h3 className="truncate font-display text-lg font-semibold">
+            {item.title}
+          </h3>
           {item.score !== null ? (
-            <span className="text-secondary rounded-md border border-secondary/40 px-2 py-0.5 font-mono text-xs font-bold">
+            <span className="rounded-md bg-accent/15 px-2 py-0.5 font-mono text-xs font-bold text-accent">
               {item.score}
             </span>
           ) : null}
         </div>
         {item.note ? (
-          <p className="text-muted-foreground mt-1 line-clamp-2 text-sm leading-6">
+          <p className="mt-1 line-clamp-2 text-sm leading-6 text-muted-foreground">
             {item.note}
           </p>
         ) : null}
@@ -237,7 +288,7 @@ function SortableRow({
               listId={listId}
               trigger={
                 <Button aria-label={`Edit ${item.title}`} size="icon" variant="ghost">
-                  <Pencil className="h-4 w-4" />
+                  <Pencil />
                 </Button>
               }
             />
@@ -247,7 +298,7 @@ function SortableRow({
               size="icon"
               variant="ghost"
             >
-              <Trash2 className="text-destructive h-4 w-4" />
+              <Trash2 className="text-destructive" />
             </Button>
           </div>
         ) : null}

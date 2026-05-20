@@ -11,7 +11,7 @@ export function VisibilityBadge({ isPublic }: VisibilityBadgeProps) {
 
   return (
     <Badge variant={isPublic ? "primary" : "surface"}>
-      <Icon className="mr-1 h-3 w-3" />
+      <Icon data-icon="inline-start" />
       {isPublic ? "Public" : "Private"}
     </Badge>
   );
