@@ -9,15 +9,15 @@ type AlertProps = ComponentPropsWithoutRef<"div"> & {
 };
 
 const tones: Record<AlertTone, string> = {
-  error: "border-destructive/40 bg-destructive/10 text-destructive",
-  success: "border-accent/50 bg-accent/10 text-accent",
+  error: "border-destructive bg-destructive text-destructive-foreground",
+  success: "border-foreground bg-tier-c text-foreground",
 };
 
 export function Alert({ className, tone = "error", ...props }: AlertProps) {
   return (
     <div
       className={cn(
-        "rounded-sm border px-3 py-2 font-mono text-xs leading-5",
+        "rounded-2xl border-2 px-3 py-2 font-mono text-xs leading-5 shadow-[3px_3px_0_0_var(--shadow-ink)]",
         tones[tone],
         className,
       )}

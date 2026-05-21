@@ -7,19 +7,19 @@ type TierBadgeProps = {
 };
 
 const tierClasses: Record<Tier, string> = {
-  S: "border-tier-s/50 bg-tier-s/15 text-tier-s",
-  A: "border-tier-a/50 bg-tier-a/15 text-tier-a",
-  B: "border-tier-b/50 bg-tier-b/15 text-tier-b",
-  C: "border-tier-c/50 bg-tier-c/15 text-tier-c",
-  D: "border-tier-d/50 bg-tier-d/15 text-tier-d",
+  S: "bg-tier-s text-white",
+  A: "bg-tier-a text-white",
+  B: "bg-tier-b text-foreground",
+  C: "bg-tier-c text-foreground",
+  D: "bg-tier-d text-white",
 };
 
 export function TierBadge({ size = "md", tier }: TierBadgeProps) {
   return (
     <span
       className={cn(
-        "font-display inline-grid shrink-0 place-items-center rounded-md border font-bold",
-        size === "lg" ? "size-12 text-xl" : "size-8 text-sm",
+        "font-display inline-grid shrink-0 place-items-center rounded-xl border-2 border-foreground font-bold shadow-[3px_3px_0_0_var(--shadow-ink)]",
+        size === "lg" ? "size-12 text-2xl" : "size-9 text-base",
         tierClasses[tier],
       )}
     >

@@ -18,6 +18,7 @@ import { ListFormDialog } from "@/features/lists/components/list-form-dialog";
 import { SortableItemList } from "@/features/lists/components/sortable-item-list";
 import { TierView } from "@/features/lists/components/tier-view";
 import { VisibilityBadge } from "@/features/lists/components/visibility-badge";
+import { getListEmoji } from "@/features/lists/lib/list-emoji";
 import { deleteListAction } from "@/features/lists/server/actions";
 import type { RankedList } from "@/features/lists/types";
 import { AppMain } from "@/shared/components/layout/app-main";
@@ -43,6 +44,7 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
   const [feedback, setFeedback] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const canEdit = list.ownerId === currentUserId;
+  const emoji = getListEmoji(list.emoji, list.topic);
 
   const deleteList = () => {
     setFeedback(null);
@@ -72,12 +74,19 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
 
       <section className="mt-6 flex flex-wrap items-end justify-between gap-5">
         <div className="min-w-0">
-          <h1 className="font-display text-4xl leading-tight font-black sm:text-5xl">
-            {list.title}
-          </h1>
+          <div className="flex items-start gap-4">
+            <div className="grid size-16 shrink-0 rotate-[-5deg] place-items-center rounded-3xl border-2 border-foreground bg-gradient-gold text-4xl shadow-elevated">
+              {emoji}
+            </div>
+            <div className="min-w-0">
+              <h1 className="font-display text-5xl leading-none font-black sm:text-6xl">
+                {list.title}
+              </h1>
+            </div>
+          </div>
 
           {list.description ? (
-            <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
+            <p className="mt-4 max-w-2xl text-sm leading-7 text-muted-foreground">
               {list.description}
             </p>
           ) : null}
@@ -102,7 +111,7 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
         <div className="flex flex-wrap items-center gap-2">
           <ToggleGroup
             aria-label="Choose list view"
-            className="h-9 overflow-hidden rounded-xl border border-border bg-card"
+            className="h-10 overflow-hidden rounded-full border-2 border-foreground bg-card"
             onValueChange={(value) => {
               if (value) setView(value as ViewMode);
             }}
@@ -111,14 +120,14 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
             value={view}
           >
             <ToggleGroupItem
-              className="h-9 rounded-none px-3 text-sm font-medium text-muted-foreground hover:text-foreground data-[state=on]:bg-secondary data-[state=on]:text-foreground"
+              className="h-10 rounded-full px-3 text-sm font-bold text-muted-foreground hover:text-foreground data-[state=on]:bg-foreground data-[state=on]:text-background"
               value="ranked"
             >
               <ListOrdered data-icon="inline-start" />
               Ranked
             </ToggleGroupItem>
             <ToggleGroupItem
-              className="h-9 rounded-none px-3 text-sm font-medium text-muted-foreground hover:text-foreground data-[state=on]:bg-secondary data-[state=on]:text-foreground"
+              className="h-10 rounded-full px-3 text-sm font-bold text-muted-foreground hover:text-foreground data-[state=on]:bg-foreground data-[state=on]:text-background"
               value="tiers"
             >
               <LayoutGrid data-icon="inline-start" />
@@ -174,7 +183,7 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
             This permanently deletes &quot;{list.title}&quot; and all ranked items
             in it.
           </p>
-          <div className="flex justify-end gap-2 border-t border-border pt-4">
+          <div className="flex justify-end gap-2 border-t-2 border-dashed border-border pt-4">
             <Button
               disabled={isPending}
               onClick={() => setDeleteDialogOpen(false)}

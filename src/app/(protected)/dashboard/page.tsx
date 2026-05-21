@@ -5,6 +5,7 @@ import { AppMain } from "@/shared/components/layout/app-main";
 import { Card } from "@/shared/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/shared/server/auth";
+import { cn } from "@/shared/utils/cn";
 
 export default async function DashboardPage() {
   const currentUser = await requireUser();
@@ -19,7 +20,7 @@ export default async function DashboardPage() {
       <section className="mt-2 max-w-3xl">
         <h1 className="font-display text-4xl leading-tight font-black sm:text-6xl">
           Welcome back,{" "}
-          <em className="text-gradient-gold not-italic">
+          <em className="scribble text-gradient-gold not-italic">
             {currentUser.profile.displayName.split(" ")[0]}
           </em>
           .
@@ -31,10 +32,10 @@ export default async function DashboardPage() {
       </section>
 
       <section className="mt-10 grid gap-4 sm:grid-cols-4">
-        <Metric label="My lists" value={lists.length} />
-        <Metric label="Public" value={publicCount} />
-        <Metric label="Private" value={privateCount} />
-        <Metric label="Entries" value={itemCount} />
+        <Metric accent="primary" label="My lists" value={lists.length} />
+        <Metric accent="accent" label="Public" value={publicCount} />
+        <Metric accent="cyan" label="Private" value={privateCount} />
+        <Metric accent="gold" label="Entries" value={itemCount} />
       </section>
 
       <section className="mt-16">
@@ -49,13 +50,36 @@ export default async function DashboardPage() {
   );
 }
 
-function Metric({ label, value }: { label: string; value: number }) {
+function Metric({
+  accent,
+  label,
+  value,
+}: {
+  accent: "accent" | "cyan" | "gold" | "primary";
+  label: string;
+  value: number;
+}) {
   return (
-    <Card as="article" className="bg-card/60 gap-0 p-5">
+    <Card
+      as="article"
+      className={cn(
+        "gap-0 p-5",
+        accent === "primary" && "tilt-l",
+        accent === "accent" && "tilt-r",
+      )}
+    >
       <p className="text-muted-foreground font-mono text-xs tracking-widest uppercase">
         {label}
       </p>
-      <p className="font-display text-gradient-gold mt-1 text-3xl font-bold">
+      <p
+        className={cn(
+          "font-display mt-2 text-5xl leading-none font-bold",
+          accent === "primary" && "text-primary",
+          accent === "accent" && "text-accent",
+          accent === "cyan" && "text-cyan",
+          accent === "gold" && "text-gold",
+        )}
+      >
         {value}
       </p>
     </Card>

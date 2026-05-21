@@ -38,7 +38,7 @@ export function ProfileMenu({
         <Button
           aria-label={open ? "Close account menu" : "Open account menu"}
           className={cn(
-            "size-10 rounded-full text-primary hover:border-primary/50",
+            "size-11 rounded-full text-primary hover:border-primary/50",
             open && "border-primary/50",
           )}
           disabled={isPending}

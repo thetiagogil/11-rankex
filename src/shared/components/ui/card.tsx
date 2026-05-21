@@ -50,11 +50,11 @@ function Card({
   return (
     <Component
       className={cn(
-        "group/card relative flex flex-col gap-4 overflow-hidden rounded-2xl border bg-card/70 py-4 text-sm text-card-foreground shadow-elevated backdrop-blur-sm transition-all has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:gap-3 data-[size=sm]:py-3 data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-2xl *:[img:last-child]:rounded-b-2xl",
+        "sticker-card group/card relative flex flex-col gap-4 overflow-hidden rounded-3xl bg-card py-4 text-sm text-card-foreground transition-all has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:gap-3 data-[size=sm]:py-3 data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-3xl *:[img:last-child]:rounded-b-3xl",
         borderClass,
-        interactive && "hover:-translate-y-1 hover:border-primary/50 hover:shadow-glow",
         className,
       )}
+      data-interactive={interactive ? "true" : undefined}
       data-size={size}
       data-slot="card"
       {...props}
@@ -112,7 +112,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       className={cn(
-        "font-display text-lg leading-snug font-bold group-data-[size=sm]/card:text-base",
+        "font-display text-2xl leading-none font-bold group-data-[size=sm]/card:text-xl",
         className,
       )}
       data-slot="card-title"
@@ -161,7 +161,7 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       className={cn(
-        "relative z-10 flex items-center rounded-b-2xl border-t bg-secondary/35 p-5 group-data-[size=sm]/card:p-4",
+        "relative z-10 flex items-center border-t-2 border-dashed bg-secondary/55 p-5 group-data-[size=sm]/card:p-4",
         className,
       )}
       data-slot="card-footer"

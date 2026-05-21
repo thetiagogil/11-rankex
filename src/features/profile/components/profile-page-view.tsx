@@ -25,10 +25,10 @@ export function ProfilePageView({
 
   return (
     <div className="flex flex-col gap-10">
-      <Card as="section" className="bg-card/45 p-5 sm:p-7">
+      <Card as="section" className="p-5 sm:p-7">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-6">
           <div className="flex items-start justify-between gap-4 sm:block">
-            <div className="grid size-28 shrink-0 place-items-center rounded-2xl bg-gradient-gold font-display text-4xl font-black text-primary-foreground shadow-glow sm:size-36">
+            <div className="grid size-28 shrink-0 rotate-[-4deg] place-items-center rounded-3xl border-2 border-foreground bg-gradient-gold font-display text-5xl font-black text-primary-foreground shadow-elevated sm:size-36 sm:text-6xl">
               {getProfileInitials(profile.displayName)}
             </div>
 
@@ -48,7 +48,7 @@ export function ProfilePageView({
           <div className="min-w-0 flex-1">
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0 flex-1">
-                <h1 className="truncate font-display text-3xl leading-tight font-black sm:text-4xl">
+                <h1 className="truncate font-display text-5xl leading-none font-black sm:text-6xl">
                   {profile.displayName}
                 </h1>
                 <p className="mt-1 truncate font-mono text-sm text-primary">
@@ -68,7 +68,7 @@ export function ProfilePageView({
               ) : null}
             </div>
 
-            <div className="mt-5 grid grid-cols-3 gap-3 border-y border-border py-4 sm:hidden">
+            <div className="mt-5 grid grid-cols-3 gap-3 border-y-2 border-dashed border-border py-4 sm:hidden">
               <ProfileStat
                 label={isCurrentUser ? "Lists" : "Public lists"}
                 value={stats.listCount}
@@ -130,10 +130,7 @@ export function ProfilePageView({
             ))}
           </div>
         ) : (
-          <Card
-            as="section"
-            className="bg-card/35 border-dashed px-6 py-16 text-center"
-          >
+          <Card as="section" className="border-dashed px-6 py-16 text-center">
             <Trophy className="text-muted-foreground mx-auto size-9" />
             <p className="font-display mt-4 text-xl">No rankings here yet</p>
             <p className="text-muted-foreground mx-auto mt-2 max-w-md text-sm leading-6">

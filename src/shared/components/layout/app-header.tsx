@@ -22,7 +22,7 @@ export function AppHeader({
   return (
     <header
       className={cn(
-        "relative z-40 mb-2 w-full pt-5 sm:mb-3 sm:pt-6",
+        "relative z-40 mb-2 w-full pt-5 sm:mb-4 sm:pt-7",
         className,
       )}
       {...props}
@@ -37,7 +37,7 @@ export function AppHeader({
           {leading ?? <AppLogo href="/" />}
         </div>
         {center ? (
-          <nav className="hidden items-center justify-center gap-6 md:flex">
+          <nav className="hidden items-center justify-center gap-2 rounded-full border-2 border-foreground/10 bg-card/80 p-1.5 backdrop-blur md:flex">
             {center}
           </nav>
         ) : (

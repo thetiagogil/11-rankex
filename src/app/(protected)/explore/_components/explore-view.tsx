@@ -140,7 +140,7 @@ export function ExploreView({ lists, profiles }: ExploreViewProps) {
           >
             {topics.map((topicOption) => (
               <ToggleGroupItem
-                className="h-9 rounded-full border border-border px-3 font-mono text-xs tracking-widest text-muted-foreground uppercase hover:bg-secondary data-[state=on]:border-primary data-[state=on]:bg-primary/10 data-[state=on]:text-primary"
+                className="h-10 rounded-full border-2 border-foreground px-3 font-mono text-xs tracking-widest text-muted-foreground uppercase hover:bg-secondary data-[state=on]:bg-foreground data-[state=on]:text-background"
                 key={topicOption}
                 value={topicOption}
               >
@@ -191,18 +191,19 @@ function ExploreUserCard({
   return (
     <Card
       as="article"
-      className="w-60 shrink-0 snap-start bg-card/65 p-4 transition hover:border-primary/45"
+      className="w-60 shrink-0 snap-start p-4"
+      interactive
     >
       <div className="flex items-start gap-3">
         <Link
-          className="grid size-14 shrink-0 place-items-center rounded-2xl bg-gradient-gold font-display text-lg font-black text-primary-foreground shadow-glow"
+          className="grid size-14 shrink-0 place-items-center rounded-2xl border-2 border-foreground bg-gradient-gold font-display text-2xl font-black text-primary-foreground shadow-[3px_3px_0_0_var(--shadow-ink)]"
           href={getProfileHref(profile)}
         >
           {getProfileInitials(profile.displayName)}
         </Link>
         <div className="min-w-0 flex-1">
           <Link
-            className="block truncate font-display text-lg font-bold transition hover:text-primary"
+            className="block truncate font-display text-2xl leading-none font-bold transition hover:text-primary"
             href={getProfileHref(profile)}
           >
             {profile.displayName}
@@ -213,7 +214,7 @@ function ExploreUserCard({
         </div>
       </div>
 
-      <div className="mt-4 flex items-center justify-between gap-3 border-t border-border pt-4">
+      <div className="mt-4 flex items-center justify-between gap-3 border-t-2 border-dashed border-border pt-4">
         <p className="text-xs leading-5 text-muted-foreground">
           <span className="font-display text-base font-bold text-foreground">
             {stats.publicListCount}

@@ -5,6 +5,7 @@ import { VisibilityBadge } from "@/features/lists/components/visibility-badge";
 import { getListEmoji } from "@/features/lists/lib/list-emoji";
 import type { RankedListSummary } from "@/features/lists/types";
 import { Card } from "@/shared/components/ui/card";
+import { cn } from "@/shared/utils/cn";
 
 type ListCardProps = {
   list: RankedListSummary;
@@ -13,13 +14,22 @@ type ListCardProps = {
 
 export function ListCard({ list, showOwner = false }: ListCardProps) {
   const emoji = getListEmoji(list.emoji, list.topic);
+  const accent = getListAccent(list.id);
+  const tilt = getListTilt(list.id);
 
   return (
-    <Card as="article" className="group h-full bg-card p-0" interactive>
+    <Card
+      as="article"
+      className={cn("group h-full p-0", tilt)}
+      interactive
+    >
       <Link className="block h-full p-5" href={`/lists/${list.id}`}>
         <div className="relative z-10 flex h-full flex-col">
           <div className="flex items-start justify-between gap-3">
-            <span className="text-3xl leading-none">
+            <span
+              className="grid size-14 shrink-0 place-items-center rounded-2xl border-2 border-foreground text-3xl leading-none shadow-[3px_3px_0_0_var(--shadow-ink)]"
+              style={{ background: accent }}
+            >
               {emoji}
             </span>
             <VisibilityBadge isPublic={list.isPublic} />
@@ -29,7 +39,7 @@ export function ListCard({ list, showOwner = false }: ListCardProps) {
             <p className="mb-2 font-mono text-xs tracking-widest text-muted-foreground uppercase">
               {list.topic ?? "General"}
             </p>
-            <h3 className="font-display text-xl leading-tight font-bold transition-colors group-hover:text-primary">
+            <h3 className="font-display text-2xl leading-none font-bold transition-colors group-hover:text-primary">
               {list.title}
             </h3>
             {list.description ? (
@@ -39,7 +49,7 @@ export function ListCard({ list, showOwner = false }: ListCardProps) {
             ) : null}
           </div>
 
-          <div className="mt-5 flex items-center justify-between border-t border-border pt-4">
+          <div className="mt-5 flex items-center justify-between border-t-2 border-dashed border-border pt-4">
             <div className="flex min-w-0 items-center gap-2 text-sm text-muted-foreground">
               <ListOrdered className="size-4 shrink-0 text-primary" />
               <span>
@@ -77,4 +87,22 @@ export function ListCard({ list, showOwner = false }: ListCardProps) {
       </Link>
     </Card>
   );
+}
+
+const listAccents = [
+  "oklch(0.7 0.21 35)",
+  "oklch(0.66 0.24 0)",
+  "oklch(0.58 0.2 290)",
+  "oklch(0.78 0.17 55)",
+  "oklch(0.75 0.18 145)",
+] as const;
+
+const listTilts = ["tilt-l", "tilt-r", "", "tilt-r", "tilt-l", ""] as const;
+
+function getListAccent(id: number) {
+  return listAccents[id % listAccents.length];
+}
+
+function getListTilt(id: number) {
+  return listTilts[id % listTilts.length];
 }

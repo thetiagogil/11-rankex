@@ -16,7 +16,7 @@ export function TierView({ items }: TierViewProps) {
 
         return (
           <section
-            className="grid gap-3 rounded-2xl border border-border bg-card/80 p-3 shadow-elevated sm:grid-cols-[4rem_1fr]"
+            className="sticker-card grid gap-3 rounded-3xl bg-card p-3 sm:grid-cols-[4rem_1fr]"
             key={tier}
           >
             <div className="flex items-center gap-3 sm:flex-col sm:justify-center">
@@ -29,12 +29,12 @@ export function TierView({ items }: TierViewProps) {
               {tierItems.length ? (
                 tierItems.map((item) => (
                   <span
-                    className="rounded-lg border border-border bg-secondary px-3 py-2 text-sm"
+                    className="rounded-full border-2 border-foreground bg-secondary px-3 py-2 text-sm font-semibold shadow-[2px_2px_0_0_var(--shadow-ink)]"
                     key={item.id}
                   >
                     {item.title}
                     {item.score !== null ? (
-                      <span className="ml-2 font-mono text-xs text-accent">
+                      <span className="ml-2 font-mono text-xs text-primary">
                         {item.score}
                       </span>
                     ) : null}
@@ -51,13 +51,13 @@ export function TierView({ items }: TierViewProps) {
       })}
 
       {untiered.length ? (
-        <section className="flex flex-wrap items-center gap-2 rounded-2xl border border-dashed border-border bg-card/40 p-3">
+        <section className="sticker-card flex flex-wrap items-center gap-2 rounded-3xl border-dashed bg-card p-3">
           <span className="mr-2 text-xs text-muted-foreground uppercase">
             No tier
           </span>
           {untiered.map((item) => (
             <span
-              className="rounded-lg border border-border bg-secondary px-3 py-2 text-sm"
+              className="rounded-full border-2 border-foreground bg-secondary px-3 py-2 text-sm font-semibold shadow-[2px_2px_0_0_var(--shadow-ink)]"
               key={item.id}
             >
               {item.title}

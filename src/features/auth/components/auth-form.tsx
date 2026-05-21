@@ -160,10 +160,10 @@ export function AuthForm({
           </p>
         </section>
 
-        <Card className="bg-card/75 shadow-elevated p-5 sm:p-7">
+        <Card className="p-5 sm:p-7">
           <ToggleGroup
             aria-label="Choose authentication mode"
-            className="mb-6 grid w-full grid-cols-2 rounded-2xl border border-border bg-background/40 p-1"
+            className="mb-6 grid w-full grid-cols-2 rounded-full border-2 border-foreground bg-card p-1"
             onValueChange={(value) => {
               if (value) switchMode(value as AuthMode);
             }}
@@ -172,14 +172,14 @@ export function AuthForm({
             value={mode}
           >
             <ToggleGroupItem
-              className="h-9 rounded-xl px-3 text-sm font-semibold text-muted-foreground hover:text-foreground data-[state=on]:bg-secondary data-[state=on]:text-foreground data-[state=on]:shadow-elevated"
+              className="h-10 rounded-full px-3 text-sm font-semibold text-muted-foreground hover:text-foreground data-[state=on]:bg-foreground data-[state=on]:text-background"
               value="signin"
             >
               <LogIn data-icon="inline-start" />
               Log in
             </ToggleGroupItem>
             <ToggleGroupItem
-              className="h-9 rounded-xl px-3 text-sm font-semibold text-muted-foreground hover:text-foreground data-[state=on]:bg-secondary data-[state=on]:text-foreground data-[state=on]:shadow-elevated"
+              className="h-10 rounded-full px-3 text-sm font-semibold text-muted-foreground hover:text-foreground data-[state=on]:bg-foreground data-[state=on]:text-background"
               value="signup"
             >
               <UserPlus data-icon="inline-start" />

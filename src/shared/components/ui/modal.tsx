@@ -32,9 +32,9 @@ export function Modal({
       }}
       open={open}
     >
-      <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-hidden border-primary/30 bg-card/95 p-0 shadow-elevated sm:max-w-lg">
-        <DialogHeader className="border-b border-border/80 px-5 pt-5 pb-4">
-          <DialogTitle className="font-display text-xl font-bold">
+      <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-hidden bg-card p-0 sm:max-w-lg">
+        <DialogHeader className="border-b-2 border-dashed border-border px-5 pt-5 pb-4">
+          <DialogTitle className="font-display text-3xl font-bold">
             {title}
           </DialogTitle>
           {description ? (

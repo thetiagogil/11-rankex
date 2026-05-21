@@ -69,7 +69,7 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
 
   return (
     <form className="w-full" onSubmit={submit}>
-      <Card as="section" className="bg-card/70 p-5 sm:p-7">
+      <Card as="section" className="p-5 sm:p-7">
         <div className="flex flex-col gap-7">
           <SettingsBlock
             description="The name and handle people see before they open one of your rankings."
@@ -144,7 +144,7 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
             <Alert tone={feedback.tone}>{feedback.message}</Alert>
           ) : null}
 
-          <div className="flex flex-col-reverse gap-2 border-t border-border pt-4 sm:flex-row sm:items-center sm:justify-end">
+          <div className="flex flex-col-reverse gap-2 border-t-2 border-dashed border-border pt-4 sm:flex-row sm:items-center sm:justify-end">
             <Button
               disabled={isPending}
               onClick={reset}

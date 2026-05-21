@@ -112,7 +112,7 @@ export function SortableItemList({
 
   if (items.length === 0) {
     return (
-      <div className="border-border bg-card/40 rounded-lg border border-dashed px-6 py-16 text-center">
+      <div className="sticker-card rounded-3xl border-dashed bg-card px-6 py-16 text-center">
         <p className="font-display text-xl">An empty podium awaits</p>
         <p className="text-muted-foreground mt-2 text-sm">
           {canEdit
@@ -230,10 +230,10 @@ function SortableRow({
   return (
     <article
       className={cn(
-        "group relative flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 shadow-elevated transition sm:flex-row sm:items-center",
+        "sticker-card group relative flex flex-col gap-3 rounded-3xl bg-card p-4 transition sm:flex-row sm:items-center",
         isDragging
-          ? "z-30 border-primary ring-2 ring-primary/45"
-          : "hover:border-primary/40",
+          ? "z-30 border-primary ring-2 ring-primary/35"
+          : "hover:border-primary",
       )}
       ref={setNodeRef}
       style={{
@@ -269,7 +269,7 @@ function SortableRow({
             {item.title}
           </h3>
           {item.score !== null ? (
-            <span className="rounded-md bg-accent/15 px-2 py-0.5 font-mono text-xs font-bold text-accent">
+            <span className="rounded-full border-2 border-foreground bg-accent px-2 py-0.5 font-mono text-xs font-bold text-accent-foreground shadow-[2px_2px_0_0_var(--shadow-ink)]">
               {item.score}
             </span>
           ) : null}

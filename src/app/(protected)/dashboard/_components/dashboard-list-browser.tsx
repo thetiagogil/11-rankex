@@ -86,7 +86,7 @@ export function DashboardListBrowser({ lists }: DashboardListBrowserProps) {
     return (
       <Card
         as="section"
-        className="bg-card/30 flex flex-col items-center justify-center border-dashed px-6 py-20 text-center"
+        className="flex flex-col items-center justify-center border-dashed px-6 py-20 text-center"
       >
         <ListPlus className="size-10 text-muted-foreground" />
         <h2 className="mt-4 font-display text-xl">No lists yet</h2>
@@ -103,7 +103,7 @@ export function DashboardListBrowser({ lists }: DashboardListBrowserProps) {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-3 rounded-2xl border border-border bg-card/35 p-3 lg:flex-row lg:items-stretch lg:justify-between">
+      <div className="sticker-sm flex flex-col gap-3 rounded-3xl bg-card p-3 lg:flex-row lg:items-stretch lg:justify-between">
         <div className="relative min-w-0 flex-1">
           <Label className="sr-only" htmlFor="dashboard-list-search">
             Search your lists
@@ -121,7 +121,7 @@ export function DashboardListBrowser({ lists }: DashboardListBrowserProps) {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
           <ToggleGroup
             aria-label="Filter lists by visibility"
-            className="h-9 items-stretch overflow-hidden rounded-xl border border-border bg-background/45"
+            className="h-10 items-stretch overflow-hidden rounded-full border-2 border-foreground bg-card"
             onValueChange={(value) => {
               if (value) setVisibility(value as VisibilityFilter);
             }}
@@ -131,7 +131,7 @@ export function DashboardListBrowser({ lists }: DashboardListBrowserProps) {
           >
             {visibilityOptions.map((option) => (
               <ToggleGroupItem
-                className="h-9 rounded-none px-3 font-mono text-xs tracking-widest text-muted-foreground uppercase hover:text-foreground data-[state=on]:bg-secondary data-[state=on]:text-foreground data-[state=on]:shadow-elevated"
+                className="h-10 rounded-full px-3 font-mono text-xs tracking-widest text-muted-foreground uppercase hover:text-foreground data-[state=on]:bg-foreground data-[state=on]:text-background"
                 key={option.value}
                 value={option.value}
               >
@@ -149,7 +149,7 @@ export function DashboardListBrowser({ lists }: DashboardListBrowserProps) {
               value={sort}
             >
               <SelectTrigger
-                className="h-9 w-full bg-card/65"
+                className="h-10 w-full"
                 id="dashboard-list-sort"
               >
                 <SelectValue placeholder="Sort lists" />
@@ -177,7 +177,7 @@ export function DashboardListBrowser({ lists }: DashboardListBrowserProps) {
       ) : (
         <Card
           as="section"
-          className="bg-card/30 flex flex-col items-center justify-center border-dashed px-6 py-16 text-center"
+          className="flex flex-col items-center justify-center border-dashed px-6 py-16 text-center"
         >
           <p className="font-display text-xl">No lists match that view</p>
           <p className="mt-2 max-w-md text-sm leading-6 text-muted-foreground">
