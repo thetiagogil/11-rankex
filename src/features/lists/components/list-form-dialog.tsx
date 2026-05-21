@@ -22,7 +22,10 @@ import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
 import { Modal } from "@/shared/components/ui/modal";
 import { Textarea } from "@/shared/components/ui/textarea";
-import { cn } from "@/shared/utils/cn";
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@/shared/components/ui/toggle-group";
 
 type ListFormDialogProps = {
   initialList?: RankedList;
@@ -161,44 +164,54 @@ export function ListFormDialog({
 
           <div className="grid gap-2">
             <Label>Icon</Label>
-            <div className="flex flex-wrap gap-2">
+            <ToggleGroup
+              aria-label="Choose list icon"
+              className="flex flex-wrap gap-2"
+              onValueChange={(value) => {
+                if (value) setEmoji(value);
+              }}
+              type="single"
+              value={emoji}
+            >
               {emojiOptions.map((option) => (
-                <button
+                <ToggleGroupItem
                   aria-label={`Use ${option} as list icon`}
-                  className={cn(
-                    "grid size-10 place-items-center rounded-lg border border-border bg-secondary/55 text-xl transition hover:bg-secondary",
-                    emoji === option &&
-                      "scale-105 border-primary bg-primary/10 shadow-glow",
-                  )}
+                  className="grid size-10 place-items-center rounded-lg border border-border bg-secondary/55 p-0 text-xl hover:bg-secondary data-[state=on]:scale-105 data-[state=on]:border-primary data-[state=on]:bg-primary/10 data-[state=on]:shadow-glow"
                   disabled={isPending}
                   key={option}
-                  onClick={() => setEmoji(option)}
-                  type="button"
+                  value={option}
                 >
                   {option}
-                </button>
+                </ToggleGroupItem>
               ))}
-            </div>
+            </ToggleGroup>
           </div>
 
           <div className="grid gap-2">
             <Label>Visibility</Label>
-            <div className="grid gap-2 sm:grid-cols-2">
+            <ToggleGroup
+              aria-label="Choose list visibility"
+              className="grid w-full gap-2 sm:grid-cols-2"
+              disabled={isPending}
+              onValueChange={(value) => {
+                if (value) setIsPublic(value === "public");
+              }}
+              type="single"
+              value={isPublic ? "public" : "private"}
+            >
               <VisibilityOption
-                active={isPublic}
                 description="Shown in Explore."
                 icon={<Globe2 />}
                 label="Public"
-                onClick={() => setIsPublic(true)}
+                value="public"
               />
               <VisibilityOption
-                active={!isPublic}
                 description="Only visible to you."
                 icon={<LockKeyhole />}
                 label="Private"
-                onClick={() => setIsPublic(false)}
+                value="private"
               />
-            </div>
+            </ToggleGroup>
           </div>
 
           <div className="flex justify-end gap-2 border-t border-border pt-4">
@@ -226,26 +239,20 @@ export function ListFormDialog({
 }
 
 function VisibilityOption({
-  active,
   description,
   icon,
   label,
-  onClick,
+  value,
 }: {
-  active: boolean;
   description: string;
   icon: ReactNode;
   label: string;
-  onClick: () => void;
+  value: string;
 }) {
   return (
-    <button
-      className={cn(
-        "rounded-xl border border-border bg-secondary/45 p-3 text-left transition hover:bg-secondary [&_svg]:size-4",
-        active && "border-primary bg-primary/10 text-primary",
-      )}
-      onClick={onClick}
-      type="button"
+    <ToggleGroupItem
+      className="h-auto flex-col items-start rounded-xl border border-border bg-secondary/45 p-3 text-left hover:bg-secondary data-[state=on]:border-primary data-[state=on]:bg-primary/10 data-[state=on]:text-primary [&_svg]:size-4"
+      value={value}
     >
       <span className="flex items-center gap-2 text-sm font-semibold">
         {icon}
@@ -254,6 +261,6 @@ function VisibilityOption({
       <span className="mt-1 block text-xs text-muted-foreground">
         {description}
       </span>
-    </button>
+    </ToggleGroupItem>
   );
 }

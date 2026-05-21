@@ -10,11 +10,11 @@ import {
   Music,
   type LucideIcon,
 } from "lucide-react";
-import { redirect } from "next/navigation";
 
 import { AppHeader } from "@/shared/components/layout/app-header";
 import { AppMain } from "@/shared/components/layout/app-main";
 import { AppShell } from "@/shared/components/layout/app-shell";
+import { ProtectedAppShell } from "@/shared/components/layout/protected-app-shell";
 import { Badge } from "@/shared/components/ui/badge";
 import { ButtonLink } from "@/shared/components/ui/button-link";
 import {
@@ -96,9 +96,14 @@ const trendingLists: TrendingList[] = [
 
 export default async function LandingPage() {
   const currentUser = await getCurrentUser();
+  const isAuthenticated = Boolean(currentUser);
 
-  if (currentUser) {
-    redirect("/dashboard");
+  if (isAuthenticated) {
+    return (
+      <ProtectedAppShell>
+        <LandingContent isAuthenticated={isAuthenticated} />
+      </ProtectedAppShell>
+    );
   }
 
   return (
@@ -111,70 +116,87 @@ export default async function LandingPage() {
         }
       />
 
-      <AppMain className="pb-20">
-        <section className="pt-16 sm:pt-20 lg:pt-24">
-          <div className="max-w-3xl">
-            <h1 className="font-display text-5xl leading-[0.95] font-black text-balance sm:text-7xl">
-              Rank{" "}
-              <em className="text-gradient-gold not-italic">what matters</em>.
-            </h1>
-            <p className="mt-5 max-w-xl text-lg leading-8 text-muted-foreground">
-              Build top lists for anything worth ordering: films, albums,
-              restaurants, games, books, places, and personal canon.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <ButtonLink href="/auth?mode=signup" size="lg">
-                Get started
-              </ButtonLink>
-              <ButtonLink href="/auth" size="lg" variant="outline">
-                Test with demo account
-              </ButtonLink>
-            </div>
-          </div>
-        </section>
+      <LandingContent isAuthenticated={isAuthenticated} />
+    </AppShell>
+  );
+}
 
-        <section className="mt-16">
-          <div className="max-w-2xl">
-            <h2 className="font-display text-3xl font-bold">
-              A straightforward place for ranked lists
-            </h2>
-            <p className="mt-3 text-muted-foreground">
-              Rankex keeps the first version focused: create lists, add items,
-              reorder them, switch views, and decide what should be public.
-            </p>
-          </div>
+function LandingContent({ isAuthenticated }: { isAuthenticated: boolean }) {
+  const primaryHref = isAuthenticated ? "/dashboard" : "/auth?mode=signup";
+  const secondaryHref = isAuthenticated ? "/explore" : "/auth";
+  const primaryLabel = isAuthenticated ? "Go to dashboard" : "Get started";
+  const secondaryLabel = isAuthenticated
+    ? "Explore rankings"
+    : "Test with demo account";
 
-          <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            {featureCards.map((feature) => (
-              <FeatureCard key={feature.title} feature={feature} />
-            ))}
-          </div>
-        </section>
-
-        <section className="mt-16">
-          <div className="mb-5 flex items-end justify-between gap-3">
-            <div>
-              <h2 className="font-display text-3xl font-bold">
-                Trending rankings
-              </h2>
-              <p className="mt-2 text-muted-foreground">
-                A preview of public lists people can browse by topic.
-              </p>
-            </div>
-            <ButtonLink href="/auth" size="sm" variant="link">
-              Explore
-              <ArrowUpRight data-icon="inline-end" />
+  return (
+    <AppMain className="pb-20">
+      <section className="pt-16 sm:pt-20 lg:pt-24">
+        <div className="max-w-3xl">
+          <h1 className="font-display text-5xl leading-[0.95] font-black text-balance sm:text-7xl">
+            Rank{" "}
+            <em className="text-gradient-gold not-italic">what matters</em>.
+          </h1>
+          <p className="mt-5 max-w-xl text-lg leading-8 text-muted-foreground">
+            Build top lists for anything worth ordering: films, albums,
+            restaurants, games, books, places, and personal canon.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <ButtonLink href={primaryHref} size="lg">
+              {primaryLabel}
+            </ButtonLink>
+            <ButtonLink href={secondaryHref} size="lg" variant="outline">
+              {secondaryLabel}
             </ButtonLink>
           </div>
+        </div>
+      </section>
 
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            {trendingLists.map((list) => (
-              <TrendingListCard key={list.title} list={list} />
-            ))}
+      <section className="mt-16">
+        <div className="max-w-2xl">
+          <h2 className="font-display text-3xl font-bold">
+            A straightforward place for ranked lists
+          </h2>
+          <p className="mt-3 text-muted-foreground">
+            Rankex keeps the first version focused: create lists, add items,
+            reorder them, switch views, and decide what should be public.
+          </p>
+        </div>
+
+        <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {featureCards.map((feature) => (
+            <FeatureCard key={feature.title} feature={feature} />
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-16">
+        <div className="mb-5 flex items-end justify-between gap-3">
+          <div>
+            <h2 className="font-display text-3xl font-bold">
+              Trending rankings
+            </h2>
+            <p className="mt-2 text-muted-foreground">
+              A preview of public lists people can browse by topic.
+            </p>
           </div>
-        </section>
-      </AppMain>
-    </AppShell>
+          <ButtonLink
+            href={isAuthenticated ? "/explore" : "/auth"}
+            size="sm"
+            variant="link"
+          >
+            Explore
+            <ArrowUpRight data-icon="inline-end" />
+          </ButtonLink>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {trendingLists.map((list) => (
+            <TrendingListCard key={list.title} list={list} />
+          ))}
+        </div>
+      </section>
+    </AppMain>
   );
 }
 

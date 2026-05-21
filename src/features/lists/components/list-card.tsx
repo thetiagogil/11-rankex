@@ -57,13 +57,13 @@ export function ListCard({ list, showOwner = false }: ListCardProps) {
           ) : null}
 
           {list.topItems.length > 0 ? (
-            <div className="mt-4 flex -space-x-1.5">
+            <div className="mt-4 flex">
               {list.topItems.map((item, index) => (
                 <span
                   className={
                     index === 0
                       ? "grid size-7 place-items-center rounded-md border-2 border-card bg-gradient-gold font-mono text-[10px] font-bold text-primary-foreground"
-                      : "grid size-7 place-items-center rounded-md border-2 border-card bg-secondary font-mono text-[10px] font-bold text-muted-foreground"
+                      : "-ml-1.5 grid size-7 place-items-center rounded-md border-2 border-card bg-secondary font-mono text-[10px] font-bold text-muted-foreground"
                   }
                   key={item.id}
                   title={item.title}

@@ -21,7 +21,7 @@ export function ProtectedNavLinks({ pathname }: ProtectedNavLinksProps) {
           <Link
             aria-current={active ? "page" : undefined}
             className={cn(
-              "relative inline-flex h-9 items-center gap-1.5 text-sm font-medium transition-colors after:absolute after:-bottom-1 after:left-0 after:h-px after:w-full after:origin-center after:scale-x-0 after:bg-primary after:transition-transform",
+              "relative inline-flex h-9 items-center text-sm font-medium transition-colors after:absolute after:-bottom-1 after:left-0 after:h-px after:w-full after:origin-center after:scale-x-0 after:bg-primary after:transition-transform",
               active
                 ? "text-primary after:scale-x-100"
                 : "text-muted-foreground hover:text-foreground",
@@ -29,7 +29,6 @@ export function ProtectedNavLinks({ pathname }: ProtectedNavLinksProps) {
             href={link.href}
             key={link.href}
           >
-            <ProtectedNavLinkIcon icon={link.icon} />
             {link.label}
           </Link>
         );

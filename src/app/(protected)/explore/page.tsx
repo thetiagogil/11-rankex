@@ -1,11 +1,15 @@
 import { ExploreView } from "@/app/(protected)/explore/_components/explore-view";
 import { getPublicListSummaries } from "@/features/lists/server/queries";
+import { getDiscoverableProfiles } from "@/features/profile/server/queries";
 import { AppMain } from "@/shared/components/layout/app-main";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function ExplorePage() {
   const client = await createClient();
-  const lists = await getPublicListSummaries(client);
+  const [lists, profiles] = await Promise.all([
+    getPublicListSummaries(client),
+    getDiscoverableProfiles(client),
+  ]);
 
   return (
     <AppMain className="pb-20">
@@ -19,7 +23,7 @@ export default async function ExplorePage() {
         </p>
       </section>
 
-      <ExploreView lists={lists} />
+      <ExploreView lists={lists} profiles={profiles} />
     </AppMain>
   );
 }

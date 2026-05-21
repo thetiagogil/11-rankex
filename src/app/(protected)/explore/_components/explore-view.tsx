@@ -10,19 +10,27 @@ import type { ProfileListStats } from "@/features/profile/types";
 import { Button } from "@/shared/components/ui/button";
 import { Card } from "@/shared/components/ui/card";
 import { Input } from "@/shared/components/ui/input";
+import { Label } from "@/shared/components/ui/label";
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@/shared/components/ui/toggle-group";
 import type { Profile } from "@/shared/types";
-import { cn } from "@/shared/utils/cn";
 import { getProfileHref, getProfileInitials } from "@/shared/utils/profile";
 
 type ExploreViewProps = {
   lists: RankedListSummary[];
+  profiles: Profile[];
 };
 
-export function ExploreView({ lists }: ExploreViewProps) {
+export function ExploreView({ lists, profiles }: ExploreViewProps) {
   const [query, setQuery] = useState("");
   const [userQuery, setUserQuery] = useState("");
   const [topic, setTopic] = useState("All");
-  const curators = useMemo(() => buildCuratorCards(lists), [lists]);
+  const curators = useMemo(
+    () => buildCuratorCards(lists, profiles),
+    [lists, profiles],
+  );
   const topics = useMemo(
     () => [
       "All",
@@ -39,12 +47,7 @@ export function ExploreView({ lists }: ExploreViewProps) {
     if (!normalizedQuery) return curators;
 
     return curators.filter(({ profile, stats }) =>
-      [
-        profile.displayName,
-        profile.username,
-        profile.bio,
-        ...stats.topics,
-      ]
+      [profile.displayName, profile.username, ...stats.topics]
         .filter(Boolean)
         .join(" ")
         .toLowerCase()
@@ -76,20 +79,23 @@ export function ExploreView({ lists }: ExploreViewProps) {
           <h2 className="font-display text-2xl font-bold">
             Curators to browse
           </h2>
-          <label className="relative block w-full lg:max-w-xs">
-            <span className="sr-only">Search users</span>
+          <div className="relative w-full lg:max-w-xs">
+            <Label className="sr-only" htmlFor="explore-user-search">
+              Search users
+            </Label>
             <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               className="h-9 pl-9"
+              id="explore-user-search"
               onChange={(event) => setUserQuery(event.target.value)}
               placeholder="Search users..."
               value={userQuery}
             />
-          </label>
+          </div>
         </div>
         {filteredCurators.length ? (
           <div className="-mx-4 overflow-x-auto px-4 pb-3 scrollbar-themed sm:mx-0 sm:px-0">
-            <div className="flex min-w-max gap-4">
+            <div className="flex w-max min-w-full snap-x gap-3">
               {filteredCurators.map((curator) => (
                 <ExploreUserCard
                   key={curator.profile.id}
@@ -102,7 +108,9 @@ export function ExploreView({ lists }: ExploreViewProps) {
         ) : (
           <EmptyExploreBlock
             title={
-              curators.length ? "No curators match that search." : "No curators published yet."
+              curators.length
+                ? "No curators match that search."
+                : "No curators published yet."
             }
             description={
               curators.length
@@ -120,34 +128,40 @@ export function ExploreView({ lists }: ExploreViewProps) {
         </div>
 
         <div className="flex flex-col gap-3 lg:flex-row lg:items-stretch lg:justify-between">
-          <div className="flex flex-wrap items-stretch gap-1.5">
+          <ToggleGroup
+            aria-label="Filter public lists by topic"
+            className="flex w-full flex-wrap items-stretch gap-1.5 lg:w-auto"
+            onValueChange={(value) => {
+              if (value) setTopic(value);
+            }}
+            spacing={0}
+            type="single"
+            value={topic}
+          >
             {topics.map((topicOption) => (
-              <button
-                className={cn(
-                  "h-9 rounded-full border px-3 font-mono text-xs tracking-widest uppercase transition",
-                  topic === topicOption
-                    ? "border-primary bg-primary/10 text-primary"
-                    : "border-border text-muted-foreground hover:bg-secondary",
-                )}
+              <ToggleGroupItem
+                className="h-9 rounded-full border border-border px-3 font-mono text-xs tracking-widest text-muted-foreground uppercase hover:bg-secondary data-[state=on]:border-primary data-[state=on]:bg-primary/10 data-[state=on]:text-primary"
                 key={topicOption}
-                onClick={() => setTopic(topicOption)}
-                type="button"
+                value={topicOption}
               >
                 {topicOption}
-              </button>
+              </ToggleGroupItem>
             ))}
-          </div>
+          </ToggleGroup>
 
-          <label className="relative block w-full lg:max-w-xs">
-            <span className="sr-only">Search lists</span>
+          <div className="relative w-full lg:max-w-xs">
+            <Label className="sr-only" htmlFor="explore-list-search">
+              Search lists
+            </Label>
             <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               className="h-9 pl-9"
+              id="explore-list-search"
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Search public lists..."
               value={query}
             />
-          </label>
+          </div>
         </div>
 
         {filteredLists.length ? (
@@ -177,7 +191,7 @@ function ExploreUserCard({
   return (
     <Card
       as="article"
-      className="w-72 shrink-0 bg-card/65 p-4 transition hover:border-primary/45"
+      className="w-60 shrink-0 snap-start bg-card/65 p-4 transition hover:border-primary/45"
     >
       <div className="flex items-start gap-3">
         <Link
@@ -198,10 +212,6 @@ function ExploreUserCard({
           </p>
         </div>
       </div>
-
-      <p className="mt-4 line-clamp-2 min-h-12 text-sm leading-6 text-muted-foreground">
-        {profile.bio || "Collecting rankings, tiers, and lists worth revisiting."}
-      </p>
 
       <div className="mt-4 flex items-center justify-between gap-3 border-t border-border pt-4">
         <p className="text-xs leading-5 text-muted-foreground">
@@ -234,7 +244,7 @@ function EmptyExploreBlock({
   );
 }
 
-function buildCuratorCards(lists: RankedListSummary[]) {
+function buildCuratorCards(lists: RankedListSummary[], profiles: Profile[]) {
   const curators = new Map<
     string,
     {
@@ -251,6 +261,12 @@ function buildCuratorCards(lists: RankedListSummary[]) {
       current.lists.push(list);
     } else {
       curators.set(list.owner.id, { lists: [list], profile: list.owner });
+    }
+  }
+
+  for (const profile of profiles) {
+    if (!curators.has(profile.id)) {
+      curators.set(profile.id, { lists: [], profile });
     }
   }
 

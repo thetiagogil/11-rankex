@@ -33,6 +33,21 @@ export async function getPublicProfileOverview(
   return buildProfileOverview(profile, lists);
 }
 
+export async function getDiscoverableProfiles(
+  client: AppSupabaseClient,
+  limit = 24,
+): Promise<Profile[]> {
+  const { data, error } = await core(client)
+    .from("profiles")
+    .select("id, display_name, avatar_url, username, bio, created_at, updated_at")
+    .order("updated_at", { ascending: false })
+    .limit(limit);
+
+  if (error) throw new Error(error.message);
+
+  return (data ?? []).map(mapProfile);
+}
+
 async function getProfileByHandle(
   client: AppSupabaseClient,
   handle: string,

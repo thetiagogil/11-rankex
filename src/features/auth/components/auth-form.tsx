@@ -21,8 +21,11 @@ import { ButtonLink } from "@/shared/components/ui/button-link";
 import { Card } from "@/shared/components/ui/card";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@/shared/components/ui/toggle-group";
 import { createClient } from "@/lib/supabase/browser";
-import { cn } from "@/shared/utils/cn";
 
 type AuthMode = "signin" | "signup";
 
@@ -158,20 +161,31 @@ export function AuthForm({
         </section>
 
         <Card className="bg-card/75 shadow-elevated p-5 sm:p-7">
-          <div className="border-border bg-background/40 mb-6 grid grid-cols-2 rounded-2xl border p-1">
-            <ModeButton
-              active={!isSignup}
-              icon={<LogIn />}
-              label="Log in"
-              onClick={() => switchMode("signin")}
-            />
-            <ModeButton
-              active={isSignup}
-              icon={<UserPlus />}
-              label="Sign up"
-              onClick={() => switchMode("signup")}
-            />
-          </div>
+          <ToggleGroup
+            aria-label="Choose authentication mode"
+            className="mb-6 grid w-full grid-cols-2 rounded-2xl border border-border bg-background/40 p-1"
+            onValueChange={(value) => {
+              if (value) switchMode(value as AuthMode);
+            }}
+            spacing={0}
+            type="single"
+            value={mode}
+          >
+            <ToggleGroupItem
+              className="h-9 rounded-xl px-3 text-sm font-semibold text-muted-foreground hover:text-foreground data-[state=on]:bg-secondary data-[state=on]:text-foreground data-[state=on]:shadow-elevated"
+              value="signin"
+            >
+              <LogIn data-icon="inline-start" />
+              Log in
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              className="h-9 rounded-xl px-3 text-sm font-semibold text-muted-foreground hover:text-foreground data-[state=on]:bg-secondary data-[state=on]:text-foreground data-[state=on]:shadow-elevated"
+              value="signup"
+            >
+              <UserPlus data-icon="inline-start" />
+              Sign up
+            </ToggleGroupItem>
+          </ToggleGroup>
 
           <div className="mb-6">
             <h2 className="font-display mt-1 text-3xl font-black">
@@ -320,33 +334,5 @@ function AuthField({
       </Label>
       {children}
     </div>
-  );
-}
-
-function ModeButton({
-  active,
-  icon,
-  label,
-  onClick,
-}: {
-  active: boolean;
-  icon: ReactNode;
-  label: string;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      className={cn(
-        "flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold transition [&_svg]:size-4",
-        active
-          ? "bg-secondary text-foreground shadow-elevated"
-          : "text-muted-foreground hover:text-foreground",
-      )}
-      onClick={onClick}
-      type="button"
-    >
-      {icon}
-      {label}
-    </button>
   );
 }

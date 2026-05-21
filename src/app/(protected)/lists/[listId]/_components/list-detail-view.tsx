@@ -22,9 +22,12 @@ import { deleteListAction } from "@/features/lists/server/actions";
 import type { RankedList } from "@/features/lists/types";
 import { AppMain } from "@/shared/components/layout/app-main";
 import { Alert } from "@/shared/components/ui/alert";
-import { Button, buttonVariants } from "@/shared/components/ui/button";
+import { Button } from "@/shared/components/ui/button";
 import { Modal } from "@/shared/components/ui/modal";
-import { cn } from "@/shared/utils/cn";
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@/shared/components/ui/toggle-group";
 
 type ListDetailViewProps = {
   currentUserId: string;
@@ -97,20 +100,31 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <div className="flex h-9 overflow-hidden rounded-xl border border-border bg-card">
-            <SegmentedButton
-              active={view === "ranked"}
-              icon={<ListOrdered />}
-              label="Ranked"
-              onClick={() => setView("ranked")}
-            />
-            <SegmentedButton
-              active={view === "tiers"}
-              icon={<LayoutGrid />}
-              label="Tiers"
-              onClick={() => setView("tiers")}
-            />
-          </div>
+          <ToggleGroup
+            aria-label="Choose list view"
+            className="h-9 overflow-hidden rounded-xl border border-border bg-card"
+            onValueChange={(value) => {
+              if (value) setView(value as ViewMode);
+            }}
+            spacing={0}
+            type="single"
+            value={view}
+          >
+            <ToggleGroupItem
+              className="h-9 rounded-none px-3 text-sm font-medium text-muted-foreground hover:text-foreground data-[state=on]:bg-secondary data-[state=on]:text-foreground"
+              value="ranked"
+            >
+              <ListOrdered data-icon="inline-start" />
+              Ranked
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              className="h-9 rounded-none px-3 text-sm font-medium text-muted-foreground hover:text-foreground data-[state=on]:bg-secondary data-[state=on]:text-foreground"
+              value="tiers"
+            >
+              <LayoutGrid data-icon="inline-start" />
+              Tiers
+            </ToggleGroupItem>
+          </ToggleGroup>
           {canEdit ? (
             <>
               <ItemFormDialog
@@ -131,22 +145,19 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
                   </Button>
                 }
               />
-              <button
+              <Button
                 aria-label={`Delete ${list.title}`}
-                className={buttonVariants({
-                  size: "icon-lg",
-                  variant: "ghost",
-                })}
                 disabled={isPending}
                 onClick={() => setDeleteDialogOpen(true)}
-                type="button"
+                size="icon-lg"
+                variant="ghost"
               >
                 {isPending ? (
                   <Loader2 className="animate-spin" />
                 ) : (
                   <Trash2 className="text-destructive" />
                 )}
-              </button>
+              </Button>
             </>
           ) : null}
         </div>
@@ -201,31 +212,5 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
         )}
       </section>
     </AppMain>
-  );
-}
-
-function SegmentedButton({
-  active,
-  icon,
-  label,
-  onClick,
-}: {
-  active: boolean;
-  icon: React.ReactNode;
-  label: string;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      className={cn(
-        "flex h-9 items-center gap-1.5 px-3 text-sm font-medium text-muted-foreground transition hover:text-foreground [&_svg]:size-4",
-        active && "bg-secondary text-foreground",
-      )}
-      onClick={onClick}
-      type="button"
-    >
-      {icon}
-      {label}
-    </button>
   );
 }

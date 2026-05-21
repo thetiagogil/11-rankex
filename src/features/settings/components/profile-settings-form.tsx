@@ -68,7 +68,7 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
   };
 
   return (
-    <form className="max-w-3xl" onSubmit={submit}>
+    <form className="w-full" onSubmit={submit}>
       <Card as="section" className="bg-card/70 p-5 sm:p-7">
         <div className="flex flex-col gap-7">
           <SettingsBlock

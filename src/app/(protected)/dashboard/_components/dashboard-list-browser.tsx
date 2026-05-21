@@ -9,7 +9,19 @@ import type { RankedListSummary } from "@/features/lists/types";
 import { Button } from "@/shared/components/ui/button";
 import { Card } from "@/shared/components/ui/card";
 import { Input } from "@/shared/components/ui/input";
-import { cn } from "@/shared/utils/cn";
+import { Label } from "@/shared/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shared/components/ui/select";
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@/shared/components/ui/toggle-group";
 
 type DashboardListBrowserProps = {
   lists: RankedListSummary[];
@@ -22,6 +34,12 @@ const visibilityOptions = [
   { label: "All", value: "all" },
   { label: "Public", value: "public" },
   { label: "Private", value: "private" },
+] as const;
+
+const sortOptions = [
+  { label: "Recently updated", value: "updated" },
+  { label: "Title A-Z", value: "title" },
+  { label: "Most items", value: "items" },
 ] as const;
 
 export function DashboardListBrowser({ lists }: DashboardListBrowserProps) {
@@ -86,48 +104,67 @@ export function DashboardListBrowser({ lists }: DashboardListBrowserProps) {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-3 rounded-2xl border border-border bg-card/35 p-3 lg:flex-row lg:items-stretch lg:justify-between">
-        <label className="relative block min-w-0 flex-1">
-          <span className="sr-only">Search your lists</span>
+        <div className="relative min-w-0 flex-1">
+          <Label className="sr-only" htmlFor="dashboard-list-search">
+            Search your lists
+          </Label>
           <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             className="h-9 pl-9"
+            id="dashboard-list-search"
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search by title, topic, or description..."
             value={query}
           />
-        </label>
+        </div>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
-          <div className="flex h-9 items-stretch overflow-hidden rounded-xl border border-border bg-background/45">
+          <ToggleGroup
+            aria-label="Filter lists by visibility"
+            className="h-9 items-stretch overflow-hidden rounded-xl border border-border bg-background/45"
+            onValueChange={(value) => {
+              if (value) setVisibility(value as VisibilityFilter);
+            }}
+            spacing={0}
+            type="single"
+            value={visibility}
+          >
             {visibilityOptions.map((option) => (
-              <button
-                className={cn(
-                  "h-9 px-3 font-mono text-xs tracking-widest uppercase transition",
-                  visibility === option.value
-                    ? "bg-secondary text-foreground shadow-elevated"
-                    : "text-muted-foreground hover:text-foreground",
-                )}
+              <ToggleGroupItem
+                className="h-9 rounded-none px-3 font-mono text-xs tracking-widest text-muted-foreground uppercase hover:text-foreground data-[state=on]:bg-secondary data-[state=on]:text-foreground data-[state=on]:shadow-elevated"
                 key={option.value}
-                onClick={() => setVisibility(option.value)}
-                type="button"
+                value={option.value}
               >
                 {option.label}
-              </button>
+              </ToggleGroupItem>
             ))}
-          </div>
+          </ToggleGroup>
 
-          <label className="grid min-w-44">
-            <span className="sr-only">Sort lists</span>
-            <select
-              className="h-9 rounded-lg border border-border bg-card/65 px-3 text-sm font-medium text-foreground outline-none transition focus:border-ring focus:ring-3 focus:ring-ring/50"
-              onChange={(event) => setSort(event.target.value as SortMode)}
+          <div className="grid min-w-44">
+            <Label className="sr-only" htmlFor="dashboard-list-sort">
+              Sort lists
+            </Label>
+            <Select
+              onValueChange={(value) => setSort(value as SortMode)}
               value={sort}
             >
-              <option value="updated">Recently updated</option>
-              <option value="title">Title A-Z</option>
-              <option value="items">Most items</option>
-            </select>
-          </label>
+              <SelectTrigger
+                className="h-9 w-full bg-card/65"
+                id="dashboard-list-sort"
+              >
+                <SelectValue placeholder="Sort lists" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {sortOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </div>
 

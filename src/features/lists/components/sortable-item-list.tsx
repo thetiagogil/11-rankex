@@ -243,20 +243,22 @@ function SortableRow({
     >
       <div className="flex items-center gap-3">
         {canEdit ? (
-          <button
+          <Button
             aria-label="Drag to reorder"
             className="cursor-grab touch-none text-muted-foreground hover:text-foreground active:cursor-grabbing"
             disabled={disabled}
+            size="icon"
             type="button"
+            variant="ghost"
             {...attributes}
             {...listeners}
           >
             {disabled ? (
-              <Loader2 className="size-5 animate-spin" />
+              <Loader2 className="animate-spin" />
             ) : (
-              <GripVertical className="size-5" />
+              <GripVertical />
             )}
-          </button>
+          </Button>
         ) : null}
         <RankBadge rank={rank} />
       </div>
