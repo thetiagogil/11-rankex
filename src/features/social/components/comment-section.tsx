@@ -1,9 +1,9 @@
 "use client";
 
-import { Loader2, Send, Trash2 } from "lucide-react";
+import { Loader2, MessageCircle, Send, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 
 import type { RankedList } from "@/features/lists/types";
 import {
@@ -12,6 +12,7 @@ import {
 } from "@/features/social/server/actions";
 import { Button } from "@/shared/components/ui/button";
 import { Card } from "@/shared/components/ui/card";
+import { EmptyState } from "@/shared/components/empty-state";
 import { Textarea } from "@/shared/components/ui/textarea";
 import { getProfileHref, getProfileInitials } from "@/shared/utils/profile";
 
@@ -27,6 +28,7 @@ const commentDateFormatter = new Intl.DateTimeFormat("en", {
 
 export function CommentSection({ currentUserId, list }: CommentSectionProps) {
   const router = useRouter();
+  const commentInputRef = useRef<HTMLTextAreaElement>(null);
   const [body, setBody] = useState("");
   const [feedback, setFeedback] = useState<string | null>(null);
   const [deletingCommentId, setDeletingCommentId] = useState<number | null>(
@@ -34,6 +36,14 @@ export function CommentSection({ currentUserId, list }: CommentSectionProps) {
   );
   const [isPending, startTransition] = useTransition();
   const trimmedBody = body.trim();
+  const canComment = list.isPublic && list.ownerId !== currentUserId;
+  const focusCommentInput = () => {
+    commentInputRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
+    commentInputRef.current?.focus({ preventScroll: true });
+  };
 
   return (
     <section className="mt-14">
@@ -49,7 +59,7 @@ export function CommentSection({ currentUserId, list }: CommentSectionProps) {
         </div>
       </div>
 
-      {list.isPublic ? (
+      {canComment ? (
         <Card className="p-4 sm:p-5">
           <form
             onSubmit={(event) => {
@@ -76,6 +86,7 @@ export function CommentSection({ currentUserId, list }: CommentSectionProps) {
               maxLength={500}
               onChange={(event) => setBody(event.target.value)}
               placeholder="Add a thought about this ranking..."
+              ref={commentInputRef}
               value={body}
             />
             <div className="mt-3 flex items-center justify-between gap-3">
@@ -178,12 +189,25 @@ export function CommentSection({ currentUserId, list }: CommentSectionProps) {
           })}
         </div>
       ) : (
-        <Card className="mt-5 border-dashed px-6 py-12 text-center">
-          <p className="font-display text-xl">No comments yet</p>
-          <p className="text-muted-foreground mx-auto mt-2 max-w-sm text-sm">
-            Public rankings can collect a short thread of reactions.
-          </p>
-        </Card>
+        <EmptyState
+          action={
+            canComment ? (
+              <Button onClick={focusCommentInput} type="button">
+                <MessageCircle data-icon="inline-start" />
+                Add comment
+              </Button>
+            ) : undefined
+          }
+          className="mt-5 min-h-48 border-border/70 bg-background/30 py-12"
+          description={
+            list.isPublic
+              ? canComment
+                ? "Be the first to leave a quick reaction."
+                : "Comments from other users will appear here."
+              : "Public rankings can collect a short thread of reactions."
+          }
+          title="No comments yet"
+        />
       )}
     </section>
   );

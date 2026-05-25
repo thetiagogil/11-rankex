@@ -4,10 +4,8 @@ import {
   ArrowLeft,
   LayoutGrid,
   ListOrdered,
-  Loader2,
   Pencil,
   Plus,
-  Trash2,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -28,9 +26,11 @@ import { Alert } from "@/shared/components/ui/alert";
 import { Button } from "@/shared/components/ui/button";
 import { Modal } from "@/shared/components/modal";
 import {
-  ToggleGroup,
-  ToggleGroupItem,
-} from "@/shared/components/ui/toggle-group";
+  SegmentedToggleGroup,
+  SegmentedToggleGroupItem,
+} from "@/shared/components/segmented-toggle-group";
+import type { Profile } from "@/shared/types";
+import { getProfileHref, getProfileInitials } from "@/shared/utils/profile";
 
 type ListDetailViewProps = {
   currentUserId: string;
@@ -75,10 +75,10 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
         Back
       </Link>
 
-      <section className="mt-6 flex flex-wrap items-end justify-between gap-5">
+      <section className="mt-6">
         <div className="min-w-0">
           <div className="flex items-start gap-4">
-            <div className="border-foreground/45 bg-gradient-gold shadow-elevated text-foreground grid size-16 shrink-0 rotate-[-5deg] place-items-center rounded-3xl border">
+            <div className="border-foreground/45 bg-gradient-gold shadow-elevated text-foreground grid size-16 shrink-0 place-items-center rounded-3xl border">
               <Icon aria-hidden="true" className="size-8" strokeWidth={2.5} />
             </div>
             <div className="min-w-0">
@@ -94,105 +94,104 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
             </p>
           ) : null}
 
-          <div className="text-muted-foreground mt-3 flex flex-wrap items-center gap-3 text-sm">
-            <VisibilityBadge isPublic={list.isPublic} />
+          <div className="text-muted-foreground mt-3 flex flex-wrap items-center gap-x-2 gap-y-2 text-sm">
+            {list.owner ? (
+              <>
+                <OwnerMetadata profile={list.owner} />
+                <MetadataDot />
+              </>
+            ) : null}
             <span>{list.topic ?? "General"}</span>
+            <MetadataDot />
             <span>
               {list.items.length}{" "}
               {list.items.length === 1 ? "entry" : "entries"}
             </span>
-            {canEdit ? <span>drag to reorder</span> : null}
-            {list.owner ? (
-              <span>
-                by{" "}
-                <span className="text-foreground">
-                  {list.owner.displayName}
-                </span>
-                {list.owner.username ? ` @${list.owner.username}` : ""}
-              </span>
-            ) : null}
             {list.remixSource ? (
-              <span>
-                remixed from{" "}
-                <Link
-                  className="text-foreground hover:text-primary transition"
-                  href={`/lists/${list.remixSource.id}`}
-                >
-                  {list.remixSource.title}
-                </Link>
-              </span>
+              <>
+                <MetadataDot />
+                <span>
+                  remixed from{" "}
+                  <Link
+                    className="text-foreground hover:text-primary transition"
+                    href={`/lists/${list.remixSource.id}`}
+                  >
+                    {list.remixSource.title}
+                  </Link>
+                </span>
+              </>
+            ) : null}
+            {canEdit ? (
+              <>
+                <MetadataDot />
+                <VisibilityBadge isPublic={list.isPublic} />
+              </>
             ) : null}
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <ToggleGroup
-            aria-label="Choose list view"
-            className="border-foreground/45 bg-card h-10 overflow-hidden rounded-xl border"
-            onValueChange={(value) => {
-              if (value) setView(value as ViewMode);
-            }}
-            spacing={0}
-            type="single"
-            value={view}
-          >
-            <ToggleGroupItem
-              className="text-muted-foreground hover:text-foreground data-[state=on]:bg-foreground data-[state=on]:text-background h-10 rounded-xl px-3 text-sm font-bold"
-              value="ranked"
+        <div className="mt-5 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-wrap items-center gap-3">
+            <SegmentedToggleGroup
+              aria-label="Choose list view"
+              onValueChange={(value) => {
+                if (value) setView(value as ViewMode);
+              }}
+              type="single"
+              value={view}
             >
-              <ListOrdered data-icon="inline-start" />
-              Ranked
-            </ToggleGroupItem>
-            <ToggleGroupItem
-              className="text-muted-foreground hover:text-foreground data-[state=on]:bg-foreground data-[state=on]:text-background h-10 rounded-xl px-3 text-sm font-bold"
-              value="tiers"
-            >
-              <LayoutGrid data-icon="inline-start" />
-              Tiers
-            </ToggleGroupItem>
-          </ToggleGroup>
-          {list.isPublic ? (
-            <ListSocialActions
-              canRemix={!canEdit}
-              listId={list.id}
-              showLabels
-              social={list.social}
-            />
-          ) : null}
+              <SegmentedToggleGroupItem
+                className="gap-1.5 px-2.5"
+                labelStyle="plain"
+                value="ranked"
+              >
+                <ListOrdered data-icon="inline-start" />
+                Ranked
+              </SegmentedToggleGroupItem>
+              <SegmentedToggleGroupItem
+                className="gap-1.5 px-2.5"
+                labelStyle="plain"
+                value="tiers"
+              >
+                <LayoutGrid data-icon="inline-start" />
+                Tiers
+              </SegmentedToggleGroupItem>
+            </SegmentedToggleGroup>
+
+            {list.isPublic ? (
+              <ListSocialActions
+                canRemix={!canEdit}
+                listId={list.id}
+                social={list.social}
+              />
+            ) : null}
+          </div>
+
           {canEdit ? (
-            <>
+            <div className="flex flex-wrap items-center gap-3">
+              <ListFormDialog
+                initialList={list}
+                onRequestDelete={() => setDeleteDialogOpen(true)}
+                trigger={
+                  <Button
+                    aria-label="Edit list"
+                    size="icon-lg"
+                    title="Edit list"
+                    variant="outline"
+                  >
+                    <Pencil />
+                  </Button>
+                }
+              />
               <ItemFormDialog
                 listId={list.id}
                 trigger={
-                  <Button size="lg">
-                    <Plus data-icon="inline-start" />
-                    Add item
+                  <Button aria-label="Add item" size="icon-lg" title="Add item">
+                    <Plus />
                   </Button>
                 }
               />
-              <ListFormDialog
-                initialList={list}
-                trigger={
-                  <Button size="lg" variant="outline">
-                    <Pencil data-icon="inline-start" />
-                    Edit
-                  </Button>
-                }
-              />
-              <Button
-                aria-label={`Delete ${list.title}`}
-                disabled={isPending}
-                onClick={() => setDeleteDialogOpen(true)}
-                size="icon-lg"
-                variant="ghost"
-              >
-                {isPending ? (
-                  <Loader2 className="animate-spin" />
-                ) : (
-                  <Trash2 className="text-destructive" />
-                )}
-              </Button>
-            </>
+            </div>
           ) : null}
         </div>
       </section>
@@ -209,12 +208,7 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
               Cancel
             </Button>
             <Button disabled={isPending} onClick={deleteList} variant="danger">
-              {isPending ? (
-                <Loader2 className="animate-spin" data-icon="inline-start" />
-              ) : (
-                <Trash2 data-icon="inline-start" />
-              )}
-              Delete list
+              {isPending ? "Deleting..." : "Delete list"}
             </Button>
           </>
         }
@@ -255,5 +249,29 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
 
       <CommentSection currentUserId={currentUserId} list={list} />
     </AppMain>
+  );
+}
+
+function OwnerMetadata({ profile }: { profile: Profile }) {
+  return (
+    <Link
+      className="text-muted-foreground hover:text-foreground inline-flex min-w-0 items-center gap-2 transition"
+      href={getProfileHref(profile)}
+    >
+      <span className="bg-primary text-primary-foreground grid size-8 shrink-0 place-items-center rounded-full font-mono text-[10px] font-bold">
+        {getProfileInitials(profile.displayName)}
+      </span>
+      <span className="min-w-0">
+        by <span className="text-foreground">{profile.displayName}</span>
+      </span>
+    </Link>
+  );
+}
+
+function MetadataDot() {
+  return (
+    <span aria-hidden="true" className="text-muted-foreground/70">
+      ·
+    </span>
   );
 }

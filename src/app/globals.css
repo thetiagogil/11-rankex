@@ -124,6 +124,8 @@
 
   --ink: oklch(0.32 0.04 260);
   --shadow-ink: oklch(0.32 0.04 260 / 0.46);
+  --shadow-blue: color-mix(in oklch, var(--primary) 42%, transparent);
+  --shadow-orange: oklch(0.78 0.1 50 / 0.42);
   --gradient-gold: linear-gradient(
     135deg,
     #e8a87c 0%,
@@ -338,8 +340,8 @@
   .rankex-card,
   .sticker-card,
   .sticker {
-    --rankex-card-shadow-color: oklch(0.78 0.1 50 / 0.42);
-    --rankex-card-hover-shadow-color: oklch(0.68 0.09 245 / 0.42);
+    --rankex-card-shadow-color: var(--shadow-orange);
+    --rankex-card-hover-shadow-color: var(--shadow-blue);
     --rankex-card-hover-tilt: -0.4deg;
     --rankex-card-tilt: 0deg;
     --rankex-card-border-color: color-mix(
@@ -358,8 +360,8 @@
   }
 
   .rankex-card[data-card-color="blue"] {
-    --rankex-card-shadow-color: oklch(0.68 0.09 245 / 0.42);
-    --rankex-card-hover-shadow-color: oklch(0.78 0.1 50 / 0.42);
+    --rankex-card-shadow-color: var(--shadow-blue);
+    --rankex-card-hover-shadow-color: var(--shadow-orange);
   }
 
   .rankex-card[data-card-color="lavender"] {
@@ -373,8 +375,8 @@
   }
 
   .rankex-card[data-card-color="orange"] {
-    --rankex-card-shadow-color: oklch(0.78 0.1 50 / 0.42);
-    --rankex-card-hover-shadow-color: oklch(0.68 0.09 245 / 0.42);
+    --rankex-card-shadow-color: var(--shadow-orange);
+    --rankex-card-hover-shadow-color: var(--shadow-blue);
   }
 
   .rankex-card[data-card-color="sage"] {

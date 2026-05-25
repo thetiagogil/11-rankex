@@ -1,30 +1,30 @@
 "use client";
 
-import { Globe2, ListPlus, Loader2, LockKeyhole, Save } from "lucide-react";
+import { Globe, ListPlus, LockKeyhole } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
-  type FormEvent,
   type ReactNode,
+  type SubmitEvent,
   useId,
   useState,
   useTransition,
 } from "react";
 
 import {
-  createListAction,
-  updateListAction,
-} from "@/features/lists/server/actions";
-import {
   getListIcon,
   listIconOptions,
   resolveListIconId,
 } from "@/features/lists/lib/list-icons";
+import {
+  createListAction,
+  updateListAction,
+} from "@/features/lists/server/actions";
 import type { RankedList } from "@/features/lists/types";
+import { Modal } from "@/shared/components/modal";
 import { Alert } from "@/shared/components/ui/alert";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
-import { Modal } from "@/shared/components/modal";
 import { Textarea } from "@/shared/components/ui/textarea";
 import {
   ToggleGroup,
@@ -33,12 +33,14 @@ import {
 
 type ListFormDialogProps = {
   initialList?: RankedList;
+  onRequestDelete?: () => void;
   redirectToList?: boolean;
   trigger?: ReactNode;
 };
 
 export function ListFormDialog({
   initialList,
+  onRequestDelete,
   redirectToList = false,
   trigger,
 }: ListFormDialogProps) {
@@ -71,7 +73,7 @@ export function ListFormDialog({
     setOpen(true);
   };
 
-  const submit = (event: FormEvent<HTMLFormElement>) => {
+  const submit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     setFeedback(null);
 
@@ -113,23 +115,44 @@ export function ListFormDialog({
         description="Create or edit a ranked list."
         footer={
           <>
-            <Button
-              disabled={isPending}
-              onClick={() => setOpen(false)}
-              type="button"
-              variant="ghost"
-            >
-              Cancel
-            </Button>
-            <Button disabled={isPending} form={formId} type="submit">
-              {isPending ? (
-                <Loader2 className="animate-spin" data-icon="inline-start" />
-              ) : (
-                <Save data-icon="inline-start" />
-              )}
-              {isEditing ? "Save list" : "Create list"}
-            </Button>
+            {isEditing && onRequestDelete ? (
+              <Button
+                className="text-destructive hover:text-destructive"
+                disabled={isPending}
+                onClick={() => {
+                  setOpen(false);
+                  onRequestDelete();
+                }}
+                type="button"
+                variant="ghost"
+              >
+                Delete
+              </Button>
+            ) : null}
+
+            <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+              <Button
+                disabled={isPending}
+                onClick={() => setOpen(false)}
+                type="button"
+                variant="ghost"
+              >
+                Cancel
+              </Button>
+              <Button disabled={isPending} form={formId} type="submit">
+                {isPending
+                  ? isEditing
+                    ? "Saving..."
+                    : "Creating..."
+                  : isEditing
+                    ? "Save"
+                    : "Create list"}
+              </Button>
+            </div>
           </>
+        }
+        footerClassName={
+          isEditing && onRequestDelete ? "sm:justify-between" : undefined
         }
         onClose={() => setOpen(false)}
         open={open}
@@ -223,7 +246,7 @@ export function ListFormDialog({
             >
               <VisibilityOption
                 description="Shown in Explore."
-                icon={<Globe2 />}
+                icon={<Globe />}
                 label="Public"
                 value="public"
               />

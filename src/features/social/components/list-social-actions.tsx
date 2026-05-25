@@ -17,7 +17,6 @@ type ListSocialActionsProps = {
   canRemix?: boolean;
   className?: string;
   listId: number;
-  showLabels?: boolean;
   size?: "compact" | "default";
   social: ListSocialState;
 };
@@ -26,7 +25,6 @@ export function ListSocialActions({
   canRemix = false,
   className,
   listId,
-  showLabels = false,
   size = "default",
   social,
 }: ListSocialActionsProps) {
@@ -38,13 +36,30 @@ export function ListSocialActions({
     "bookmark" | "like" | "remix" | null
   >(null);
   const [isPending, startTransition] = useTransition();
-  const buttonSize = size === "compact" ? "sm" : "default";
+  const countButtonSize = size === "compact" ? "sm" : "default";
+  const iconButtonSize = size === "compact" ? "icon-sm" : "icon";
 
   const isBusy = (action: typeof pendingAction) =>
     isPending && pendingAction === action;
 
   return (
-    <div className={cn("flex flex-wrap items-center gap-1.5", className)}>
+    <div
+      className={cn(
+        "flex flex-wrap items-center",
+        size === "compact" ? "gap-1.5" : "gap-3",
+        className,
+      )}
+    >
+      <span
+        className={cn(
+          "border-border bg-background text-muted-foreground inline-flex items-center justify-center gap-1 rounded-full border font-bold shadow-none",
+          size === "compact" ? "h-8 px-2.5 text-xs" : "h-10 px-2.5 text-sm",
+        )}
+      >
+        <MessageCircle className="size-3.5" data-icon="inline-start" />
+        {social.commentCount}
+      </span>
+
       <Button
         aria-label={liked ? "Unlike list" : "Like list"}
         disabled={isPending}
@@ -64,8 +79,8 @@ export function ListSocialActions({
             router.refresh();
           });
         }}
-        size={buttonSize}
-        variant={liked ? "default" : "outline"}
+        size={countButtonSize}
+        variant="outline"
       >
         {isBusy("like") ? (
           <Loader2 className="animate-spin" data-icon="inline-start" />
@@ -75,8 +90,7 @@ export function ListSocialActions({
             data-icon="inline-start"
           />
         )}
-        {showLabels ? "Like" : null}
-        {likeCount}
+        <span>{likeCount}</span>
       </Button>
 
       <Button
@@ -92,8 +106,8 @@ export function ListSocialActions({
             router.refresh();
           });
         }}
-        size={buttonSize}
-        variant={bookmarked ? "default" : "outline"}
+        size={iconButtonSize}
+        variant="outline"
       >
         {isBusy("bookmark") ? (
           <Loader2 className="animate-spin" data-icon="inline-start" />
@@ -103,13 +117,7 @@ export function ListSocialActions({
             data-icon="inline-start"
           />
         )}
-        {showLabels ? (bookmarked ? "Saved" : "Save") : null}
       </Button>
-
-      <span className="border-border bg-secondary text-muted-foreground inline-flex h-8 items-center gap-1 rounded-lg border px-2.5 text-xs font-bold">
-        <MessageCircle className="size-3.5" data-icon="inline-start" />
-        {social.commentCount}
-      </span>
 
       {canRemix ? (
         <Button
@@ -124,7 +132,8 @@ export function ListSocialActions({
               router.refresh();
             });
           }}
-          size={buttonSize}
+          aria-label="Remix list"
+          size={iconButtonSize}
           variant="outline"
         >
           {isBusy("remix") ? (
@@ -132,7 +141,6 @@ export function ListSocialActions({
           ) : (
             <Copy data-icon="inline-start" />
           )}
-          Remix
         </Button>
       ) : null}
     </div>

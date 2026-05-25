@@ -177,12 +177,7 @@ export function SortableItemList({
               Cancel
             </Button>
             <Button disabled={isPending} onClick={deleteItem} variant="danger">
-              {isPending ? (
-                <Loader2 className="animate-spin" data-icon="inline-start" />
-              ) : (
-                <Trash2 data-icon="inline-start" />
-              )}
-              Delete item
+              {isPending ? "Deleting..." : "Delete item"}
             </Button>
           </>
         }

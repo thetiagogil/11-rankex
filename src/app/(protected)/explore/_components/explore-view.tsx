@@ -13,9 +13,9 @@ import { EmptyState } from "@/shared/components/empty-state";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
 import {
-  ToggleGroup,
-  ToggleGroupItem,
-} from "@/shared/components/ui/toggle-group";
+  SegmentedToggleGroup,
+  SegmentedToggleGroupItem,
+} from "@/shared/components/segmented-toggle-group";
 import type { Profile } from "@/shared/types";
 import { getProfileHref, getProfileInitials } from "@/shared/utils/profile";
 
@@ -160,52 +160,46 @@ export function ExploreView({
 
         <div className="flex flex-col gap-3 lg:flex-row lg:items-stretch lg:justify-between">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
-            <ToggleGroup
+            <SegmentedToggleGroup
               aria-label="Sort public lists"
-              className="flex flex-wrap items-stretch gap-1.5"
               onValueChange={(value) => {
                 if (value) setSort(value as ExploreSort);
               }}
-              spacing={0}
               type="single"
               value={sort}
+              wrap
             >
               {(["trending", "newest", "following"] as const).map(
                 (sortOption) => (
-                  <ToggleGroupItem
-                    className="border-foreground/45 text-muted-foreground hover:bg-secondary data-[state=on]:bg-foreground data-[state=on]:text-background h-10 rounded-xl border px-3 font-mono text-xs tracking-widest uppercase"
-                    key={sortOption}
-                    value={sortOption}
-                  >
+                  <SegmentedToggleGroupItem key={sortOption} value={sortOption}>
                     {sortOption === "trending" ? (
                       <TrendingUp data-icon="inline-start" />
                     ) : null}
                     {sortOption}
-                  </ToggleGroupItem>
+                  </SegmentedToggleGroupItem>
                 ),
               )}
-            </ToggleGroup>
+            </SegmentedToggleGroup>
 
-            <ToggleGroup
+            <SegmentedToggleGroup
               aria-label="Filter public lists by topic"
-              className="flex w-full flex-wrap items-stretch gap-1.5 lg:w-auto"
+              className="w-full lg:w-auto"
               onValueChange={(value) => {
                 if (value) setTopic(value);
               }}
-              spacing={0}
               type="single"
               value={topic}
+              wrap
             >
               {topics.map((topicOption) => (
-                <ToggleGroupItem
-                  className="border-foreground/45 text-muted-foreground hover:bg-secondary data-[state=on]:bg-foreground data-[state=on]:text-background h-10 rounded-xl border px-3 font-mono text-xs tracking-widest uppercase"
+                <SegmentedToggleGroupItem
                   key={topicOption}
                   value={topicOption}
                 >
                   {topicOption}
-                </ToggleGroupItem>
+                </SegmentedToggleGroupItem>
               ))}
-            </ToggleGroup>
+            </SegmentedToggleGroup>
           </div>
 
           <div className="relative w-full lg:max-w-xs">

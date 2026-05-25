@@ -85,7 +85,7 @@ export function ListCard({
               <Heart className="size-3.5" />
               {list.social.likeCount}
             </span>
-            <span className="inline-flex items-center gap-1">
+            <span className="border-border bg-background inline-flex h-7 items-center gap-1 rounded-full border px-2">
               <MessageCircle className="size-3.5" />
               {list.social.commentCount}
             </span>

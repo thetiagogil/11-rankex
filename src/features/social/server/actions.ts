@@ -171,6 +171,25 @@ export async function createListCommentAction(
   try {
     const client = await createClient();
     const user = await requireAuthUser(client);
+    const { data: list, error: listError } = await rankex(client)
+      .from("lists")
+      .select("id, is_public, user_id")
+      .eq("id", listId)
+      .maybeSingle();
+
+    if (listError) return { ok: false, error: listError.message };
+    if (!list || !list.is_public) {
+      return {
+        ok: false,
+        error: "Only public lists can receive comments.",
+      };
+    }
+    if (list.user_id === user.id) {
+      return {
+        ok: false,
+        error: "You cannot comment on your own list.",
+      };
+    }
 
     const { error } = await rankex(client).from("list_comments").insert({
       body,

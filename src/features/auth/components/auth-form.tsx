@@ -3,7 +3,7 @@
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { type FormEvent, type ReactNode, useMemo, useState } from "react";
+import { type ReactNode, type SubmitEvent, useMemo, useState } from "react";
 
 import { AuthFeedback } from "@/features/auth/components/auth-feedback";
 import { AppLogo } from "@/shared/components/layout/app-logo";
@@ -69,7 +69,7 @@ export function AuthForm({
     return null;
   };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const validationError = validate();

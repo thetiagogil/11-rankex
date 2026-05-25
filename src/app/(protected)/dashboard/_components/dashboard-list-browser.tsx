@@ -11,6 +11,10 @@ import { EmptyState } from "@/shared/components/empty-state";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
 import {
+  SegmentedToggleGroup,
+  SegmentedToggleGroupItem,
+} from "@/shared/components/segmented-toggle-group";
+import {
   Select,
   SelectContent,
   SelectGroup,
@@ -18,10 +22,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/components/ui/select";
-import {
-  ToggleGroup,
-  ToggleGroupItem,
-} from "@/shared/components/ui/toggle-group";
 
 type DashboardListBrowserProps = {
   currentUserId: string;
@@ -123,26 +123,20 @@ export function DashboardListBrowser({
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
-          <ToggleGroup
+          <SegmentedToggleGroup
             aria-label="Filter lists by visibility"
-            className="border-foreground/20 bg-background/35 h-10 items-stretch overflow-hidden rounded-2xl border p-1"
             onValueChange={(value) => {
               if (value) setVisibility(value as VisibilityFilter);
             }}
-            spacing={1}
             type="single"
             value={visibility}
           >
             {visibilityOptions.map((option) => (
-              <ToggleGroupItem
-                className="text-muted-foreground hover:text-foreground hover:bg-foreground/5 data-[state=on]:bg-foreground data-[state=on]:text-background h-[1.875rem] rounded-xl border-0 px-3 font-mono text-xs leading-none tracking-widest uppercase"
-                key={option.value}
-                value={option.value}
-              >
+              <SegmentedToggleGroupItem key={option.value} value={option.value}>
                 {option.label}
-              </ToggleGroupItem>
+              </SegmentedToggleGroupItem>
             ))}
-          </ToggleGroup>
+          </SegmentedToggleGroup>
 
           <div className="grid min-w-44">
             <Label className="sr-only" htmlFor="dashboard-list-sort">

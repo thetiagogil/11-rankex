@@ -1,10 +1,10 @@
 "use client";
 
-import { Loader2, Plus, Save } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
-  type FormEvent,
   type ReactNode,
+  type SubmitEvent,
   useId,
   useState,
   useTransition,
@@ -67,7 +67,7 @@ export function ItemFormDialog({ item, listId, trigger }: ItemFormDialogProps) {
     setOpen(true);
   };
 
-  const submit = (event: FormEvent<HTMLFormElement>) => {
+  const submit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     setFeedback(null);
 
@@ -118,12 +118,7 @@ export function ItemFormDialog({ item, listId, trigger }: ItemFormDialogProps) {
               Cancel
             </Button>
             <Button disabled={isPending} form={formId} type="submit">
-              {isPending ? (
-                <Loader2 className="animate-spin" data-icon="inline-start" />
-              ) : (
-                <Save data-icon="inline-start" />
-              )}
-              Save item
+              {isPending ? "Saving..." : "Save item"}
             </Button>
           </>
         }

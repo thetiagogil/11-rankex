@@ -1,4 +1,4 @@
-import { Globe2, LockKeyhole } from "lucide-react";
+import { Globe, LockKeyhole } from "lucide-react";
 
 import { Badge } from "@/shared/components/ui/badge";
 
@@ -7,7 +7,7 @@ type VisibilityBadgeProps = {
 };
 
 export function VisibilityBadge({ isPublic }: VisibilityBadgeProps) {
-  const Icon = isPublic ? Globe2 : LockKeyhole;
+  const Icon = isPublic ? Globe : LockKeyhole;
 
   return (
     <Badge variant={isPublic ? "primary" : "surface"}>

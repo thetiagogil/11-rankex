@@ -9,7 +9,7 @@ import {
   Save,
   UserRound,
 } from "lucide-react";
-import { type FormEvent, type ReactNode, useState, useTransition } from "react";
+import { type ReactNode, type SubmitEvent, useState, useTransition } from "react";
 
 import { updateProfileSettingsAction } from "@/features/settings/server/actions";
 import { Alert } from "@/shared/components/ui/alert";
@@ -37,7 +37,7 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
   } | null>(null);
   const [isPending, startTransition] = useTransition();
 
-  const submit = (event: FormEvent<HTMLFormElement>) => {
+  const submit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     setFeedback(null);
 

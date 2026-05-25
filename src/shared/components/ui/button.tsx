@@ -5,14 +5,14 @@ import { Slot } from "radix-ui";
 import { cn } from "@/shared/utils/cn";
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border bg-clip-padding text-sm font-bold whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/30 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button inline-flex shrink-0 items-center justify-center rounded-full border bg-clip-padding text-sm font-bold whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/30 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
         default:
-          "border-foreground/70 bg-foreground text-background shadow-[3px_3px_0_0_var(--color-primary)] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_var(--color-primary)]",
+          "border-transparent bg-foreground text-background shadow-[3px_3px_0_0_var(--shadow-blue)] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_var(--shadow-blue)]",
         primary:
-          "border-foreground/70 bg-foreground text-background shadow-[3px_3px_0_0_var(--color-primary)] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_var(--color-primary)]",
+          "border-transparent bg-foreground text-background shadow-[3px_3px_0_0_var(--shadow-blue)] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_var(--shadow-blue)]",
         outline:
           "border-foreground/55 bg-card text-foreground shadow-[3px_3px_0_0_var(--color-accent)] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-secondary hover:shadow-[5px_5px_0_0_var(--color-accent)] aria-expanded:bg-secondary",
         secondary:
@@ -20,9 +20,9 @@ const buttonVariants = cva(
         ghost:
           "border-transparent text-foreground shadow-none hover:bg-foreground/5 aria-expanded:bg-foreground/5",
         destructive:
-          "border-destructive/70 bg-destructive text-destructive-foreground shadow-[3px_3px_0_0_var(--shadow-ink)] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_var(--shadow-ink)] focus-visible:border-destructive/40 focus-visible:ring-destructive/20",
+          "border-transparent bg-destructive text-destructive-foreground shadow-[3px_3px_0_0_var(--shadow-ink)] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_var(--shadow-ink)] focus-visible:border-destructive focus-visible:ring-destructive/20",
         danger:
-          "border-destructive/70 bg-destructive text-destructive-foreground shadow-[3px_3px_0_0_var(--shadow-ink)] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_var(--shadow-ink)] focus-visible:border-destructive/40 focus-visible:ring-destructive/20",
+          "border-transparent bg-destructive text-destructive-foreground shadow-[3px_3px_0_0_var(--shadow-ink)] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_var(--shadow-ink)] focus-visible:border-destructive focus-visible:ring-destructive/20",
         link: "border-transparent bg-transparent text-primary shadow-none hover:bg-transparent hover:underline",
       },
       size: {
