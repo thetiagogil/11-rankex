@@ -9,6 +9,7 @@ import type { RankedListSummary } from "@/features/lists/types";
 import type { ProfileListStats } from "@/features/profile/types";
 import { FollowButton } from "@/features/social/components/follow-button";
 import { Card } from "@/shared/components/ui/card";
+import { EmptyState } from "@/shared/components/empty-state";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
 import {
@@ -256,7 +257,11 @@ function ExploreUserCard({
   stats: ProfileListStats;
 }) {
   return (
-    <Card as="article" className="w-60 shrink-0 snap-start p-4" interactive>
+    <Card
+      as="article"
+      className="w-60 shrink-0 snap-start p-4"
+      variant="shadow"
+    >
       <div className="flex items-start gap-3">
         <Link
           className="border-foreground/45 bg-gradient-gold font-display text-primary-foreground grid size-14 shrink-0 place-items-center rounded-2xl border text-2xl font-black shadow-none"
@@ -302,12 +307,7 @@ function EmptyExploreBlock({
   description: string;
   title: string;
 }) {
-  return (
-    <div className="border-border bg-card/30 rounded-2xl border border-dashed px-6 py-16 text-center">
-      <p className="font-display text-xl">{title}</p>
-      <p className="text-muted-foreground mt-2 text-sm">{description}</p>
-    </div>
-  );
+  return <EmptyState description={description} title={title} />;
 }
 
 function buildCuratorCards(lists: RankedListSummary[], profiles: Profile[]) {

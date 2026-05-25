@@ -31,7 +31,9 @@ import {
 import type { RankedItem } from "@/features/lists/types";
 import { Alert } from "@/shared/components/ui/alert";
 import { Button } from "@/shared/components/ui/button";
-import { Modal } from "@/shared/components/ui/modal";
+import { Card } from "@/shared/components/ui/card";
+import { EmptyState } from "@/shared/components/empty-state";
+import { Modal } from "@/shared/components/modal";
 import { cn } from "@/shared/utils/cn";
 
 type SortableItemListProps = {
@@ -111,19 +113,15 @@ export function SortableItemList({
 
   if (items.length === 0) {
     return (
-      <div className="sticker-card bg-card rounded-3xl border-dashed px-6 py-16 text-center">
-        <p className="font-display text-xl">An empty podium awaits</p>
-        <p className="text-muted-foreground mt-2 text-sm">
-          {canEdit
-            ? "Add the first contender to start the ranking."
-            : "This list does not have items yet."}
-        </p>
-        {canEdit ? (
-          <div className="mt-6">
-            <ItemFormDialog listId={listId} />
-          </div>
-        ) : null}
-      </div>
+      <EmptyState
+        action={canEdit ? <ItemFormDialog listId={listId} /> : null}
+        description={
+          canEdit
+            ? "Add your first contender to start ranking."
+            : "This list does not have items yet."
+        }
+        title="An empty podium awaits"
+      />
     );
   }
 
@@ -169,17 +167,8 @@ export function SortableItemList({
             ? `Delete ${itemPendingDelete.title} from this ranked list.`
             : undefined
         }
-        onClose={() => setItemPendingDelete(null)}
-        open={Boolean(itemPendingDelete)}
-        title="Delete this item?"
-      >
-        <div className="flex flex-col gap-5 pt-5">
-          <p className="text-muted-foreground text-sm leading-6">
-            {itemPendingDelete
-              ? `This permanently removes "${itemPendingDelete.title}" from the ranking.`
-              : "This item will be removed from the ranking."}
-          </p>
-          <div className="border-border flex justify-end gap-2 border-t pt-4">
+        footer={
+          <>
             <Button
               disabled={isPending}
               onClick={() => setItemPendingDelete(null)}
@@ -195,7 +184,18 @@ export function SortableItemList({
               )}
               Delete item
             </Button>
-          </div>
+          </>
+        }
+        onClose={() => setItemPendingDelete(null)}
+        open={Boolean(itemPendingDelete)}
+        title="Delete this item?"
+      >
+        <div className="flex flex-col gap-5">
+          <p className="text-muted-foreground text-sm leading-6">
+            {itemPendingDelete
+              ? `This permanently removes "${itemPendingDelete.title}" from the ranking.`
+              : "This item will be removed from the ranking."}
+          </p>
         </div>
       </Modal>
     </div>
@@ -227,9 +227,10 @@ function SortableRow({
   } = useSortable({ disabled: !canEdit || disabled, id: item.id });
 
   return (
-    <article
+    <Card
+      as="article"
       className={cn(
-        "sticker-card group bg-card relative flex flex-col gap-3 rounded-3xl p-4 transition sm:flex-row sm:items-center",
+        "group relative flex flex-col gap-3 rounded-3xl p-4 transition sm:flex-row sm:items-center",
         isDragging
           ? "border-primary ring-primary/35 z-30 ring-2"
           : "hover:border-primary",
@@ -239,6 +240,7 @@ function SortableRow({
         transform: CSS.Transform.toString(transform),
         transition,
       }}
+      variant="shadow"
     >
       <div className="flex items-center gap-3">
         {canEdit ? (
@@ -304,6 +306,6 @@ function SortableRow({
           </div>
         ) : null}
       </div>
-    </article>
+    </Card>
   );
 }

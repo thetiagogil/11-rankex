@@ -13,27 +13,29 @@ type ProtectedNavLinksProps = {
 
 export function ProtectedNavLinks({ pathname }: ProtectedNavLinksProps) {
   return (
-    <>
+    <div className="border-foreground/20 bg-background/35 flex items-center gap-1 rounded-2xl border p-1">
       {protectedNavLinks.map((link) => {
         const active = isProtectedNavActive(pathname, link.href);
+        const Icon = protectedNavIconMap[link.icon];
 
         return (
           <Link
             aria-current={active ? "page" : undefined}
             className={cn(
-              "relative inline-flex h-8 items-center text-sm font-bold transition-colors after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:origin-left after:scale-x-0 after:rounded-full after:bg-primary after:transition-transform",
+              "inline-flex h-8 items-center gap-1.5 rounded-xl px-3 text-sm font-bold transition-all",
               active
-                ? "text-foreground after:scale-x-100"
-                : "text-foreground/65 hover:text-foreground",
+                ? "bg-foreground text-background"
+                : "text-foreground/60 hover:bg-foreground/5 hover:text-foreground",
             )}
             href={link.href}
             key={link.href}
           >
+            <Icon aria-hidden="true" className="size-4" />
             {link.label}
           </Link>
         );
       })}
-    </>
+    </div>
   );
 }
 

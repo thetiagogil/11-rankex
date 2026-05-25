@@ -15,7 +15,6 @@ export default async function DashboardPage() {
     getUserListSummaries(client, currentUser.id),
     getProfileSocialStats(client, currentUser.id, currentUser.id),
   ]);
-  const publicCount = lists.filter((list) => list.isPublic).length;
 
   return (
     <AppMain className="pb-20">
@@ -34,9 +33,13 @@ export default async function DashboardPage() {
 
       <section className="mt-10 grid gap-4 sm:grid-cols-4">
         <Metric accent="primary" label="My lists" value={lists.length} />
-        <Metric accent="accent" label="Public" value={publicCount} />
-        <Metric accent="cyan" label="Likes" value={social.likesReceivedCount} />
-        <Metric accent="gold" label="Saved" value={social.savedListCount} />
+        <Metric
+          accent="accent"
+          label="Likes"
+          value={social.likesReceivedCount}
+        />
+        <Metric accent="cyan" label="Following" value={social.followingCount} />
+        <Metric accent="gold" label="Bookmarks" value={social.savedListCount} />
       </section>
 
       <section className="mt-16">
@@ -61,7 +64,7 @@ function Metric({
   value: number;
 }) {
   return (
-    <Card as="article" className="gap-0 p-5">
+    <Card as="article" className="gap-0 p-5" variant="shadow">
       <p className="text-muted-foreground font-mono text-xs tracking-widest uppercase">
         {label}
       </p>

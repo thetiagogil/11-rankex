@@ -1,13 +1,13 @@
 "use client";
 
-import { ListPlus, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { ListCard } from "@/features/lists/components/list-card";
 import { ListFormDialog } from "@/features/lists/components/list-form-dialog";
 import type { RankedListSummary } from "@/features/lists/types";
 import { Button } from "@/shared/components/ui/button";
-import { Card } from "@/shared/components/ui/card";
+import { EmptyState } from "@/shared/components/empty-state";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
 import {
@@ -96,33 +96,25 @@ export function DashboardListBrowser({
 
   if (!lists.length) {
     return (
-      <Card
-        as="section"
-        className="flex flex-col items-center justify-center border-dashed px-6 py-20 text-center"
-      >
-        <ListPlus className="text-muted-foreground size-10" />
-        <h2 className="font-display mt-4 text-xl">No lists yet</h2>
-        <p className="text-muted-foreground mt-1 max-w-md text-sm leading-6">
-          Create your first ranking. You can keep it private while drafting and
-          make it public when it is ready.
-        </p>
-        <div className="mt-6">
-          <ListFormDialog redirectToList />
-        </div>
-      </Card>
+      <EmptyState
+        action={<ListFormDialog redirectToList />}
+        className="py-20"
+        description="Create your first ranking. You can keep it private while drafting and make it public when it is ready."
+        title="No lists yet"
+      />
     );
   }
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="sticker-sm bg-card flex flex-col gap-3 rounded-3xl p-3 lg:flex-row lg:items-stretch lg:justify-between">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-stretch lg:justify-between">
         <div className="relative min-w-0 flex-1">
           <Label className="sr-only" htmlFor="dashboard-list-search">
             Search your lists
           </Label>
           <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
           <Input
-            className="h-9 pl-9"
+            className="border-foreground/25 bg-background/35 focus-visible:border-primary/45 h-10 rounded-2xl pl-9 shadow-none"
             id="dashboard-list-search"
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search by title, topic, or description..."
@@ -133,17 +125,17 @@ export function DashboardListBrowser({
         <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
           <ToggleGroup
             aria-label="Filter lists by visibility"
-            className="border-foreground/45 bg-card h-10 items-stretch overflow-hidden rounded-xl border"
+            className="border-foreground/20 bg-background/35 h-10 items-stretch overflow-hidden rounded-2xl border p-1"
             onValueChange={(value) => {
               if (value) setVisibility(value as VisibilityFilter);
             }}
-            spacing={0}
+            spacing={1}
             type="single"
             value={visibility}
           >
             {visibilityOptions.map((option) => (
               <ToggleGroupItem
-                className="text-muted-foreground hover:text-foreground data-[state=on]:bg-foreground data-[state=on]:text-background h-10 rounded-xl px-3 font-mono text-xs tracking-widest uppercase"
+                className="text-muted-foreground hover:text-foreground hover:bg-foreground/5 data-[state=on]:bg-foreground data-[state=on]:text-background h-[1.875rem] rounded-xl border-0 px-3 font-mono text-xs leading-none tracking-widest uppercase"
                 key={option.value}
                 value={option.value}
               >
@@ -160,7 +152,10 @@ export function DashboardListBrowser({
               onValueChange={(value) => setSort(value as SortMode)}
               value={sort}
             >
-              <SelectTrigger className="h-10 w-full" id="dashboard-list-sort">
+              <SelectTrigger
+                className="border-foreground/25 bg-background/35 focus-visible:border-primary/45 h-10 w-full rounded-2xl shadow-none"
+                id="dashboard-list-sort"
+              >
                 <SelectValue placeholder="Sort lists" />
               </SelectTrigger>
               <SelectContent>
@@ -184,27 +179,22 @@ export function DashboardListBrowser({
           ))}
         </div>
       ) : (
-        <Card
-          as="section"
-          className="flex flex-col items-center justify-center border-dashed px-6 py-16 text-center"
-        >
-          <p className="font-display text-xl">No lists match that view</p>
-          <p className="text-muted-foreground mt-2 max-w-md text-sm leading-6">
-            Adjust the search, filter, or sort controls to bring more lists back
-            into view.
-          </p>
-          <Button
-            className="mt-5"
-            onClick={() => {
-              setQuery("");
-              setVisibility("all");
-              setSort("updated");
-            }}
-            variant="outline"
-          >
-            Reset filters
-          </Button>
-        </Card>
+        <EmptyState
+          action={
+            <Button
+              onClick={() => {
+                setQuery("");
+                setVisibility("all");
+                setSort("updated");
+              }}
+              variant="outline"
+            >
+              Reset filters
+            </Button>
+          }
+          description="Adjust the search, filter, or sort controls to bring more lists back into view."
+          title="No lists match that view"
+        />
       )}
     </div>
   );

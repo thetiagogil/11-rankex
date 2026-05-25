@@ -8,7 +8,19 @@ import type { Rarity } from "@/shared/types";
 import { cn } from "@/shared/utils/cn";
 
 type CardElement = "article" | "div" | "section";
+type CardColor = "blue" | "lavender" | "navy" | "orange" | "sage";
 type CardTone = "accent" | "danger" | "default" | "primary";
+type CardVariant = "none" | "settle" | "shadow" | "tilt";
+type CardProps = Omit<React.HTMLAttributes<HTMLElement>, "color"> & {
+  as?: CardElement;
+  color?: CardColor;
+  corners?: boolean;
+  gradient?: boolean;
+  rarity?: Rarity;
+  size?: "default" | "sm";
+  tone?: CardTone;
+  variant?: CardVariant;
+};
 
 const borders: Record<CardTone, string> = {
   accent: "border-accent/45",
@@ -24,39 +36,38 @@ const cornerTones: Record<CardTone, string> = {
   primary: "text-primary",
 };
 
-function Card({
-  as: Component = "div",
-  children,
-  className,
-  corners = false,
-  gradient = false,
-  interactive = false,
-  rarity,
-  size = "default",
-  tone = "default",
-  ...props
-}: React.ComponentProps<"div"> & {
-  as?: CardElement;
-  corners?: boolean;
-  gradient?: boolean;
-  interactive?: boolean;
-  rarity?: Rarity;
-  size?: "default" | "sm";
-  tone?: CardTone;
-}) {
+const Card = React.forwardRef<HTMLElement, CardProps>(function Card(
+  {
+    as: Component = "div",
+    children,
+    className,
+    color = "orange",
+    corners = false,
+    gradient = false,
+    rarity,
+    size = "default",
+    tone = "default",
+    variant = "none",
+    ...props
+  },
+  ref,
+) {
+  const CardComponent = Component as React.ElementType;
   const borderClass = rarity ? RARITY_BORDER_CLASS[rarity] : borders[tone];
   const cornerClass = rarity ? RARITY_TEXT_CLASS[rarity] : cornerTones[tone];
 
   return (
-    <Component
+    <CardComponent
       className={cn(
         "rankex-card group/card bg-card text-card-foreground relative flex flex-col gap-4 overflow-hidden rounded-3xl border py-4 text-sm transition-all has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:gap-3 data-[size=sm]:py-3 data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-3xl *:[img:last-child]:rounded-b-3xl",
         borderClass,
         className,
       )}
-      data-interactive={interactive ? "true" : undefined}
+      data-card-color={color}
+      data-card-variant={variant}
       data-size={size}
       data-slot="card"
+      ref={ref}
       {...props}
     >
       {gradient ? (
@@ -91,9 +102,9 @@ function Card({
         </>
       ) : null}
       {children}
-    </Component>
+    </CardComponent>
   );
-}
+});
 
 function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
@@ -179,3 +190,4 @@ export {
   CardHeader,
   CardTitle,
 };
+export type { CardColor, CardVariant };

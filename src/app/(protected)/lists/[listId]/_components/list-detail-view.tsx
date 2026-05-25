@@ -26,7 +26,7 @@ import { ListSocialActions } from "@/features/social/components/list-social-acti
 import { AppMain } from "@/shared/components/layout/app-main";
 import { Alert } from "@/shared/components/ui/alert";
 import { Button } from "@/shared/components/ui/button";
-import { Modal } from "@/shared/components/ui/modal";
+import { Modal } from "@/shared/components/modal";
 import {
   ToggleGroup,
   ToggleGroupItem,
@@ -199,16 +199,8 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
 
       <Modal
         description={`Delete ${list.title} and all ranked items.`}
-        onClose={() => setDeleteDialogOpen(false)}
-        open={deleteDialogOpen}
-        title="Delete this list?"
-      >
-        <div className="flex flex-col gap-5 pt-5">
-          <p className="text-muted-foreground text-sm leading-6">
-            This permanently deletes &quot;{list.title}&quot; and all ranked
-            items in it.
-          </p>
-          <div className="border-border flex justify-end gap-2 border-t border-dashed pt-4">
+        footer={
+          <>
             <Button
               disabled={isPending}
               onClick={() => setDeleteDialogOpen(false)}
@@ -224,7 +216,17 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
               )}
               Delete list
             </Button>
-          </div>
+          </>
+        }
+        onClose={() => setDeleteDialogOpen(false)}
+        open={deleteDialogOpen}
+        title="Delete this list?"
+      >
+        <div className="flex flex-col gap-5">
+          <p className="text-muted-foreground text-sm leading-6">
+            This permanently deletes &quot;{list.title}&quot; and all ranked
+            items in it.
+          </p>
         </div>
       </Modal>
 
@@ -242,7 +244,12 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
             listId={list.id}
           />
         ) : (
-          <TierView items={list.items} />
+          <TierView
+            emptyAction={
+              canEdit ? <ItemFormDialog listId={list.id} /> : undefined
+            }
+            items={list.items}
+          />
         )}
       </section>
 

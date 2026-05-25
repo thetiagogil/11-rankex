@@ -1,13 +1,28 @@
+import type { ReactNode } from "react";
+
 import { TierBadge } from "@/features/lists/components/tier-badge";
 import { tierDescriptions, TIERS } from "@/features/lists/lib/tiers";
 import type { RankedItem } from "@/features/lists/types";
+import { Card } from "@/shared/components/ui/card";
+import { EmptyState } from "@/shared/components/empty-state";
 
 type TierViewProps = {
+  emptyAction?: ReactNode;
   items: RankedItem[];
 };
 
-export function TierView({ items }: TierViewProps) {
+export function TierView({ emptyAction, items }: TierViewProps) {
   const untiered = items.filter((item) => !item.tier);
+
+  if (items.length === 0) {
+    return (
+      <EmptyState
+        action={emptyAction}
+        description="Add your first contender to start ranking."
+        title="An empty podium awaits"
+      />
+    );
+  }
 
   return (
     <div className="flex flex-col gap-3">
@@ -15,8 +30,9 @@ export function TierView({ items }: TierViewProps) {
         const tierItems = items.filter((item) => item.tier === tier);
 
         return (
-          <section
-            className="sticker-card bg-card grid gap-3 rounded-3xl p-3 sm:grid-cols-[4rem_1fr]"
+          <Card
+            as="section"
+            className="grid gap-3 rounded-3xl p-3 sm:grid-cols-[4rem_1fr]"
             key={tier}
           >
             <div className="flex items-center gap-3 sm:flex-col sm:justify-center">
@@ -46,12 +62,15 @@ export function TierView({ items }: TierViewProps) {
                 </span>
               )}
             </div>
-          </section>
+          </Card>
         );
       })}
 
       {untiered.length ? (
-        <section className="sticker-card bg-card flex flex-wrap items-center gap-2 rounded-3xl border-dashed p-3">
+        <Card
+          as="section"
+          className="flex flex-wrap items-center gap-2 rounded-3xl border-dashed p-3"
+        >
           <span className="text-muted-foreground mr-2 text-xs uppercase">
             No tier
           </span>
@@ -63,7 +82,7 @@ export function TierView({ items }: TierViewProps) {
               {item.title}
             </span>
           ))}
-        </section>
+        </Card>
       ) : null}
     </div>
   );

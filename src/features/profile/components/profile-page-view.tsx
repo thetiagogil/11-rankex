@@ -1,10 +1,11 @@
-import { Settings, Trophy } from "lucide-react";
+import { Settings } from "lucide-react";
 
 import { ListCard } from "@/features/lists/components/list-card";
 import type { ProfileOverview } from "@/features/profile/types";
 import { FollowButton } from "@/features/social/components/follow-button";
-import { ButtonLink } from "@/shared/components/ui/button-link";
+import { ButtonLink } from "@/shared/components/button-link";
 import { Card } from "@/shared/components/ui/card";
+import { EmptyState } from "@/shared/components/empty-state";
 import { getProfileInitials } from "@/shared/utils/profile";
 
 type ProfilePageViewProps = {
@@ -31,7 +32,7 @@ export function ProfilePageView({
       <Card as="section" className="w-full max-w-full p-5 sm:p-7">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-6">
           <div className="sm:block">
-            <div className="border-foreground/45 bg-gradient-gold font-display text-primary-foreground shadow-elevated grid size-28 shrink-0 rotate-[-4deg] place-items-center rounded-3xl border text-5xl font-black sm:size-36 sm:text-6xl">
+            <div className="border-foreground/45 bg-gradient-gold font-display text-primary-foreground shadow-elevated grid size-28 shrink-0 place-items-center rounded-3xl border text-5xl font-black sm:size-36 sm:text-6xl">
               {getProfileInitials(profile.displayName)}
             </div>
           </div>
@@ -171,13 +172,7 @@ export function ProfilePageView({
             ))}
           </div>
         ) : (
-          <Card as="section" className="border-dashed px-6 py-16 text-center">
-            <Trophy className="text-muted-foreground mx-auto size-9" />
-            <p className="font-display mt-4 text-xl">No rankings here yet</p>
-            <p className="text-muted-foreground mx-auto mt-2 max-w-md text-sm leading-6">
-              {emptyCopy}
-            </p>
-          </Card>
+          <EmptyState description={emptyCopy} title="No rankings here yet" />
         )}
       </section>
     </div>

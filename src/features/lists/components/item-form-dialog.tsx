@@ -2,7 +2,13 @@
 
 import { Loader2, Plus, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { type FormEvent, type ReactNode, useState, useTransition } from "react";
+import {
+  type FormEvent,
+  type ReactNode,
+  useId,
+  useState,
+  useTransition,
+} from "react";
 
 import {
   createItemAction,
@@ -13,7 +19,7 @@ import { Alert } from "@/shared/components/ui/alert";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
-import { Modal } from "@/shared/components/ui/modal";
+import { Modal } from "@/shared/components/modal";
 import {
   Select,
   SelectContent,
@@ -41,6 +47,7 @@ const tierOptions = [
 
 export function ItemFormDialog({ item, listId, trigger }: ItemFormDialogProps) {
   const router = useRouter();
+  const generatedFormId = useId();
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState(item?.title ?? "");
   const [note, setNote] = useState(item?.note ?? "");
@@ -49,6 +56,7 @@ export function ItemFormDialog({ item, listId, trigger }: ItemFormDialogProps) {
   const [feedback, setFeedback] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const isEditing = Boolean(item);
+  const formId = `rankex-item-form-${generatedFormId}`;
 
   const openDialog = () => {
     setTitle(item?.title ?? "");
@@ -99,11 +107,31 @@ export function ItemFormDialog({ item, listId, trigger }: ItemFormDialogProps) {
 
       <Modal
         description="Add or edit a ranked list item."
+        footer={
+          <>
+            <Button
+              disabled={isPending}
+              onClick={() => setOpen(false)}
+              type="button"
+              variant="ghost"
+            >
+              Cancel
+            </Button>
+            <Button disabled={isPending} form={formId} type="submit">
+              {isPending ? (
+                <Loader2 className="animate-spin" data-icon="inline-start" />
+              ) : (
+                <Save data-icon="inline-start" />
+              )}
+              Save item
+            </Button>
+          </>
+        }
         onClose={() => setOpen(false)}
         open={open}
         title={isEditing ? "Edit item" : "Add item"}
       >
-        <form className="flex flex-col gap-4 pt-5" onSubmit={submit}>
+        <form className="flex flex-col gap-4" id={formId} onSubmit={submit}>
           {feedback ? <Alert tone="error">{feedback}</Alert> : null}
 
           <div className="flex flex-col gap-1.5">
@@ -172,25 +200,6 @@ export function ItemFormDialog({ item, listId, trigger }: ItemFormDialogProps) {
                 </SelectContent>
               </Select>
             </div>
-          </div>
-
-          <div className="border-border flex justify-end gap-2 border-t pt-4">
-            <Button
-              disabled={isPending}
-              onClick={() => setOpen(false)}
-              type="button"
-              variant="ghost"
-            >
-              Cancel
-            </Button>
-            <Button disabled={isPending} type="submit">
-              {isPending ? (
-                <Loader2 className="animate-spin" data-icon="inline-start" />
-              ) : (
-                <Save data-icon="inline-start" />
-              )}
-              Save item
-            </Button>
           </div>
         </form>
       </Modal>

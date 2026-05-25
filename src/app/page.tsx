@@ -16,7 +16,8 @@ import { AppHeader } from "@/shared/components/layout/app-header";
 import { AppMain } from "@/shared/components/layout/app-main";
 import { AppShell } from "@/shared/components/layout/app-shell";
 import { ProtectedAppShell } from "@/shared/components/layout/protected-app-shell";
-import { ButtonLink } from "@/shared/components/ui/button-link";
+import { ButtonLink } from "@/shared/components/button-link";
+import { Card } from "@/shared/components/ui/card";
 import { getCurrentUser } from "@/shared/server/auth";
 import { cn } from "@/shared/utils/cn";
 
@@ -24,7 +25,6 @@ type FeatureCard = {
   accent: string;
   description: string;
   icon: LucideIcon;
-  shadow: string;
   tilt: string;
   title: string;
 };
@@ -48,7 +48,6 @@ const featureCards: FeatureCard[] = [
     accent: "oklch(0.78 0.1 50)",
     description: "Drag-and-drop ordering with scores, notes, and tiers.",
     icon: ListOrdered,
-    shadow: "peach",
     tilt: "tilt-l",
     title: "Ranked lists",
   },
@@ -56,7 +55,6 @@ const featureCards: FeatureCard[] = [
     accent: "oklch(0.68 0.09 245)",
     description: "Trending lists by topic, surfaced from the community.",
     icon: Compass,
-    shadow: "sky",
     tilt: "tilt-r",
     title: "Explore feed",
   },
@@ -64,7 +62,6 @@ const featureCards: FeatureCard[] = [
     accent: "oklch(0.78 0.06 320)",
     description: "Build a feed of taste you trust. Profiles for every user.",
     icon: Users,
-    shadow: "lavender",
     tilt: "tilt-l",
     title: "Follow curators",
   },
@@ -72,7 +69,6 @@ const featureCards: FeatureCard[] = [
     accent: "oklch(0.78 0.07 150)",
     description: "React to others, fork their lists, and make them yours.",
     icon: Heart,
-    shadow: "sage",
     tilt: "tilt-r",
     title: "Like, remix, comment",
   },
@@ -253,10 +249,10 @@ function LandingContent({ isAuthenticated }: { isAuthenticated: boolean }) {
         </div>
       </section>
 
-      <section
-        className="landing-sticker bg-gradient-gold relative mt-20 overflow-hidden rounded-3xl px-6 py-12 text-center sm:px-12 sm:py-16"
-        data-shadow="navy"
-        data-static="true"
+      <Card
+        as="section"
+        className="bg-gradient-gold relative mt-20 overflow-hidden rounded-3xl px-6 py-12 text-center sm:px-12 sm:py-16"
+        color="navy"
       >
         <Trophy className="text-primary-foreground/30 absolute top-6 left-6 size-12 rotate-[-14deg]" />
         <Star className="text-primary-foreground/30 absolute right-8 bottom-6 size-12 rotate-16" />
@@ -272,7 +268,7 @@ function LandingContent({ isAuthenticated }: { isAuthenticated: boolean }) {
             <ArrowRight data-icon="inline-end" />
           </ButtonLink>
         </div>
-      </section>
+      </Card>
     </AppMain>
   );
 }
@@ -281,9 +277,10 @@ function FeatureCard({ feature }: { feature: FeatureCard }) {
   const Icon = feature.icon;
 
   return (
-    <article
-      className={cn("landing-sticker bg-card rounded-3xl p-6", feature.tilt)}
-      data-shadow={feature.shadow}
+    <Card
+      as="article"
+      className={cn("rounded-3xl p-6", feature.tilt)}
+      variant="settle"
     >
       <div className="flex items-center gap-3">
         <span
@@ -299,7 +296,7 @@ function FeatureCard({ feature }: { feature: FeatureCard }) {
       <p className="text-muted-foreground mt-3 text-sm leading-6">
         {feature.description}
       </p>
-    </article>
+    </Card>
   );
 }
 
@@ -329,9 +326,9 @@ function SampleRankingCard({
   const Icon = ranking.icon;
 
   return (
-    <article
-      className="landing-sticker bg-card absolute w-64 rounded-3xl p-5"
-      data-static="true"
+    <Card
+      as="article"
+      className="absolute w-64 rounded-3xl p-5"
       style={{
         left: layout.left,
         top: layout.top,
@@ -368,6 +365,6 @@ function SampleRankingCard({
           </li>
         ))}
       </ol>
-    </article>
+    </Card>
   );
 }

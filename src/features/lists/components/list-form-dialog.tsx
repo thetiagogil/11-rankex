@@ -2,7 +2,13 @@
 
 import { Globe2, ListPlus, Loader2, LockKeyhole, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { type FormEvent, type ReactNode, useState, useTransition } from "react";
+import {
+  type FormEvent,
+  type ReactNode,
+  useId,
+  useState,
+  useTransition,
+} from "react";
 
 import {
   createListAction,
@@ -18,7 +24,7 @@ import { Alert } from "@/shared/components/ui/alert";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
-import { Modal } from "@/shared/components/ui/modal";
+import { Modal } from "@/shared/components/modal";
 import { Textarea } from "@/shared/components/ui/textarea";
 import {
   ToggleGroup,
@@ -37,6 +43,7 @@ export function ListFormDialog({
   trigger,
 }: ListFormDialogProps) {
   const router = useRouter();
+  const generatedFormId = useId();
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState(initialList?.title ?? "");
   const [topic, setTopic] = useState(initialList?.topic ?? "");
@@ -50,6 +57,7 @@ export function ListFormDialog({
   const [feedback, setFeedback] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const isEditing = Boolean(initialList);
+  const formId = `rankex-list-form-${generatedFormId}`;
 
   const openDialog = () => {
     setTitle(initialList?.title ?? "");
@@ -103,11 +111,31 @@ export function ListFormDialog({
 
       <Modal
         description="Create or edit a ranked list."
+        footer={
+          <>
+            <Button
+              disabled={isPending}
+              onClick={() => setOpen(false)}
+              type="button"
+              variant="ghost"
+            >
+              Cancel
+            </Button>
+            <Button disabled={isPending} form={formId} type="submit">
+              {isPending ? (
+                <Loader2 className="animate-spin" data-icon="inline-start" />
+              ) : (
+                <Save data-icon="inline-start" />
+              )}
+              {isEditing ? "Save list" : "Create list"}
+            </Button>
+          </>
+        }
         onClose={() => setOpen(false)}
         open={open}
         title={isEditing ? "Edit list" : "Start a new top list"}
       >
-        <form className="flex flex-col gap-4 pt-5" onSubmit={submit}>
+        <form className="flex flex-col gap-4" id={formId} onSubmit={submit}>
           {feedback ? <Alert tone="error">{feedback}</Alert> : null}
 
           <div className="flex flex-col gap-1.5">
@@ -168,7 +196,7 @@ export function ListFormDialog({
                 return (
                   <ToggleGroupItem
                     aria-label={`Use ${option.label} icon`}
-                    className="border-border bg-secondary/55 text-foreground hover:bg-secondary data-[state=on]:border-primary data-[state=on]:bg-primary/10 data-[state=on]:text-primary data-[state=on]:shadow-glow grid size-10 place-items-center rounded-lg border p-0 data-[state=on]:scale-105"
+                    className="border-border bg-secondary/55 text-foreground hover:bg-secondary data-[state=on]:border-primary data-[state=on]:bg-primary/10 data-[state=on]:text-primary grid size-10 place-items-center rounded-lg border p-0 data-[state=on]:scale-105"
                     disabled={isPending}
                     key={option.id}
                     title={option.label}
@@ -206,25 +234,6 @@ export function ListFormDialog({
                 value="private"
               />
             </ToggleGroup>
-          </div>
-
-          <div className="border-border flex justify-end gap-2 border-t pt-4">
-            <Button
-              disabled={isPending}
-              onClick={() => setOpen(false)}
-              type="button"
-              variant="ghost"
-            >
-              Cancel
-            </Button>
-            <Button disabled={isPending} type="submit">
-              {isPending ? (
-                <Loader2 className="animate-spin" data-icon="inline-start" />
-              ) : (
-                <Save data-icon="inline-start" />
-              )}
-              {isEditing ? "Save list" : "Create list"}
-            </Button>
           </div>
         </form>
       </Modal>

@@ -1,27 +1,92 @@
-import type { ComponentPropsWithoutRef } from "react";
+import * as React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/shared/utils/cn";
 
 type AlertTone = "error" | "success";
 
-type AlertProps = ComponentPropsWithoutRef<"div"> & {
-  tone?: AlertTone;
+const alertVariants = cva(
+  "group/alert relative grid w-full gap-0.5 rounded-2xl border px-3 py-2 text-left text-sm shadow-none has-data-[slot=alert-action]:relative has-data-[slot=alert-action]:pr-18 has-[>svg]:grid-cols-[auto_1fr] has-[>svg]:gap-x-2 *:[svg]:row-span-2 *:[svg]:translate-y-0.5 *:[svg]:text-current *:[svg:not([class*='size-'])]:size-4",
+  {
+    variants: {
+      variant: {
+        default: "bg-card text-card-foreground",
+        destructive: "border-destructive bg-destructive text-destructive-foreground",
+        success: "border-foreground bg-tier-c text-foreground",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+    },
+  },
+);
+
+const toneVariants: Record<AlertTone, NonNullable<AlertVariant>> = {
+  error: "destructive",
+  success: "success",
 };
 
-const tones: Record<AlertTone, string> = {
-  error: "border-destructive bg-destructive text-destructive-foreground",
-  success: "border-foreground bg-tier-c text-foreground",
-};
+type AlertVariant = VariantProps<typeof alertVariants>["variant"];
 
-export function Alert({ className, tone = "error", ...props }: AlertProps) {
+type AlertProps = React.ComponentProps<"div"> &
+  VariantProps<typeof alertVariants> & {
+    tone?: AlertTone;
+  };
+
+function Alert({ className, tone, variant, ...props }: AlertProps) {
+  const resolvedVariant = variant ?? (tone ? toneVariants[tone] : "default");
+
   return (
     <div
+      data-slot="alert"
+      role="alert"
       className={cn(
-        "rounded-2xl border px-3 py-2 font-mono text-xs leading-5 shadow-none",
-        tones[tone],
+        alertVariants({ variant: resolvedVariant }),
+        "font-mono text-xs leading-5",
         className,
       )}
       {...props}
     />
   );
 }
+
+function AlertTitle({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      className={cn(
+        "font-medium group-has-[>svg]/alert:col-start-2 [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground",
+        className,
+      )}
+      data-slot="alert-title"
+      {...props}
+    />
+  );
+}
+
+function AlertDescription({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
+  return (
+    <div
+      className={cn(
+        "text-muted-foreground text-sm text-balance md:text-pretty [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground [&_p:not(:last-child)]:mb-4",
+        className,
+      )}
+      data-slot="alert-description"
+      {...props}
+    />
+  );
+}
+
+function AlertAction({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      className={cn("absolute top-2 right-2", className)}
+      data-slot="alert-action"
+      {...props}
+    />
+  );
+}
+
+export { Alert, AlertAction, AlertDescription, AlertTitle };

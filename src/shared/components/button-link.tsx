@@ -2,7 +2,7 @@ import Link, { type LinkProps } from "next/link";
 import type { AnchorHTMLAttributes, ReactNode } from "react";
 
 import {
-  buttonVariants,
+  Button,
   type ButtonSize,
   type ButtonVariant,
 } from "@/shared/components/ui/button";
@@ -15,12 +15,15 @@ type ButtonLinkProps = LinkProps &
   };
 
 export function ButtonLink({
+  children,
   className,
   size = "md",
   variant = "primary",
   ...props
 }: ButtonLinkProps) {
   return (
-    <Link className={buttonVariants({ className, size, variant })} {...props} />
+    <Button asChild className={className} size={size} variant={variant}>
+      <Link {...props}>{children}</Link>
+    </Button>
   );
 }

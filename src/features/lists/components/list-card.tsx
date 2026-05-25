@@ -34,11 +34,8 @@ export function ListCard({
   return (
     <Card
       as="article"
-      className={cn(
-        "sticker-card group h-full min-w-0 justify-between p-0",
-        tilt,
-      )}
-      interactive
+      className={cn("group h-full min-w-0 justify-between p-0", tilt)}
+      variant="tilt"
     >
       <Link className="block min-w-0 p-5" href={`/lists/${list.id}`}>
         <div className="relative z-10 flex flex-col">

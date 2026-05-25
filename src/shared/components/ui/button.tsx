@@ -10,19 +10,19 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "border-foreground/70 bg-foreground text-background shadow-[1px_1px_0_0_var(--color-primary)] hover:-translate-x-px hover:-translate-y-px hover:shadow-[2px_2px_0_0_var(--color-primary)]",
+          "border-foreground/70 bg-foreground text-background shadow-[3px_3px_0_0_var(--color-primary)] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_var(--color-primary)]",
         primary:
-          "border-foreground/70 bg-foreground text-background shadow-[1px_1px_0_0_var(--color-primary)] hover:-translate-x-px hover:-translate-y-px hover:shadow-[2px_2px_0_0_var(--color-primary)]",
+          "border-foreground/70 bg-foreground text-background shadow-[3px_3px_0_0_var(--color-primary)] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_var(--color-primary)]",
         outline:
-          "border-foreground/55 bg-card text-foreground shadow-[1px_1px_0_0_var(--color-accent)] hover:-translate-x-px hover:-translate-y-px hover:bg-secondary hover:shadow-[2px_2px_0_0_var(--color-accent)] aria-expanded:bg-secondary",
+          "border-foreground/55 bg-card text-foreground shadow-[3px_3px_0_0_var(--color-accent)] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-secondary hover:shadow-[5px_5px_0_0_var(--color-accent)] aria-expanded:bg-secondary",
         secondary:
-          "border-foreground/40 bg-secondary text-secondary-foreground shadow-none hover:-translate-x-px hover:-translate-y-px hover:bg-secondary/80 hover:shadow-[1px_1px_0_0_var(--shadow-ink)] aria-expanded:bg-secondary",
+          "border-foreground/40 bg-secondary text-secondary-foreground shadow-[2px_2px_0_0_var(--shadow-ink)] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-secondary/80 hover:shadow-[4px_4px_0_0_var(--shadow-ink)] aria-expanded:bg-secondary",
         ghost:
           "border-transparent text-foreground shadow-none hover:bg-foreground/5 aria-expanded:bg-foreground/5",
         destructive:
-          "border-destructive/70 bg-destructive text-destructive-foreground shadow-[1px_1px_0_0_var(--shadow-ink)] hover:-translate-x-px hover:-translate-y-px hover:shadow-[2px_2px_0_0_var(--shadow-ink)] focus-visible:border-destructive/40 focus-visible:ring-destructive/20",
+          "border-destructive/70 bg-destructive text-destructive-foreground shadow-[3px_3px_0_0_var(--shadow-ink)] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_var(--shadow-ink)] focus-visible:border-destructive/40 focus-visible:ring-destructive/20",
         danger:
-          "border-destructive/70 bg-destructive text-destructive-foreground shadow-[1px_1px_0_0_var(--shadow-ink)] hover:-translate-x-px hover:-translate-y-px hover:shadow-[2px_2px_0_0_var(--shadow-ink)] focus-visible:border-destructive/40 focus-visible:ring-destructive/20",
+          "border-destructive/70 bg-destructive text-destructive-foreground shadow-[3px_3px_0_0_var(--shadow-ink)] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_var(--shadow-ink)] focus-visible:border-destructive/40 focus-visible:ring-destructive/20",
         link: "border-transparent bg-transparent text-primary shadow-none hover:bg-transparent hover:underline",
       },
       size: {
