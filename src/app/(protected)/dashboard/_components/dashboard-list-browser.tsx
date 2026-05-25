@@ -24,11 +24,12 @@ import {
 } from "@/shared/components/ui/toggle-group";
 
 type DashboardListBrowserProps = {
+  currentUserId: string;
   lists: RankedListSummary[];
 };
 
 type VisibilityFilter = "all" | "public" | "private";
-type SortMode = "updated" | "title" | "items";
+type SortMode = "items" | "likes" | "title" | "updated";
 
 const visibilityOptions = [
   { label: "All", value: "all" },
@@ -40,9 +41,13 @@ const sortOptions = [
   { label: "Recently updated", value: "updated" },
   { label: "Title A-Z", value: "title" },
   { label: "Most items", value: "items" },
+  { label: "Most liked", value: "likes" },
 ] as const;
 
-export function DashboardListBrowser({ lists }: DashboardListBrowserProps) {
+export function DashboardListBrowser({
+  currentUserId,
+  lists,
+}: DashboardListBrowserProps) {
   const [query, setQuery] = useState("");
   const [visibility, setVisibility] = useState<VisibilityFilter>("all");
   const [sort, setSort] = useState<SortMode>("updated");
@@ -78,6 +83,13 @@ export function DashboardListBrowser({ lists }: DashboardListBrowserProps) {
           );
         }
 
+        if (sort === "likes") {
+          return (
+            second.social.likeCount - first.social.likeCount ||
+            second.updatedAt.localeCompare(first.updatedAt)
+          );
+        }
+
         return second.updatedAt.localeCompare(first.updatedAt);
       });
   }, [lists, query, sort, visibility]);
@@ -88,9 +100,9 @@ export function DashboardListBrowser({ lists }: DashboardListBrowserProps) {
         as="section"
         className="flex flex-col items-center justify-center border-dashed px-6 py-20 text-center"
       >
-        <ListPlus className="size-10 text-muted-foreground" />
-        <h2 className="mt-4 font-display text-xl">No lists yet</h2>
-        <p className="mt-1 max-w-md text-sm leading-6 text-muted-foreground">
+        <ListPlus className="text-muted-foreground size-10" />
+        <h2 className="font-display mt-4 text-xl">No lists yet</h2>
+        <p className="text-muted-foreground mt-1 max-w-md text-sm leading-6">
           Create your first ranking. You can keep it private while drafting and
           make it public when it is ready.
         </p>
@@ -103,12 +115,12 @@ export function DashboardListBrowser({ lists }: DashboardListBrowserProps) {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="sticker-sm flex flex-col gap-3 rounded-3xl bg-card p-3 lg:flex-row lg:items-stretch lg:justify-between">
+      <div className="sticker-sm bg-card flex flex-col gap-3 rounded-3xl p-3 lg:flex-row lg:items-stretch lg:justify-between">
         <div className="relative min-w-0 flex-1">
           <Label className="sr-only" htmlFor="dashboard-list-search">
             Search your lists
           </Label>
-          <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
           <Input
             className="h-9 pl-9"
             id="dashboard-list-search"
@@ -121,7 +133,7 @@ export function DashboardListBrowser({ lists }: DashboardListBrowserProps) {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
           <ToggleGroup
             aria-label="Filter lists by visibility"
-            className="h-10 items-stretch overflow-hidden rounded-full border-2 border-foreground bg-card"
+            className="border-foreground/45 bg-card h-10 items-stretch overflow-hidden rounded-xl border"
             onValueChange={(value) => {
               if (value) setVisibility(value as VisibilityFilter);
             }}
@@ -131,7 +143,7 @@ export function DashboardListBrowser({ lists }: DashboardListBrowserProps) {
           >
             {visibilityOptions.map((option) => (
               <ToggleGroupItem
-                className="h-10 rounded-full px-3 font-mono text-xs tracking-widest text-muted-foreground uppercase hover:text-foreground data-[state=on]:bg-foreground data-[state=on]:text-background"
+                className="text-muted-foreground hover:text-foreground data-[state=on]:bg-foreground data-[state=on]:text-background h-10 rounded-xl px-3 font-mono text-xs tracking-widest uppercase"
                 key={option.value}
                 value={option.value}
               >
@@ -148,10 +160,7 @@ export function DashboardListBrowser({ lists }: DashboardListBrowserProps) {
               onValueChange={(value) => setSort(value as SortMode)}
               value={sort}
             >
-              <SelectTrigger
-                className="h-10 w-full"
-                id="dashboard-list-sort"
-              >
+              <SelectTrigger className="h-10 w-full" id="dashboard-list-sort">
                 <SelectValue placeholder="Sort lists" />
               </SelectTrigger>
               <SelectContent>
@@ -171,7 +180,7 @@ export function DashboardListBrowser({ lists }: DashboardListBrowserProps) {
       {filteredLists.length ? (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filteredLists.map((list) => (
-            <ListCard key={list.id} list={list} />
+            <ListCard currentUserId={currentUserId} key={list.id} list={list} />
           ))}
         </div>
       ) : (
@@ -180,9 +189,9 @@ export function DashboardListBrowser({ lists }: DashboardListBrowserProps) {
           className="flex flex-col items-center justify-center border-dashed px-6 py-16 text-center"
         >
           <p className="font-display text-xl">No lists match that view</p>
-          <p className="mt-2 max-w-md text-sm leading-6 text-muted-foreground">
-            Adjust the search, filter, or sort controls to bring more lists
-            back into view.
+          <p className="text-muted-foreground mt-2 max-w-md text-sm leading-6">
+            Adjust the search, filter, or sort controls to bring more lists back
+            into view.
           </p>
           <Button
             className="mt-5"

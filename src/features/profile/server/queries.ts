@@ -1,6 +1,8 @@
 import { getPublicListSummariesByUser } from "@/features/lists/server/queries";
 import type { RankedListSummary } from "@/features/lists/types";
 import type { ProfileOverview, ProfileListStats } from "@/features/profile/types";
+import { getProfileSocialStats } from "@/features/social/server/queries";
+import type { ProfileSocialStats } from "@/features/social/types";
 import { core, type AppSupabaseClient } from "@/lib/supabase/schemas";
 import { mapProfile } from "@/shared/server/mappers";
 import type { Profile, ProfileRow } from "@/shared/types";
@@ -11,10 +13,12 @@ const uuidPattern =
 export function buildProfileOverview(
   profile: Profile,
   lists: RankedListSummary[],
+  social: ProfileSocialStats,
 ): ProfileOverview {
   return {
     lists,
     profile,
+    social,
     stats: buildProfileStats(lists),
   };
 }
@@ -22,15 +26,19 @@ export function buildProfileOverview(
 export async function getPublicProfileOverview(
   client: AppSupabaseClient,
   handle: string,
+  viewerId?: string,
 ): Promise<ProfileOverview | null> {
   const profileRow = await getProfileByHandle(client, handle);
 
   if (!profileRow) return null;
 
   const profile = mapProfile(profileRow);
-  const lists = await getPublicListSummariesByUser(client, profile.id);
+  const [lists, social] = await Promise.all([
+    getPublicListSummariesByUser(client, profile.id, viewerId),
+    getProfileSocialStats(client, profile.id, viewerId),
+  ]);
 
-  return buildProfileOverview(profile, lists);
+  return buildProfileOverview(profile, lists, social);
 }
 
 export async function getDiscoverableProfiles(

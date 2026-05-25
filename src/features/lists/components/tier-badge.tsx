@@ -18,7 +18,7 @@ export function TierBadge({ size = "md", tier }: TierBadgeProps) {
   return (
     <span
       className={cn(
-        "font-display inline-grid shrink-0 place-items-center rounded-xl border-2 border-foreground font-bold shadow-[3px_3px_0_0_var(--shadow-ink)]",
+        "font-display border-foreground/45 inline-grid shrink-0 place-items-center rounded-xl border font-bold shadow-none",
         size === "lg" ? "size-12 text-2xl" : "size-9 text-base",
         tierClasses[tier],
       )}

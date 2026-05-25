@@ -1,13 +1,13 @@
 "use client";
 
-import { ListFilter, Search, UserPlus } from "lucide-react";
+import { ListFilter, Search, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
 import { ListCard } from "@/features/lists/components/list-card";
 import type { RankedListSummary } from "@/features/lists/types";
 import type { ProfileListStats } from "@/features/profile/types";
-import { Button } from "@/shared/components/ui/button";
+import { FollowButton } from "@/features/social/components/follow-button";
 import { Card } from "@/shared/components/ui/card";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
@@ -18,18 +18,32 @@ import {
 import type { Profile } from "@/shared/types";
 import { getProfileHref, getProfileInitials } from "@/shared/utils/profile";
 
+type ExploreSort = "following" | "newest" | "trending";
+
 type ExploreViewProps = {
+  currentUserId: string;
+  followingIds: string[];
   lists: RankedListSummary[];
   profiles: Profile[];
 };
 
-export function ExploreView({ lists, profiles }: ExploreViewProps) {
+export function ExploreView({
+  currentUserId,
+  followingIds,
+  lists,
+  profiles,
+}: ExploreViewProps) {
   const [query, setQuery] = useState("");
   const [userQuery, setUserQuery] = useState("");
   const [topic, setTopic] = useState("All");
+  const [sort, setSort] = useState<ExploreSort>("trending");
   const curators = useMemo(
-    () => buildCuratorCards(lists, profiles),
-    [lists, profiles],
+    () =>
+      buildCuratorCards(
+        lists,
+        profiles.filter((profile) => profile.id !== currentUserId),
+      ),
+    [currentUserId, lists, profiles],
   );
   const topics = useMemo(
     () => [
@@ -58,7 +72,7 @@ export function ExploreView({ lists, profiles }: ExploreViewProps) {
   const filteredLists = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
 
-    return lists.filter((list) => {
+    const filtered = lists.filter((list) => {
       const matchesTopic = topic === "All" || list.topic === topic;
       const matchesQuery =
         !normalizedQuery ||
@@ -70,20 +84,36 @@ export function ExploreView({ lists, profiles }: ExploreViewProps) {
 
       return matchesTopic && matchesQuery;
     });
-  }, [lists, query, topic]);
+
+    const scoped =
+      sort === "following"
+        ? filtered.filter((list) => followingIds.includes(list.ownerId))
+        : filtered;
+
+    return [...scoped].sort((a, b) => {
+      if (sort === "newest" || sort === "following") {
+        return b.updatedAt.localeCompare(a.updatedAt);
+      }
+
+      return (
+        b.social.likeCount +
+          b.social.commentCount -
+          (a.social.likeCount + a.social.commentCount) ||
+        b.updatedAt.localeCompare(a.updatedAt)
+      );
+    });
+  }, [followingIds, lists, query, sort, topic]);
 
   return (
     <div className="mt-10 flex flex-col gap-12">
       <section>
         <div className="mb-5 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <h2 className="font-display text-2xl font-bold">
-            Curators to browse
-          </h2>
+          <h2 className="font-display text-2xl font-bold">People to follow</h2>
           <div className="relative w-full lg:max-w-xs">
             <Label className="sr-only" htmlFor="explore-user-search">
               Search users
             </Label>
-            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
             <Input
               className="h-9 pl-9"
               id="explore-user-search"
@@ -94,12 +124,14 @@ export function ExploreView({ lists, profiles }: ExploreViewProps) {
           </div>
         </div>
         {filteredCurators.length ? (
-          <div className="-mx-4 overflow-x-auto px-4 pb-3 scrollbar-themed sm:mx-0 sm:px-0">
+          <div className="scrollbar-themed -mx-4 overflow-x-auto px-4 pb-3 sm:mx-0 sm:px-0">
             <div className="flex w-max min-w-full snap-x gap-3">
               {filteredCurators.map((curator) => (
                 <ExploreUserCard
+                  currentUserId={currentUserId}
                   key={curator.profile.id}
                   profile={curator.profile}
+                  isFollowing={followingIds.includes(curator.profile.id)}
                   stats={curator.stats}
                 />
               ))}
@@ -108,14 +140,12 @@ export function ExploreView({ lists, profiles }: ExploreViewProps) {
         ) : (
           <EmptyExploreBlock
             title={
-              curators.length
-                ? "No curators match that search."
-                : "No curators published yet."
+              curators.length ? "No users match that search." : "No users yet."
             }
             description={
               curators.length
                 ? "Try another name, handle, or topic."
-                : "Public lists will surface curator cards here."
+                : "Public profiles will surface here."
             }
           />
         )}
@@ -123,37 +153,65 @@ export function ExploreView({ lists, profiles }: ExploreViewProps) {
 
       <section>
         <div className="mb-5 flex items-center gap-2">
-          <ListFilter className="size-5 text-primary" />
+          <ListFilter className="text-primary size-5" />
           <h2 className="font-display text-2xl font-bold">Public lists</h2>
         </div>
 
         <div className="flex flex-col gap-3 lg:flex-row lg:items-stretch lg:justify-between">
-          <ToggleGroup
-            aria-label="Filter public lists by topic"
-            className="flex w-full flex-wrap items-stretch gap-1.5 lg:w-auto"
-            onValueChange={(value) => {
-              if (value) setTopic(value);
-            }}
-            spacing={0}
-            type="single"
-            value={topic}
-          >
-            {topics.map((topicOption) => (
-              <ToggleGroupItem
-                className="h-10 rounded-full border-2 border-foreground px-3 font-mono text-xs tracking-widest text-muted-foreground uppercase hover:bg-secondary data-[state=on]:bg-foreground data-[state=on]:text-background"
-                key={topicOption}
-                value={topicOption}
-              >
-                {topicOption}
-              </ToggleGroupItem>
-            ))}
-          </ToggleGroup>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
+            <ToggleGroup
+              aria-label="Sort public lists"
+              className="flex flex-wrap items-stretch gap-1.5"
+              onValueChange={(value) => {
+                if (value) setSort(value as ExploreSort);
+              }}
+              spacing={0}
+              type="single"
+              value={sort}
+            >
+              {(["trending", "newest", "following"] as const).map(
+                (sortOption) => (
+                  <ToggleGroupItem
+                    className="border-foreground/45 text-muted-foreground hover:bg-secondary data-[state=on]:bg-foreground data-[state=on]:text-background h-10 rounded-xl border px-3 font-mono text-xs tracking-widest uppercase"
+                    key={sortOption}
+                    value={sortOption}
+                  >
+                    {sortOption === "trending" ? (
+                      <TrendingUp data-icon="inline-start" />
+                    ) : null}
+                    {sortOption}
+                  </ToggleGroupItem>
+                ),
+              )}
+            </ToggleGroup>
+
+            <ToggleGroup
+              aria-label="Filter public lists by topic"
+              className="flex w-full flex-wrap items-stretch gap-1.5 lg:w-auto"
+              onValueChange={(value) => {
+                if (value) setTopic(value);
+              }}
+              spacing={0}
+              type="single"
+              value={topic}
+            >
+              {topics.map((topicOption) => (
+                <ToggleGroupItem
+                  className="border-foreground/45 text-muted-foreground hover:bg-secondary data-[state=on]:bg-foreground data-[state=on]:text-background h-10 rounded-xl border px-3 font-mono text-xs tracking-widest uppercase"
+                  key={topicOption}
+                  value={topicOption}
+                >
+                  {topicOption}
+                </ToggleGroupItem>
+              ))}
+            </ToggleGroup>
+          </div>
 
           <div className="relative w-full lg:max-w-xs">
             <Label className="sr-only" htmlFor="explore-list-search">
               Search lists
             </Label>
-            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
             <Input
               className="h-9 pl-9"
               id="explore-list-search"
@@ -167,7 +225,12 @@ export function ExploreView({ lists, profiles }: ExploreViewProps) {
         {filteredLists.length ? (
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {filteredLists.map((list) => (
-              <ListCard key={list.id} list={list} showOwner />
+              <ListCard
+                currentUserId={currentUserId}
+                key={list.id}
+                list={list}
+                showOwner
+              />
             ))}
           </div>
         ) : (
@@ -182,49 +245,51 @@ export function ExploreView({ lists, profiles }: ExploreViewProps) {
 }
 
 function ExploreUserCard({
+  currentUserId,
+  isFollowing,
   profile,
   stats,
 }: {
+  currentUserId: string;
+  isFollowing: boolean;
   profile: Profile;
   stats: ProfileListStats;
 }) {
   return (
-    <Card
-      as="article"
-      className="w-60 shrink-0 snap-start p-4"
-      interactive
-    >
+    <Card as="article" className="w-60 shrink-0 snap-start p-4" interactive>
       <div className="flex items-start gap-3">
         <Link
-          className="grid size-14 shrink-0 place-items-center rounded-2xl border-2 border-foreground bg-gradient-gold font-display text-2xl font-black text-primary-foreground shadow-[3px_3px_0_0_var(--shadow-ink)]"
+          className="border-foreground/45 bg-gradient-gold font-display text-primary-foreground grid size-14 shrink-0 place-items-center rounded-2xl border text-2xl font-black shadow-none"
           href={getProfileHref(profile)}
         >
           {getProfileInitials(profile.displayName)}
         </Link>
         <div className="min-w-0 flex-1">
           <Link
-            className="block truncate font-display text-2xl leading-none font-bold transition hover:text-primary"
+            className="font-display hover:text-primary block truncate text-2xl leading-none font-bold transition"
             href={getProfileHref(profile)}
           >
             {profile.displayName}
           </Link>
-          <p className="truncate font-mono text-xs text-primary">
+          <p className="text-primary truncate font-mono text-xs">
             {profile.username ? `@${profile.username}` : "Rankex curator"}
           </p>
         </div>
       </div>
 
-      <div className="mt-4 flex items-center justify-between gap-3 border-t-2 border-dashed border-border pt-4">
-        <p className="text-xs leading-5 text-muted-foreground">
-          <span className="font-display text-base font-bold text-foreground">
+      <div className="border-border mt-4 flex items-center justify-between gap-3 border-t border-dashed pt-4">
+        <p className="text-muted-foreground text-xs leading-5">
+          <span className="font-display text-foreground text-base font-bold">
             {stats.publicListCount}
           </span>{" "}
           public lists / {stats.itemCount} ranked
         </p>
-        <Button size="sm" type="button" variant="outline">
-          <UserPlus data-icon="inline-start" />
-          Follow
-        </Button>
+        {profile.id !== currentUserId ? (
+          <FollowButton
+            initialIsFollowing={isFollowing}
+            profileId={profile.id}
+          />
+        ) : null}
       </div>
     </Card>
   );
@@ -238,9 +303,9 @@ function EmptyExploreBlock({
   title: string;
 }) {
   return (
-    <div className="rounded-2xl border border-dashed border-border bg-card/30 px-6 py-16 text-center">
+    <div className="border-border bg-card/30 rounded-2xl border border-dashed px-6 py-16 text-center">
       <p className="font-display text-xl">{title}</p>
-      <p className="mt-2 text-sm text-muted-foreground">{description}</p>
+      <p className="text-muted-foreground mt-2 text-sm">{description}</p>
     </div>
   );
 }

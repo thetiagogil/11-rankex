@@ -37,7 +37,7 @@ export function AppHeader({
           {leading ?? <AppLogo href="/" />}
         </div>
         {center ? (
-          <nav className="hidden items-center justify-center gap-2 rounded-full border-2 border-foreground/10 bg-card/80 p-1.5 backdrop-blur md:flex">
+          <nav className="hidden items-center justify-center gap-6 md:flex">
             {center}
           </nav>
         ) : (

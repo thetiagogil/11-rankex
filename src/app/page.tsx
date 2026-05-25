@@ -1,15 +1,14 @@
 import {
   ArrowRight,
-  ArrowUpRight,
   Clapperboard,
-  Coffee,
+  Compass,
   Gamepad2,
-  GripVertical,
-  LayoutGrid,
+  Heart,
   ListOrdered,
-  LockKeyhole,
   Music,
-  Sparkles,
+  Star,
+  Trophy,
+  Users,
   type LucideIcon,
 } from "lucide-react";
 
@@ -17,84 +16,103 @@ import { AppHeader } from "@/shared/components/layout/app-header";
 import { AppMain } from "@/shared/components/layout/app-main";
 import { AppShell } from "@/shared/components/layout/app-shell";
 import { ProtectedAppShell } from "@/shared/components/layout/protected-app-shell";
-import { Badge } from "@/shared/components/ui/badge";
 import { ButtonLink } from "@/shared/components/ui/button-link";
-import {
-  Card,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/shared/components/ui/card";
 import { getCurrentUser } from "@/shared/server/auth";
+import { cn } from "@/shared/utils/cn";
 
 type FeatureCard = {
+  accent: string;
   description: string;
   icon: LucideIcon;
+  shadow: string;
+  tilt: string;
   title: string;
 };
 
-type TrendingList = {
-  description: string;
-  entries: number;
+type SampleRanking = {
+  accent: string;
   icon: LucideIcon;
+  items: string[];
   title: string;
   topic: string;
 };
 
+type SampleDeckLayout = {
+  left: number;
+  rotate: number;
+  top: number;
+};
+
 const featureCards: FeatureCard[] = [
   {
-    description: "Create lists for movies, albums, restaurants, books, games, or anything else worth ordering.",
+    accent: "oklch(0.78 0.1 50)",
+    description: "Drag-and-drop ordering with scores, notes, and tiers.",
     icon: ListOrdered,
+    shadow: "peach",
+    tilt: "tilt-l",
     title: "Ranked lists",
   },
   {
-    description: "Switch from exact order to S/A/B/C/D tiers when the comparison gets less precise.",
-    icon: LayoutGrid,
-    title: "Tier view",
+    accent: "oklch(0.68 0.09 245)",
+    description: "Trending lists by topic, surfaced from the community.",
+    icon: Compass,
+    shadow: "sky",
+    tilt: "tilt-r",
+    title: "Explore feed",
   },
   {
-    description: "Move entries quickly and keep the final order synced to your account.",
-    icon: GripVertical,
-    title: "Drag reorder",
+    accent: "oklch(0.78 0.06 320)",
+    description: "Build a feed of taste you trust. Profiles for every user.",
+    icon: Users,
+    shadow: "lavender",
+    tilt: "tilt-l",
+    title: "Follow curators",
   },
   {
-    description: "Keep drafts private, then publish the lists you want other people to browse.",
-    icon: LockKeyhole,
-    title: "Visibility",
+    accent: "oklch(0.78 0.07 150)",
+    description: "React to others, fork their lists, and make them yours.",
+    icon: Heart,
+    shadow: "sage",
+    tilt: "tilt-r",
+    title: "Like, remix, comment",
   },
 ];
 
-const trendingLists: TrendingList[] = [
+const sampleRankings: SampleRanking[] = [
   {
-    description: "Quiet classics, dense visuals, and the kind of films that reward a second watch.",
-    entries: 4,
+    accent: "oklch(0.78 0.1 50)",
     icon: Clapperboard,
-    title: "Comfort films worth revisiting",
-    topic: "Movies",
-  },
-  {
-    description: "Reliable counters, strong coffee, and places worth crossing town for.",
-    entries: 3,
-    icon: Coffee,
-    title: "Lisbon coffee counters",
-    topic: "Food",
-  },
-  {
-    description: "Low-friction picks that work when everyone at the table has a different taste.",
-    entries: 3,
-    icon: Gamepad2,
-    title: "Board games for mixed groups",
+    items: ["Attack on Titan", "Demon Slayer", "My Hero Academia"],
+    title: "GOTY 2025",
     topic: "Games",
   },
   {
-    description: "No-skip records, focus playlists, and albums that still feel durable.",
-    entries: 8,
+    accent: "oklch(0.78 0.06 320)",
     icon: Music,
-    title: "Albums that hold up",
-    topic: "Music",
+    items: ["Blackbear", "Sueco", "Creepy Nuts"],
+    title: "Best artists",
+    topic: "Artists",
+  },
+  {
+    accent: "oklch(0.68 0.09 245)",
+    icon: Gamepad2,
+    items: ["Assassins Creed", "Pokémon", "Grand Theft Auto"],
+    title: "Best game franchises",
+    topic: "Games",
   },
 ];
+
+const sampleDeckLayout: SampleDeckLayout[] = [
+  { left: 20, rotate: -7, top: 0 },
+  { left: 124, rotate: 4, top: 78 },
+  { left: 42, rotate: -3, top: 172 },
+];
+
+const defaultSampleDeckLayout: SampleDeckLayout = sampleDeckLayout[0] ?? {
+  left: 20,
+  rotate: -7,
+  top: 0,
+};
 
 const marqueeTopics = [
   "Films",
@@ -103,11 +121,36 @@ const marqueeTopics = [
   "Restaurants",
   "Books",
   "Cities",
-  "Coffee",
-  "Trails",
-  "Directors",
-  "Desserts",
+  "TV shows",
+  "Podcasts",
+  "Comics",
+  "Anime",
+  "Hobbies",
+  "Cars",
+  "Recipes",
+  "Songs",
+  "Artists",
+  "Memes",
+  "Destinations",
+  "Sports teams",
+  "Cryptocurrencies",
+  "Board games",
+  "Fitness routines",
+  "Superheroes",
+  "Villains",
+  "TV characters",
 ];
+
+const marqueeTopicCopies = 12;
+const marqueeTopicLoop = Array.from(
+  { length: marqueeTopicCopies },
+  (_, copyIndex) =>
+    marqueeTopics.map((topic, topicIndex) => ({
+      copyIndex,
+      topic,
+      topicIndex,
+    })),
+).flat();
 
 export default async function LandingPage() {
   const currentUser = await getCurrentUser();
@@ -125,7 +168,7 @@ export default async function LandingPage() {
     <AppShell>
       <AppHeader
         actions={
-          <ButtonLink className="[box-shadow:none]" href="/auth" size="lg">
+          <ButtonLink className="[box-shadow:none]" href="/login" size="lg">
             Log in
           </ButtonLink>
         }
@@ -137,8 +180,8 @@ export default async function LandingPage() {
 }
 
 function LandingContent({ isAuthenticated }: { isAuthenticated: boolean }) {
-  const primaryHref = isAuthenticated ? "/dashboard" : "/auth?mode=signup";
-  const secondaryHref = isAuthenticated ? "/explore" : "/auth";
+  const primaryHref = isAuthenticated ? "/dashboard" : "/signup";
+  const secondaryHref = isAuthenticated ? "/explore" : "/login";
   const primaryLabel = isAuthenticated ? "Go to dashboard" : "Get started";
   const secondaryLabel = isAuthenticated
     ? "Explore rankings"
@@ -146,22 +189,15 @@ function LandingContent({ isAuthenticated }: { isAuthenticated: boolean }) {
 
   return (
     <AppMain className="pb-20">
-      <section className="grid items-center gap-10 pt-14 sm:pt-18 lg:grid-cols-[1.1fr_0.9fr] lg:pt-24">
+      <section className="relative grid items-center gap-10 pt-14 sm:pt-20 lg:grid-cols-[1.3fr_1fr] lg:pt-24">
         <div className="max-w-3xl">
-          <span className="chip text-xs font-bold">
-            <Sparkles className="size-3" />
-            Ranked lists with personality
-          </span>
-          <h1 className="mt-5 font-display text-6xl leading-[0.9] font-black text-balance sm:text-8xl">
-            Rank{" "}
-            <em className="scribble text-gradient-gold not-italic">
-              what matters
-            </em>
-            .
+          <h1 className="font-display mt-5 text-6xl leading-[0.92] font-black text-balance sm:text-7xl lg:text-8xl">
+            Rank <span className="text-gradient-gold">what matters</span>
           </h1>
-          <p className="mt-6 max-w-xl text-lg leading-8 text-muted-foreground">
-            Build top lists for anything worth ordering: films, albums,
-            restaurants, games, books, places, and personal canon.
+          <p className="text-muted-foreground mt-6 max-w-2xl text-lg leading-8">
+            Build top lists for anything worth ordering. Follow tastemakers,
+            like, comment, and remix the community&apos;s picks into your own
+            canon.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <ButtonLink href={primaryHref} size="lg">
@@ -174,116 +210,61 @@ function LandingContent({ isAuthenticated }: { isAuthenticated: boolean }) {
           </div>
         </div>
 
-        <div className="relative mx-auto h-[360px] w-full max-w-md max-lg:mt-2">
-          <SampleCard
-            accent="oklch(0.78 0.17 55)"
-            emoji="🎮"
-            items={["Clair Obscur", "Silksong", "Hades II"]}
-            left={18}
-            rotate={-6}
-            title="Game night canon"
-            topic="Games"
-            top={0}
-          />
-          <SampleCard
-            accent="oklch(0.66 0.24 0)"
-            emoji="🎬"
-            items={["In the Mood for Love", "Spirited Away", "Paddington 2"]}
-            left={128}
-            rotate={4}
-            title="Comfort films"
-            topic="Movies"
-            top={86}
-          />
-          <SampleCard
-            accent="oklch(0.58 0.2 290)"
-            emoji="🎧"
-            items={["Brat", "Cowboy Carter", "Imaginal Disk"]}
-            left={42}
-            rotate={-3}
-            title="Albums that hold up"
-            topic="Music"
-            top={176}
-          />
-        </div>
+        <SampleRankingDeck />
       </section>
 
-      <section className="mt-16 overflow-hidden border-y-2 border-foreground bg-foreground py-4 text-background">
+      <section className="border-foreground/35 bg-foreground text-background mt-16 overflow-hidden border-y py-4">
         <div className="marquee">
-          {[0, 1].map((track) => (
-            <div className="marquee-track" key={track}>
-              {marqueeTopics.map((topic) => (
-                <span
-                  className="font-display text-3xl font-bold tracking-wider uppercase"
-                  key={`${track}-${topic}`}
-                >
-                  {topic}
-                  <span className="mx-6 text-primary">★</span>
+          <div className="marquee-track">
+            {marqueeTopicLoop.map(({ copyIndex, topic, topicIndex }) => (
+              <span
+                aria-hidden={copyIndex > 0 ? "true" : undefined}
+                className="font-display inline-flex shrink-0 items-center text-2xl font-bold tracking-normal uppercase sm:text-3xl"
+                key={`${copyIndex}-${topicIndex}-${topic}`}
+              >
+                {topic}
+                <span className="inline-flex w-16 shrink-0 items-center justify-center">
+                  <Star
+                    aria-hidden="true"
+                    className="text-primary block size-5 fill-current"
+                    strokeWidth={2.5}
+                  />
                 </span>
-              ))}
-            </div>
-          ))}
+              </span>
+            ))}
+          </div>
         </div>
       </section>
 
       <section className="mt-18">
-        <div className="max-w-2xl">
-          <h2 className="font-display text-5xl leading-none font-bold">
-            Built for <span className="scribble">opinions</span>.
+        <div className="mb-10 flex items-end justify-between gap-4">
+          <h2 className="font-display max-w-xl text-4xl leading-none font-black sm:text-5xl">
+            Built for <span className="text-gradient-gold">opinions</span>
           </h2>
-          <p className="mt-3 text-muted-foreground">
-            Rankex keeps the first version focused: create lists, add items,
-            reorder them, switch views, and decide what should be public.
+          <p className="text-muted-foreground hidden max-w-xs text-sm leading-6 sm:block">
+            Drag, drop, rank, remix. Then put it in front of people who care.
           </p>
         </div>
 
-        <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
           {featureCards.map((feature) => (
             <FeatureCard key={feature.title} feature={feature} />
           ))}
         </div>
       </section>
 
-      <section className="mt-18">
-        <div className="mb-5 flex items-end justify-between gap-3">
-          <div>
-            <h2 className="font-display text-5xl leading-none font-bold">
-              Trending rankings
-            </h2>
-            <p className="mt-2 text-muted-foreground">
-              A preview of public lists people can browse by topic.
-            </p>
-          </div>
-          <ButtonLink
-            href={isAuthenticated ? "/explore" : "/auth"}
-            size="sm"
-            variant="link"
-          >
-            Explore
-            <ArrowUpRight data-icon="inline-end" />
-          </ButtonLink>
-        </div>
-
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          {trendingLists.map((list) => (
-            <TrendingListCard key={list.title} list={list} />
-          ))}
-        </div>
-      </section>
-
-      <section className="sticker relative mt-20 overflow-hidden rounded-[2rem] bg-gradient-gold px-6 py-12 text-center sm:px-12 sm:py-16">
-        <div className="absolute top-6 left-6 rotate-[-14deg] text-5xl opacity-25">
-          🏆
-        </div>
-        <div className="absolute right-8 bottom-6 rotate-[16deg] text-5xl opacity-25">
-          ★
-        </div>
-        <h2 className="relative font-display text-5xl leading-none font-bold text-primary-foreground sm:text-7xl">
-          What belongs in your top 10?
+      <section
+        className="landing-sticker bg-gradient-gold relative mt-20 overflow-hidden rounded-3xl px-6 py-12 text-center sm:px-12 sm:py-16"
+        data-shadow="navy"
+        data-static="true"
+      >
+        <Trophy className="text-primary-foreground/30 absolute top-6 left-6 size-12 rotate-[-14deg]" />
+        <Star className="text-primary-foreground/30 absolute right-8 bottom-6 size-12 rotate-16" />
+        <h2 className="font-display text-primary-foreground relative text-5xl leading-none font-bold sm:text-7xl">
+          What&apos;s on your top 10?
         </h2>
-        <p className="relative mx-auto mt-3 max-w-md text-primary-foreground/90">
-          Start with one list, keep it private while drafting, then publish when
-          the order feels right.
+        <p className="text-primary-foreground/90 relative mx-auto mt-3 max-w-md">
+          Five minutes to your first list. No credit card. No nonsense.
         </p>
         <div className="relative mt-7">
           <ButtonLink href={primaryHref} size="lg" variant="outline">
@@ -300,98 +281,93 @@ function FeatureCard({ feature }: { feature: FeatureCard }) {
   const Icon = feature.icon;
 
   return (
-    <Card as="article" className="bg-card" interactive size="sm">
-      <CardHeader className="gap-3">
-        <div className="flex items-center gap-3">
-          <span className="grid size-11 shrink-0 place-items-center rounded-2xl border-2 border-foreground bg-gradient-gold text-primary-foreground shadow-[3px_3px_0_0_var(--shadow-ink)]">
-            <Icon className="size-4" />
-          </span>
-          <CardTitle>{feature.title}</CardTitle>
-        </div>
-        <CardDescription className="leading-6">
-          {feature.description}
-        </CardDescription>
-      </CardHeader>
-    </Card>
+    <article
+      className={cn("landing-sticker bg-card rounded-3xl p-6", feature.tilt)}
+      data-shadow={feature.shadow}
+    >
+      <div className="flex items-center gap-3">
+        <span
+          className="text-foreground grid size-12 shrink-0 place-items-center rounded-2xl"
+          style={{ background: feature.accent }}
+        >
+          <Icon className="size-6" strokeWidth={2.5} />
+        </span>
+        <h3 className="font-display text-2xl leading-tight font-bold">
+          {feature.title}
+        </h3>
+      </div>
+      <p className="text-muted-foreground mt-3 text-sm leading-6">
+        {feature.description}
+      </p>
+    </article>
   );
 }
 
-function TrendingListCard({ list }: { list: TrendingList }) {
-  const Icon = list.icon;
-
+function SampleRankingDeck() {
   return (
-    <Card as="article" className="bg-card" interactive size="sm">
-      <CardHeader className="gap-4">
-        <div className="flex items-center justify-between gap-3">
-          <span className="grid size-11 shrink-0 place-items-center rounded-2xl border-2 border-foreground bg-secondary text-primary shadow-[3px_3px_0_0_var(--shadow-ink)]">
-            <Icon className="size-4" />
-          </span>
-          <Badge variant="surface">{list.topic}</Badge>
-        </div>
-        <div>
-          <CardTitle className="line-clamp-2">{list.title}</CardTitle>
-          <CardDescription className="mt-2 line-clamp-2 leading-6">
-            {list.description}
-          </CardDescription>
-        </div>
-      </CardHeader>
-      <CardFooter className="justify-between gap-3 text-xs text-muted-foreground">
-        <span>Public ranking</span>
-        <span>{list.entries} entries</span>
-      </CardFooter>
-    </Card>
+    <div className="relative mx-auto h-90 w-full max-w-md overflow-visible sm:h-97.5 lg:mt-0">
+      <div className="absolute top-0 left-1/2 h-97.5 w-105 -translate-x-1/2 scale-[0.86] sm:scale-95 lg:scale-100">
+        {sampleRankings.map((ranking, index) => (
+          <SampleRankingCard
+            key={ranking.title}
+            layout={sampleDeckLayout[index] ?? defaultSampleDeckLayout}
+            ranking={ranking}
+          />
+        ))}
+      </div>
+    </div>
   );
 }
 
-function SampleCard({
-  accent,
-  emoji,
-  items,
-  left,
-  rotate,
-  title,
-  topic,
-  top,
+function SampleRankingCard({
+  layout,
+  ranking,
 }: {
-  accent: string;
-  emoji: string;
-  items: string[];
-  left: number;
-  rotate: number;
-  title: string;
-  topic: string;
-  top: number;
+  layout: SampleDeckLayout;
+  ranking: SampleRanking;
 }) {
+  const Icon = ranking.icon;
+
   return (
-    <div
-      className="sticker absolute w-64 rounded-3xl bg-card p-5"
-      style={{ left, top, transform: `rotate(${rotate}deg)` }}
+    <article
+      className="landing-sticker bg-card absolute w-64 rounded-3xl p-5"
+      data-static="true"
+      style={{
+        left: layout.left,
+        top: layout.top,
+        transform: `rotate(${layout.rotate}deg)`,
+      }}
     >
       <div className="flex items-center justify-between gap-3">
-        <div className="text-3xl">{emoji}</div>
         <span
-          className="rounded-full border-2 border-foreground px-2 py-0.5 font-mono text-[10px] font-black tracking-widest uppercase"
-          style={{ background: accent }}
+          className="text-foreground grid size-11 shrink-0 place-items-center rounded-2xl"
+          style={{ background: ranking.accent }}
         >
-          {topic}
+          <Icon className="size-5" strokeWidth={2.5} />
+        </span>
+        <span
+          className="text-foreground rounded-lg px-2 py-0.5 text-[10px] font-black tracking-widest uppercase"
+          style={{ background: ranking.accent }}
+        >
+          {ranking.topic}
         </span>
       </div>
-      <h3 className="mt-3 font-display text-2xl leading-none font-bold">
-        {title}
+      <h3 className="font-display mt-3 text-xl leading-tight font-bold">
+        {ranking.title}
       </h3>
-      <ol className="mt-3 flex flex-col gap-1.5 text-sm">
-        {items.map((item, index) => (
+      <ol className="mt-3 space-y-1.5 text-sm">
+        {ranking.items.map((item, index) => (
           <li className="flex items-center gap-2" key={item}>
             <span
-              className="grid size-6 shrink-0 place-items-center rounded-lg border-2 border-foreground font-display text-sm leading-none"
-              style={{ background: accent }}
+              className="font-display flex size-5 shrink-0 items-center justify-center rounded-md text-xs font-black"
+              style={{ background: ranking.accent }}
             >
               {index + 1}
             </span>
-            <span className="truncate text-foreground/75">{item}</span>
+            <span className="text-foreground/80 min-w-0 truncate">{item}</span>
           </li>
         ))}
       </ol>
-    </div>
+    </article>
   );
 }

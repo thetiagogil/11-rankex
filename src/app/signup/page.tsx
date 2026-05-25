@@ -6,14 +6,14 @@ import { safeRedirectPath } from "@/lib/routing/redirect";
 import { SetupMissing } from "@/shared/components/setup-missing";
 import { getCurrentUser } from "@/shared/server/auth";
 
-type LoginPageProps = {
+type SignupPageProps = {
   searchParams: Promise<{
     error?: string;
     next?: string;
   }>;
 };
 
-export default async function LoginPage({ searchParams }: LoginPageProps) {
+export default async function SignupPage({ searchParams }: SignupPageProps) {
   if (!isSupabaseConfigured()) {
     return <SetupMissing />;
   }
@@ -29,7 +29,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   return (
     <AuthForm
       initialError={params.error ?? null}
-      mode="login"
+      mode="signup"
       next={safeNext}
     />
   );

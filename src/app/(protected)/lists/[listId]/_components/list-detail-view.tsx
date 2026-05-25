@@ -18,9 +18,11 @@ import { ListFormDialog } from "@/features/lists/components/list-form-dialog";
 import { SortableItemList } from "@/features/lists/components/sortable-item-list";
 import { TierView } from "@/features/lists/components/tier-view";
 import { VisibilityBadge } from "@/features/lists/components/visibility-badge";
-import { getListEmoji } from "@/features/lists/lib/list-emoji";
+import { getListIcon } from "@/features/lists/lib/list-icons";
 import { deleteListAction } from "@/features/lists/server/actions";
 import type { RankedList } from "@/features/lists/types";
+import { CommentSection } from "@/features/social/components/comment-section";
+import { ListSocialActions } from "@/features/social/components/list-social-actions";
 import { AppMain } from "@/shared/components/layout/app-main";
 import { Alert } from "@/shared/components/ui/alert";
 import { Button } from "@/shared/components/ui/button";
@@ -44,7 +46,8 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
   const [feedback, setFeedback] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const canEdit = list.ownerId === currentUserId;
-  const emoji = getListEmoji(list.emoji, list.topic);
+  const listIcon = getListIcon(list.emoji, list.topic);
+  const Icon = listIcon.Icon;
 
   const deleteList = () => {
     setFeedback(null);
@@ -65,7 +68,7 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
   return (
     <AppMain className="max-w-4xl pb-20">
       <Link
-        className="inline-flex items-center gap-2 text-sm text-muted-foreground transition hover:text-foreground"
+        className="text-muted-foreground hover:text-foreground inline-flex items-center gap-2 text-sm transition"
         href="/dashboard"
       >
         <ArrowLeft className="size-4" />
@@ -75,8 +78,8 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
       <section className="mt-6 flex flex-wrap items-end justify-between gap-5">
         <div className="min-w-0">
           <div className="flex items-start gap-4">
-            <div className="grid size-16 shrink-0 rotate-[-5deg] place-items-center rounded-3xl border-2 border-foreground bg-gradient-gold text-4xl shadow-elevated">
-              {emoji}
+            <div className="border-foreground/45 bg-gradient-gold shadow-elevated text-foreground grid size-16 shrink-0 rotate-[-5deg] place-items-center rounded-3xl border">
+              <Icon aria-hidden="true" className="size-8" strokeWidth={2.5} />
             </div>
             <div className="min-w-0">
               <h1 className="font-display text-5xl leading-none font-black sm:text-6xl">
@@ -86,12 +89,12 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
           </div>
 
           {list.description ? (
-            <p className="mt-4 max-w-2xl text-sm leading-7 text-muted-foreground">
+            <p className="text-muted-foreground mt-4 max-w-2xl text-sm leading-7">
               {list.description}
             </p>
           ) : null}
 
-          <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+          <div className="text-muted-foreground mt-3 flex flex-wrap items-center gap-3 text-sm">
             <VisibilityBadge isPublic={list.isPublic} />
             <span>{list.topic ?? "General"}</span>
             <span>
@@ -101,8 +104,22 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
             {canEdit ? <span>drag to reorder</span> : null}
             {list.owner ? (
               <span>
-                by <span className="text-foreground">{list.owner.displayName}</span>
+                by{" "}
+                <span className="text-foreground">
+                  {list.owner.displayName}
+                </span>
                 {list.owner.username ? ` @${list.owner.username}` : ""}
+              </span>
+            ) : null}
+            {list.remixSource ? (
+              <span>
+                remixed from{" "}
+                <Link
+                  className="text-foreground hover:text-primary transition"
+                  href={`/lists/${list.remixSource.id}`}
+                >
+                  {list.remixSource.title}
+                </Link>
               </span>
             ) : null}
           </div>
@@ -111,7 +128,7 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
         <div className="flex flex-wrap items-center gap-2">
           <ToggleGroup
             aria-label="Choose list view"
-            className="h-10 overflow-hidden rounded-full border-2 border-foreground bg-card"
+            className="border-foreground/45 bg-card h-10 overflow-hidden rounded-xl border"
             onValueChange={(value) => {
               if (value) setView(value as ViewMode);
             }}
@@ -120,20 +137,28 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
             value={view}
           >
             <ToggleGroupItem
-              className="h-10 rounded-full px-3 text-sm font-bold text-muted-foreground hover:text-foreground data-[state=on]:bg-foreground data-[state=on]:text-background"
+              className="text-muted-foreground hover:text-foreground data-[state=on]:bg-foreground data-[state=on]:text-background h-10 rounded-xl px-3 text-sm font-bold"
               value="ranked"
             >
               <ListOrdered data-icon="inline-start" />
               Ranked
             </ToggleGroupItem>
             <ToggleGroupItem
-              className="h-10 rounded-full px-3 text-sm font-bold text-muted-foreground hover:text-foreground data-[state=on]:bg-foreground data-[state=on]:text-background"
+              className="text-muted-foreground hover:text-foreground data-[state=on]:bg-foreground data-[state=on]:text-background h-10 rounded-xl px-3 text-sm font-bold"
               value="tiers"
             >
               <LayoutGrid data-icon="inline-start" />
               Tiers
             </ToggleGroupItem>
           </ToggleGroup>
+          {list.isPublic ? (
+            <ListSocialActions
+              canRemix={!canEdit}
+              listId={list.id}
+              showLabels
+              social={list.social}
+            />
+          ) : null}
           {canEdit ? (
             <>
               <ItemFormDialog
@@ -179,11 +204,11 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
         title="Delete this list?"
       >
         <div className="flex flex-col gap-5 pt-5">
-          <p className="text-sm leading-6 text-muted-foreground">
-            This permanently deletes &quot;{list.title}&quot; and all ranked items
-            in it.
+          <p className="text-muted-foreground text-sm leading-6">
+            This permanently deletes &quot;{list.title}&quot; and all ranked
+            items in it.
           </p>
-          <div className="flex justify-end gap-2 border-t-2 border-dashed border-border pt-4">
+          <div className="border-border flex justify-end gap-2 border-t border-dashed pt-4">
             <Button
               disabled={isPending}
               onClick={() => setDeleteDialogOpen(false)}
@@ -220,6 +245,8 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
           <TierView items={list.items} />
         )}
       </section>
+
+      <CommentSection currentUserId={currentUserId} list={list} />
     </AppMain>
   );
 }

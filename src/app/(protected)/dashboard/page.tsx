@@ -1,6 +1,7 @@
 import { DashboardListBrowser } from "@/app/(protected)/dashboard/_components/dashboard-list-browser";
 import { ListFormDialog } from "@/features/lists/components/list-form-dialog";
 import { getUserListSummaries } from "@/features/lists/server/queries";
+import { getProfileSocialStats } from "@/features/social/server/queries";
 import { AppMain } from "@/shared/components/layout/app-main";
 import { Card } from "@/shared/components/ui/card";
 import { createClient } from "@/lib/supabase/server";
@@ -10,20 +11,20 @@ import { cn } from "@/shared/utils/cn";
 export default async function DashboardPage() {
   const currentUser = await requireUser();
   const client = await createClient();
-  const lists = await getUserListSummaries(client, currentUser.id);
+  const [lists, social] = await Promise.all([
+    getUserListSummaries(client, currentUser.id),
+    getProfileSocialStats(client, currentUser.id, currentUser.id),
+  ]);
   const publicCount = lists.filter((list) => list.isPublic).length;
-  const privateCount = lists.length - publicCount;
-  const itemCount = lists.reduce((sum, list) => sum + list.itemCount, 0);
 
   return (
     <AppMain className="pb-20">
       <section className="mt-2 max-w-3xl">
         <h1 className="font-display text-4xl leading-tight font-black sm:text-6xl">
           Welcome back,{" "}
-          <em className="scribble text-gradient-gold not-italic">
+          <em className="text-gradient-gold not-italic">
             {currentUser.profile.displayName.split(" ")[0]}
           </em>
-          .
         </h1>
         <p className="text-muted-foreground mt-4 text-lg leading-8">
           Curate your canon, share with the community, and see what others are
@@ -34,8 +35,8 @@ export default async function DashboardPage() {
       <section className="mt-10 grid gap-4 sm:grid-cols-4">
         <Metric accent="primary" label="My lists" value={lists.length} />
         <Metric accent="accent" label="Public" value={publicCount} />
-        <Metric accent="cyan" label="Private" value={privateCount} />
-        <Metric accent="gold" label="Entries" value={itemCount} />
+        <Metric accent="cyan" label="Likes" value={social.likesReceivedCount} />
+        <Metric accent="gold" label="Saved" value={social.savedListCount} />
       </section>
 
       <section className="mt-16">
@@ -44,7 +45,7 @@ export default async function DashboardPage() {
           <ListFormDialog redirectToList />
         </div>
 
-        <DashboardListBrowser lists={lists} />
+        <DashboardListBrowser currentUserId={currentUser.id} lists={lists} />
       </section>
     </AppMain>
   );
@@ -60,14 +61,7 @@ function Metric({
   value: number;
 }) {
   return (
-    <Card
-      as="article"
-      className={cn(
-        "gap-0 p-5",
-        accent === "primary" && "tilt-l",
-        accent === "accent" && "tilt-r",
-      )}
-    >
+    <Card as="article" className="gap-0 p-5">
       <p className="text-muted-foreground font-mono text-xs tracking-widest uppercase">
         {label}
       </p>

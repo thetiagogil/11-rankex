@@ -24,7 +24,7 @@ export default async function PublicProfilePage({
   }
 
   const client = await createClient();
-  const overview = await getPublicProfileOverview(client, handle);
+  const overview = await getPublicProfileOverview(client, handle, currentUser.id);
 
   if (!overview) {
     notFound();
@@ -32,7 +32,7 @@ export default async function PublicProfilePage({
 
   return (
     <AppMain className="pb-20">
-      <ProfilePageView overview={overview} />
+      <ProfilePageView currentUserId={currentUser.id} overview={overview} />
     </AppMain>
   );
 }

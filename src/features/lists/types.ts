@@ -1,4 +1,5 @@
 import type {
+  RankexListCommentRow,
   RankexListItemRow,
   RankexListRow,
   RankexTier,
@@ -27,13 +28,18 @@ export type RankedList = {
   emoji: string | null;
   description: string | null;
   isPublic: boolean;
+  remixedFromListId: number | null;
+  remixedFromUserId: string | null;
   createdAt: string;
   updatedAt: string;
   owner: Profile | null;
   items: RankedItem[];
+  remixSource: RemixSource | null;
+  social: ListSocialState;
+  comments: ListComment[];
 };
 
-export type RankedListSummary = Omit<RankedList, "items"> & {
+export type RankedListSummary = Omit<RankedList, "comments" | "items"> & {
   itemCount: number;
   topItems: Pick<RankedItem, "id" | "position" | "title">[];
 };
@@ -41,4 +47,32 @@ export type RankedListSummary = Omit<RankedList, "items"> & {
 export type RankedListRows = {
   list: RankexListRow;
   items: RankexListItemRow[];
+};
+
+export type RemixSource = {
+  id: number;
+  owner: Profile | null;
+  title: string;
+};
+
+export type ListSocialState = {
+  commentCount: number;
+  isBookmarkedByViewer: boolean;
+  isLikedByViewer: boolean;
+  likeCount: number;
+};
+
+export type ListComment = {
+  author: Profile | null;
+  body: string;
+  createdAt: string;
+  id: number;
+  listId: number;
+  updatedAt: string;
+  userId: string;
+};
+
+export type ListCommentRows = {
+  author: Profile | null;
+  comment: RankexListCommentRow;
 };

@@ -106,7 +106,7 @@ export function ItemFormDialog({ item, listId, trigger }: ItemFormDialogProps) {
         <form className="flex flex-col gap-4 pt-5" onSubmit={submit}>
           {feedback ? <Alert tone="error">{feedback}</Alert> : null}
 
-          <div className="grid gap-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label htmlFor="item-title" required>
               Title
             </Label>
@@ -122,7 +122,7 @@ export function ItemFormDialog({ item, listId, trigger }: ItemFormDialogProps) {
             />
           </div>
 
-          <div className="grid gap-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label htmlFor="item-note">Note</Label>
             <Textarea
               disabled={isPending}
@@ -136,7 +136,7 @@ export function ItemFormDialog({ item, listId, trigger }: ItemFormDialogProps) {
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2">
-            <div className="grid gap-1.5">
+            <div className="flex flex-col gap-1.5">
               <Label htmlFor="item-score">Score</Label>
               <Input
                 disabled={isPending}
@@ -151,7 +151,7 @@ export function ItemFormDialog({ item, listId, trigger }: ItemFormDialogProps) {
               />
             </div>
 
-            <div className="grid gap-1.5">
+            <div className="flex flex-col gap-1.5">
               <Label htmlFor="item-tier">Tier</Label>
               <Select
                 disabled={isPending}
@@ -174,7 +174,7 @@ export function ItemFormDialog({ item, listId, trigger }: ItemFormDialogProps) {
             </div>
           </div>
 
-          <div className="flex justify-end gap-2 border-t border-border pt-4">
+          <div className="border-border flex justify-end gap-2 border-t pt-4">
             <Button
               disabled={isPending}
               onClick={() => setOpen(false)}

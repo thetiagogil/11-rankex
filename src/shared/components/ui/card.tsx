@@ -50,7 +50,7 @@ function Card({
   return (
     <Component
       className={cn(
-        "sticker-card group/card relative flex flex-col gap-4 overflow-hidden rounded-3xl bg-card py-4 text-sm text-card-foreground transition-all has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:gap-3 data-[size=sm]:py-3 data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-3xl *:[img:last-child]:rounded-b-3xl",
+        "rankex-card group/card bg-card text-card-foreground relative flex flex-col gap-4 overflow-hidden rounded-3xl border py-4 text-sm transition-all has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:gap-3 data-[size=sm]:py-3 data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-3xl *:[img:last-child]:rounded-b-3xl",
         borderClass,
         className,
       )}
@@ -60,7 +60,7 @@ function Card({
       {...props}
     >
       {gradient ? (
-        <div className="pointer-events-none absolute inset-0 bg-linear-to-br from-primary/10 via-transparent to-accent/10" />
+        <div className="from-primary/10 to-accent/10 pointer-events-none absolute inset-0 bg-linear-to-br via-transparent" />
       ) : null}
       {corners ? (
         <>
@@ -124,7 +124,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
 function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
-      className={cn("text-sm text-muted-foreground", className)}
+      className={cn("text-muted-foreground text-sm", className)}
       data-slot="card-description"
       {...props}
     />
@@ -161,7 +161,7 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       className={cn(
-        "relative z-10 flex items-center border-t-2 border-dashed bg-secondary/55 p-5 group-data-[size=sm]/card:p-4",
+        "bg-secondary/55 relative z-10 flex items-center border-t border-dashed p-5 group-data-[size=sm]/card:p-4",
         className,
       )}
       data-slot="card-footer"

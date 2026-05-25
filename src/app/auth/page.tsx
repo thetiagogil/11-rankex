@@ -1,10 +1,6 @@
 import { redirect } from "next/navigation";
 
-import { AuthForm } from "@/features/auth/components/auth-form";
-import { SetupMissing } from "@/shared/components/setup-missing";
-import { isSupabaseConfigured } from "@/lib/env";
 import { safeRedirectPath } from "@/lib/routing/redirect";
-import { getCurrentUser } from "@/shared/server/auth";
 
 type AuthPageProps = {
   searchParams: Promise<{
@@ -15,23 +11,18 @@ type AuthPageProps = {
 };
 
 export default async function AuthPage({ searchParams }: AuthPageProps) {
-  if (!isSupabaseConfigured()) {
-    return <SetupMissing />;
-  }
-
   const params = await searchParams;
+  const pathname = params.mode === "signup" ? "/signup" : "/login";
+  const redirectUrl = new URL(pathname, "https://rankex.local");
   const safeNext = safeRedirectPath(params.next, "/dashboard");
-  const currentUser = await getCurrentUser();
 
-  if (currentUser) {
-    redirect(safeNext);
+  if (safeNext !== "/dashboard") {
+    redirectUrl.searchParams.set("next", safeNext);
   }
 
-  return (
-    <AuthForm
-      initialError={params.error ?? null}
-      initialMode={params.mode === "signup" ? "signup" : "signin"}
-      next={safeNext}
-    />
-  );
+  if (params.error) {
+    redirectUrl.searchParams.set("error", params.error);
+  }
+
+  redirect(`${redirectUrl.pathname}${redirectUrl.search}`);
 }

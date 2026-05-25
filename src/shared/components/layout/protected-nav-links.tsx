@@ -21,10 +21,10 @@ export function ProtectedNavLinks({ pathname }: ProtectedNavLinksProps) {
           <Link
             aria-current={active ? "page" : undefined}
             className={cn(
-              "relative inline-flex h-8 items-center rounded-full px-3 text-sm font-bold transition-colors",
+              "relative inline-flex h-8 items-center text-sm font-bold transition-colors after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:origin-left after:scale-x-0 after:rounded-full after:bg-primary after:transition-transform",
               active
-                ? "bg-foreground text-background shadow-[3px_3px_0_0_var(--color-primary)]"
-                : "text-foreground/65 hover:bg-foreground/5 hover:text-foreground",
+                ? "text-foreground after:scale-x-100"
+                : "text-foreground/65 hover:text-foreground",
             )}
             href={link.href}
             key={link.href}

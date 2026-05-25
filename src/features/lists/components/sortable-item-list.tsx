@@ -53,13 +53,12 @@ export function SortableItemList({
   const [isPending, startTransition] = useTransition();
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
   );
 
-  const sortableIds = useMemo(
-    () => items.map((item) => item.id),
-    [items],
-  );
+  const sortableIds = useMemo(() => items.map((item) => item.id), [items]);
 
   const onDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -112,7 +111,7 @@ export function SortableItemList({
 
   if (items.length === 0) {
     return (
-      <div className="sticker-card rounded-3xl border-dashed bg-card px-6 py-16 text-center">
+      <div className="sticker-card bg-card rounded-3xl border-dashed px-6 py-16 text-center">
         <p className="font-display text-xl">An empty podium awaits</p>
         <p className="text-muted-foreground mt-2 text-sm">
           {canEdit
@@ -175,12 +174,12 @@ export function SortableItemList({
         title="Delete this item?"
       >
         <div className="flex flex-col gap-5 pt-5">
-          <p className="text-sm leading-6 text-muted-foreground">
+          <p className="text-muted-foreground text-sm leading-6">
             {itemPendingDelete
               ? `This permanently removes "${itemPendingDelete.title}" from the ranking.`
               : "This item will be removed from the ranking."}
           </p>
-          <div className="flex justify-end gap-2 border-t border-border pt-4">
+          <div className="border-border flex justify-end gap-2 border-t pt-4">
             <Button
               disabled={isPending}
               onClick={() => setItemPendingDelete(null)}
@@ -230,9 +229,9 @@ function SortableRow({
   return (
     <article
       className={cn(
-        "sticker-card group relative flex flex-col gap-3 rounded-3xl bg-card p-4 transition sm:flex-row sm:items-center",
+        "sticker-card group bg-card relative flex flex-col gap-3 rounded-3xl p-4 transition sm:flex-row sm:items-center",
         isDragging
-          ? "z-30 border-primary ring-2 ring-primary/35"
+          ? "border-primary ring-primary/35 z-30 ring-2"
           : "hover:border-primary",
       )}
       ref={setNodeRef}
@@ -245,7 +244,7 @@ function SortableRow({
         {canEdit ? (
           <Button
             aria-label="Drag to reorder"
-            className="cursor-grab touch-none text-muted-foreground hover:text-foreground active:cursor-grabbing"
+            className="text-muted-foreground hover:text-foreground cursor-grab touch-none active:cursor-grabbing"
             disabled={disabled}
             size="icon"
             type="button"
@@ -253,11 +252,7 @@ function SortableRow({
             {...attributes}
             {...listeners}
           >
-            {disabled ? (
-              <Loader2 className="animate-spin" />
-            ) : (
-              <GripVertical />
-            )}
+            {disabled ? <Loader2 className="animate-spin" /> : <GripVertical />}
           </Button>
         ) : null}
         <RankBadge rank={rank} />
@@ -265,17 +260,17 @@ function SortableRow({
 
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
-          <h3 className="truncate font-display text-lg font-semibold">
+          <h3 className="font-display truncate text-lg font-semibold">
             {item.title}
           </h3>
           {item.score !== null ? (
-            <span className="rounded-full border-2 border-foreground bg-accent px-2 py-0.5 font-mono text-xs font-bold text-accent-foreground shadow-[2px_2px_0_0_var(--shadow-ink)]">
+            <span className="border-foreground/45 bg-accent text-accent-foreground rounded-lg border px-2 py-0.5 font-mono text-xs font-bold shadow-none">
               {item.score}
             </span>
           ) : null}
         </div>
         {item.note ? (
-          <p className="mt-1 line-clamp-2 text-sm leading-6 text-muted-foreground">
+          <p className="text-muted-foreground mt-1 line-clamp-2 text-sm leading-6">
             {item.note}
           </p>
         ) : null}
@@ -289,7 +284,11 @@ function SortableRow({
               item={item}
               listId={listId}
               trigger={
-                <Button aria-label={`Edit ${item.title}`} size="icon" variant="ghost">
+                <Button
+                  aria-label={`Edit ${item.title}`}
+                  size="icon"
+                  variant="ghost"
+                >
                   <Pencil />
                 </Button>
               }

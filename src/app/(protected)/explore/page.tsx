@@ -1,14 +1,18 @@
 import { ExploreView } from "@/app/(protected)/explore/_components/explore-view";
 import { getPublicListSummaries } from "@/features/lists/server/queries";
 import { getDiscoverableProfiles } from "@/features/profile/server/queries";
+import { getFollowingIds } from "@/features/social/server/queries";
 import { AppMain } from "@/shared/components/layout/app-main";
 import { createClient } from "@/lib/supabase/server";
+import { requireUser } from "@/shared/server/auth";
 
 export default async function ExplorePage() {
+  const currentUser = await requireUser();
   const client = await createClient();
-  const [lists, profiles] = await Promise.all([
-    getPublicListSummaries(client),
+  const [lists, profiles, followingIds] = await Promise.all([
+    getPublicListSummaries(client, 30, currentUser.id),
     getDiscoverableProfiles(client),
+    getFollowingIds(client, currentUser.id),
   ]);
 
   return (
@@ -23,7 +27,12 @@ export default async function ExplorePage() {
         </p>
       </section>
 
-      <ExploreView lists={lists} profiles={profiles} />
+      <ExploreView
+        currentUserId={currentUser.id}
+        followingIds={followingIds}
+        lists={lists}
+        profiles={profiles}
+      />
     </AppMain>
   );
 }

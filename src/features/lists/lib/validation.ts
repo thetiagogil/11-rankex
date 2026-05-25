@@ -1,4 +1,5 @@
 import { isTier, type Tier } from "@/features/lists/lib/tiers";
+import { resolveListIconId } from "@/features/lists/lib/list-icon-data";
 
 export type ListInput = {
   description?: string | null;
@@ -34,17 +35,15 @@ const titleMaxLength = 120;
 const topicMaxLength = 80;
 const descriptionMaxLength = 500;
 const noteMaxLength = 800;
-const emojiMaxLength = 16;
+const iconMaxLength = 16;
 
 export function normalizeListInput(
   input: ListInput,
-):
-  | { ok: true; data: NormalizedListInput }
-  | { ok: false; error: string } {
+): { ok: true; data: NormalizedListInput } | { ok: false; error: string } {
   const title = input.title.trim();
   const topic = input.topic?.trim() || null;
   const description = input.description?.trim() || null;
-  const emoji = input.emoji?.trim() || null;
+  const icon = input.emoji?.trim() || null;
 
   if (!title) return { ok: false, error: "List title is required." };
 
@@ -69,15 +68,15 @@ export function normalizeListInput(
     };
   }
 
-  if (emoji && emoji.length > emojiMaxLength) {
-    return { ok: false, error: "Emoji must be a short label." };
+  if (icon && icon.length > iconMaxLength) {
+    return { ok: false, error: "Icon must be a short label." };
   }
 
   return {
     ok: true,
     data: {
       description,
-      emoji,
+      emoji: resolveListIconId(icon, topic),
       isPublic: input.isPublic,
       title,
       topic,
@@ -87,9 +86,7 @@ export function normalizeListInput(
 
 export function normalizeItemInput(
   input: ItemInput,
-):
-  | { ok: true; data: NormalizedItemInput }
-  | { ok: false; error: string } {
+): { ok: true; data: NormalizedItemInput } | { ok: false; error: string } {
   const title = input.title.trim();
   const note = input.note?.trim() || null;
   const score = normalizeScore(input.score);

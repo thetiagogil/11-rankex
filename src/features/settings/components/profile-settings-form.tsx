@@ -103,7 +103,7 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
                   placeholder="rank_curator"
                   value={username}
                 />
-                <p className="text-xs text-muted-foreground">
+                <p className="text-muted-foreground text-xs">
                   Lowercase letters, numbers, and underscores. Leave blank to
                   keep the generated profile URL.
                 </p>
@@ -125,7 +125,7 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
                 rows={5}
                 value={bio}
               />
-              <p className="text-right font-mono text-[10px] text-muted-foreground">
+              <p className="text-muted-foreground text-right font-mono text-[10px]">
                 {bio.length}/160
               </p>
             </FieldShell>
@@ -144,7 +144,7 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
             <Alert tone={feedback.tone}>{feedback.message}</Alert>
           ) : null}
 
-          <div className="flex flex-col-reverse gap-2 border-t-2 border-dashed border-border pt-4 sm:flex-row sm:items-center sm:justify-end">
+          <div className="border-border flex flex-col-reverse gap-2 border-t border-dashed pt-4 sm:flex-row sm:items-center sm:justify-end">
             <Button
               disabled={isPending}
               onClick={reset}
@@ -182,7 +182,7 @@ function SettingsBlock({
     <section className="flex flex-col gap-4">
       <div>
         <h2 className="font-display text-xl font-bold">{title}</h2>
-        <p className="mt-1 text-sm leading-6 text-muted-foreground">
+        <p className="text-muted-foreground mt-1 text-sm leading-6">
           {description}
         </p>
       </div>
@@ -207,7 +207,7 @@ function FieldShell({
   return (
     <div className="flex w-full flex-col gap-1.5">
       <Label
-        className="inline-flex w-full items-center gap-2 [&_svg]:size-3.5 [&_svg]:text-primary"
+        className="[&_svg]:text-primary inline-flex w-full items-center gap-2 [&_svg]:size-3.5"
         htmlFor={htmlFor}
         required={required}
       >

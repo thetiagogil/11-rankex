@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  Globe2,
-  ListPlus,
-  Loader2,
-  LockKeyhole,
-  Save,
-} from "lucide-react";
+import { Globe2, ListPlus, Loader2, LockKeyhole, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { type FormEvent, type ReactNode, useState, useTransition } from "react";
 
@@ -14,7 +8,11 @@ import {
   createListAction,
   updateListAction,
 } from "@/features/lists/server/actions";
-import { getListEmoji } from "@/features/lists/lib/list-emoji";
+import {
+  getListIcon,
+  listIconOptions,
+  resolveListIconId,
+} from "@/features/lists/lib/list-icons";
 import type { RankedList } from "@/features/lists/types";
 import { Alert } from "@/shared/components/ui/alert";
 import { Button } from "@/shared/components/ui/button";
@@ -33,19 +31,6 @@ type ListFormDialogProps = {
   trigger?: ReactNode;
 };
 
-const emojiOptions = [
-  "🏆",
-  "🎬",
-  "🎮",
-  "🎵",
-  "🍜",
-  "📚",
-  "⚽",
-  "✈️",
-  "☕",
-  "💻",
-];
-
 export function ListFormDialog({
   initialList,
   redirectToList = false,
@@ -55,11 +40,13 @@ export function ListFormDialog({
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState(initialList?.title ?? "");
   const [topic, setTopic] = useState(initialList?.topic ?? "");
-  const [description, setDescription] = useState(initialList?.description ?? "");
-  const [emoji, setEmoji] = useState(
-    getListEmoji(initialList?.emoji ?? null, initialList?.topic ?? null),
+  const [description, setDescription] = useState(
+    initialList?.description ?? "",
   );
-  const [isPublic, setIsPublic] = useState(initialList?.isPublic ?? false);
+  const [iconId, setIconId] = useState(
+    getListIcon(initialList?.emoji ?? null, initialList?.topic ?? null).id,
+  );
+  const [isPublic, setIsPublic] = useState(initialList?.isPublic ?? true);
   const [feedback, setFeedback] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const isEditing = Boolean(initialList);
@@ -68,8 +55,10 @@ export function ListFormDialog({
     setTitle(initialList?.title ?? "");
     setTopic(initialList?.topic ?? "");
     setDescription(initialList?.description ?? "");
-    setEmoji(getListEmoji(initialList?.emoji ?? null, initialList?.topic ?? null));
-    setIsPublic(initialList?.isPublic ?? false);
+    setIconId(
+      getListIcon(initialList?.emoji ?? null, initialList?.topic ?? null).id,
+    );
+    setIsPublic(initialList?.isPublic ?? true);
     setFeedback(null);
     setOpen(true);
   };
@@ -79,7 +68,7 @@ export function ListFormDialog({
     setFeedback(null);
 
     startTransition(async () => {
-      const input = { description, emoji, isPublic, title, topic };
+      const input = { description, emoji: iconId, isPublic, title, topic };
       const result = initialList
         ? await updateListAction(initialList.id, input)
         : await createListAction(input);
@@ -121,7 +110,7 @@ export function ListFormDialog({
         <form className="flex flex-col gap-4 pt-5" onSubmit={submit}>
           {feedback ? <Alert tone="error">{feedback}</Alert> : null}
 
-          <div className="grid gap-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label htmlFor="list-title" required>
               List title
             </Label>
@@ -137,7 +126,7 @@ export function ListFormDialog({
             />
           </div>
 
-          <div className="grid gap-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label htmlFor="list-topic">Topic</Label>
             <Input
               disabled={isPending}
@@ -149,7 +138,7 @@ export function ListFormDialog({
             />
           </div>
 
-          <div className="grid gap-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label htmlFor="list-description">Description</Label>
             <Textarea
               disabled={isPending}
@@ -162,32 +151,37 @@ export function ListFormDialog({
             />
           </div>
 
-          <div className="grid gap-2">
+          <div className="flex flex-col gap-2">
             <Label>Icon</Label>
             <ToggleGroup
               aria-label="Choose list icon"
               className="flex flex-wrap gap-2"
               onValueChange={(value) => {
-                if (value) setEmoji(value);
+                if (value) setIconId(resolveListIconId(value, null));
               }}
               type="single"
-              value={emoji}
+              value={iconId}
             >
-              {emojiOptions.map((option) => (
-                <ToggleGroupItem
-                  aria-label={`Use ${option} as list icon`}
-                  className="grid size-10 place-items-center rounded-lg border border-border bg-secondary/55 p-0 text-xl hover:bg-secondary data-[state=on]:scale-105 data-[state=on]:border-primary data-[state=on]:bg-primary/10 data-[state=on]:shadow-glow"
-                  disabled={isPending}
-                  key={option}
-                  value={option}
-                >
-                  {option}
-                </ToggleGroupItem>
-              ))}
+              {listIconOptions.map((option) => {
+                const Icon = option.Icon;
+
+                return (
+                  <ToggleGroupItem
+                    aria-label={`Use ${option.label} icon`}
+                    className="border-border bg-secondary/55 text-foreground hover:bg-secondary data-[state=on]:border-primary data-[state=on]:bg-primary/10 data-[state=on]:text-primary data-[state=on]:shadow-glow grid size-10 place-items-center rounded-lg border p-0 data-[state=on]:scale-105"
+                    disabled={isPending}
+                    key={option.id}
+                    title={option.label}
+                    value={option.id}
+                  >
+                    <Icon aria-hidden="true" className="size-5" />
+                  </ToggleGroupItem>
+                );
+              })}
             </ToggleGroup>
           </div>
 
-          <div className="grid gap-2">
+          <div className="flex flex-col gap-2">
             <Label>Visibility</Label>
             <ToggleGroup
               aria-label="Choose list visibility"
@@ -214,7 +208,7 @@ export function ListFormDialog({
             </ToggleGroup>
           </div>
 
-          <div className="flex justify-end gap-2 border-t border-border pt-4">
+          <div className="border-border flex justify-end gap-2 border-t pt-4">
             <Button
               disabled={isPending}
               onClick={() => setOpen(false)}
@@ -251,14 +245,14 @@ function VisibilityOption({
 }) {
   return (
     <ToggleGroupItem
-      className="h-auto flex-col items-start rounded-xl border border-border bg-secondary/45 p-3 text-left hover:bg-secondary data-[state=on]:border-primary data-[state=on]:bg-primary/10 data-[state=on]:text-primary [&_svg]:size-4"
+      className="border-border bg-secondary/45 hover:bg-secondary data-[state=on]:border-primary data-[state=on]:bg-primary/10 data-[state=on]:text-primary h-auto flex-col items-start rounded-xl border p-3 text-left [&_svg]:size-4"
       value={value}
     >
       <span className="flex items-center gap-2 text-sm font-semibold">
         {icon}
         {label}
       </span>
-      <span className="mt-1 block text-xs text-muted-foreground">
+      <span className="text-muted-foreground mt-1 block text-xs">
         {description}
       </span>
     </ToggleGroupItem>

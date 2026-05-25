@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
   const requestUrl = new URL(request.url);
   const formData = await request.formData();
   const next = safeRedirectPath(formData.get("next")?.toString(), "/dashboard");
-  const failureUrl = new URL("/auth", requestUrl.origin);
+  const failureUrl = new URL("/login", requestUrl.origin);
   failureUrl.searchParams.set("next", next);
 
   try {

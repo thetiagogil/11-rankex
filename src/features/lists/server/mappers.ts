@@ -1,12 +1,23 @@
 import { mapProfile } from "@/shared/server/mappers";
 import type { ProfileRow } from "@/shared/types";
 import type {
+  ListComment,
+  ListCommentRows,
+  ListSocialState,
   RankedItem,
   RankedList,
   RankedListRows,
   RankedListSummary,
+  RemixSource,
 } from "@/features/lists/types";
 import type { RankexListItemRow } from "@/types/database.types";
+
+const defaultSocialState: ListSocialState = {
+  commentCount: 0,
+  isBookmarkedByViewer: false,
+  isLikedByViewer: false,
+  likeCount: 0,
+};
 
 export function mapItem(row: RankexListItemRow): RankedItem {
   return {
@@ -25,6 +36,11 @@ export function mapItem(row: RankexListItemRow): RankedItem {
 export function mapList(
   rows: RankedListRows,
   owner: ProfileRow | null,
+  options: {
+    comments?: ListCommentRows[];
+    remixSource?: RemixSource | null;
+    social?: ListSocialState;
+  } = {},
 ): RankedList {
   const { list, items } = rows;
 
@@ -36,18 +52,27 @@ export function mapList(
     emoji: list.emoji,
     description: list.description,
     isPublic: list.is_public,
+    remixedFromListId: list.remixed_from_list_id,
+    remixedFromUserId: list.remixed_from_user_id,
     createdAt: list.created_at,
     updatedAt: list.updated_at,
     owner: owner ? mapProfile(owner) : null,
     items: items.map(mapItem).sort(sortItems),
+    remixSource: options.remixSource ?? null,
+    social: options.social ?? defaultSocialState,
+    comments: (options.comments ?? []).map(mapComment),
   };
 }
 
 export function mapListSummary(
   rows: RankedListRows,
   owner: ProfileRow | null,
+  options: {
+    remixSource?: RemixSource | null;
+    social?: ListSocialState;
+  } = {},
 ): RankedListSummary {
-  const list = mapList(rows, owner);
+  const list = mapList(rows, owner, options);
 
   return {
     ...list,
@@ -57,6 +82,18 @@ export function mapListSummary(
       position: item.position,
       title: item.title,
     })),
+  };
+}
+
+export function mapComment({ author, comment }: ListCommentRows): ListComment {
+  return {
+    author,
+    body: comment.body,
+    createdAt: comment.created_at,
+    id: comment.id,
+    listId: comment.list_id,
+    updatedAt: comment.updated_at,
+    userId: comment.user_id,
   };
 }
 

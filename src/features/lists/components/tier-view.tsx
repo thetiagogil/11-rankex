@@ -16,12 +16,12 @@ export function TierView({ items }: TierViewProps) {
 
         return (
           <section
-            className="sticker-card grid gap-3 rounded-3xl bg-card p-3 sm:grid-cols-[4rem_1fr]"
+            className="sticker-card bg-card grid gap-3 rounded-3xl p-3 sm:grid-cols-[4rem_1fr]"
             key={tier}
           >
             <div className="flex items-center gap-3 sm:flex-col sm:justify-center">
               <TierBadge size="lg" tier={tier} />
-              <span className="text-xs text-muted-foreground">
+              <span className="text-muted-foreground text-xs">
                 {tierDescriptions[tier]}
               </span>
             </div>
@@ -29,19 +29,19 @@ export function TierView({ items }: TierViewProps) {
               {tierItems.length ? (
                 tierItems.map((item) => (
                   <span
-                    className="rounded-full border-2 border-foreground bg-secondary px-3 py-2 text-sm font-semibold shadow-[2px_2px_0_0_var(--shadow-ink)]"
+                    className="border-foreground/45 bg-secondary rounded-xl border px-3 py-2 text-sm font-semibold shadow-none"
                     key={item.id}
                   >
                     {item.title}
                     {item.score !== null ? (
-                      <span className="ml-2 font-mono text-xs text-primary">
+                      <span className="text-primary ml-2 font-mono text-xs">
                         {item.score}
                       </span>
                     ) : null}
                   </span>
                 ))
               ) : (
-                <span className="text-sm text-muted-foreground italic">
+                <span className="text-muted-foreground text-sm italic">
                   Empty
                 </span>
               )}
@@ -51,13 +51,13 @@ export function TierView({ items }: TierViewProps) {
       })}
 
       {untiered.length ? (
-        <section className="sticker-card flex flex-wrap items-center gap-2 rounded-3xl border-dashed bg-card p-3">
-          <span className="mr-2 text-xs text-muted-foreground uppercase">
+        <section className="sticker-card bg-card flex flex-wrap items-center gap-2 rounded-3xl border-dashed p-3">
+          <span className="text-muted-foreground mr-2 text-xs uppercase">
             No tier
           </span>
           {untiered.map((item) => (
             <span
-              className="rounded-full border-2 border-foreground bg-secondary px-3 py-2 text-sm font-semibold shadow-[2px_2px_0_0_var(--shadow-ink)]"
+              className="border-foreground/45 bg-secondary rounded-xl border px-3 py-2 text-sm font-semibold shadow-none"
               key={item.id}
             >
               {item.title}

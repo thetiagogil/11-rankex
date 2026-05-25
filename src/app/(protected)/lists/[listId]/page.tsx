@@ -20,7 +20,7 @@ export default async function ListDetailPage({ params }: ListDetailPageProps) {
 
   const currentUser = await requireUser();
   const client = await createClient();
-  const list = await getListById(client, parsedListId);
+  const list = await getListById(client, parsedListId, currentUser.id);
 
   if (!list) notFound();
 

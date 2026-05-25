@@ -5,24 +5,24 @@ import { Slot } from "radix-ui";
 import { cn } from "@/shared/utils/cn";
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-full border-2 bg-clip-padding text-sm font-bold whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/35 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border bg-clip-padding text-sm font-bold whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/30 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
         default:
-          "border-foreground bg-foreground text-background shadow-[4px_4px_0_0_var(--color-primary)] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_var(--color-primary)]",
+          "border-foreground/70 bg-foreground text-background shadow-[1px_1px_0_0_var(--color-primary)] hover:-translate-x-px hover:-translate-y-px hover:shadow-[2px_2px_0_0_var(--color-primary)]",
         primary:
-          "border-foreground bg-foreground text-background shadow-[4px_4px_0_0_var(--color-primary)] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_var(--color-primary)]",
+          "border-foreground/70 bg-foreground text-background shadow-[1px_1px_0_0_var(--color-primary)] hover:-translate-x-px hover:-translate-y-px hover:shadow-[2px_2px_0_0_var(--color-primary)]",
         outline:
-          "border-foreground bg-card text-foreground shadow-[4px_4px_0_0_var(--color-accent)] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-secondary hover:shadow-[6px_6px_0_0_var(--color-accent)] aria-expanded:bg-secondary",
+          "border-foreground/55 bg-card text-foreground shadow-[1px_1px_0_0_var(--color-accent)] hover:-translate-x-px hover:-translate-y-px hover:bg-secondary hover:shadow-[2px_2px_0_0_var(--color-accent)] aria-expanded:bg-secondary",
         secondary:
-          "border-foreground bg-secondary text-secondary-foreground shadow-[3px_3px_0_0_var(--shadow-ink)] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-secondary/80 aria-expanded:bg-secondary",
+          "border-foreground/40 bg-secondary text-secondary-foreground shadow-none hover:-translate-x-px hover:-translate-y-px hover:bg-secondary/80 hover:shadow-[1px_1px_0_0_var(--shadow-ink)] aria-expanded:bg-secondary",
         ghost:
           "border-transparent text-foreground shadow-none hover:bg-foreground/5 aria-expanded:bg-foreground/5",
         destructive:
-          "border-destructive bg-destructive text-destructive-foreground shadow-[4px_4px_0_0_var(--shadow-ink)] hover:-translate-x-0.5 hover:-translate-y-0.5 focus-visible:border-destructive/40 focus-visible:ring-destructive/20",
+          "border-destructive/70 bg-destructive text-destructive-foreground shadow-[1px_1px_0_0_var(--shadow-ink)] hover:-translate-x-px hover:-translate-y-px hover:shadow-[2px_2px_0_0_var(--shadow-ink)] focus-visible:border-destructive/40 focus-visible:ring-destructive/20",
         danger:
-          "border-destructive bg-destructive text-destructive-foreground shadow-[4px_4px_0_0_var(--shadow-ink)] hover:-translate-x-0.5 hover:-translate-y-0.5 focus-visible:border-destructive/40 focus-visible:ring-destructive/20",
+          "border-destructive/70 bg-destructive text-destructive-foreground shadow-[1px_1px_0_0_var(--shadow-ink)] hover:-translate-x-px hover:-translate-y-px hover:shadow-[2px_2px_0_0_var(--shadow-ink)] focus-visible:border-destructive/40 focus-visible:ring-destructive/20",
         link: "border-transparent bg-transparent text-primary shadow-none hover:bg-transparent hover:underline",
       },
       size: {

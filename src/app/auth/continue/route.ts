@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {
-    const authUrl = new URL("/auth", requestUrl.origin);
+    const authUrl = new URL("/login", requestUrl.origin);
     authUrl.searchParams.set("next", next);
 
     return NextResponse.redirect(authUrl);
