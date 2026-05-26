@@ -25,7 +25,7 @@ export default async function ExplorePage() {
           Explore
         </h1>
         <p className="mt-4 text-lg leading-8 text-muted-foreground">
-          Browse public rankings, discover curators, and follow the topics that
+          Browse public rankings, discover people, and follow the topics that
           keep showing up in the community canon.
         </p>
       </section>

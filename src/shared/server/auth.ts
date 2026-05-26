@@ -125,7 +125,7 @@ function getProfileDefaults(user: User) {
     readString(metadata.full_name) ??
     readString(metadata.name) ??
     titleCase(emailName) ??
-    "Rankex User";
+    "Rankex profile";
 
   return {
     displayName,

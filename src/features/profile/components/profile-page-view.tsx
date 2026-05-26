@@ -6,7 +6,10 @@ import { FollowButton } from "@/features/social/components/follow-button";
 import { ButtonLink } from "@/shared/components/button-link";
 import { Card } from "@/shared/components/ui/card";
 import { EmptyState } from "@/shared/components/empty-state";
-import { getProfileInitials } from "@/shared/utils/profile";
+import {
+  getProfileInitials,
+  getProfileUsernameLabel,
+} from "@/shared/utils/profile";
 
 type ProfilePageViewProps = {
   currentUserId?: string;
@@ -20,12 +23,13 @@ export function ProfilePageView({
   overview,
 }: ProfilePageViewProps) {
   const { lists, profile, social, stats } = overview;
+  const usernameLabel = getProfileUsernameLabel(profile);
   const emptyCopy = isCurrentUser
     ? "Create a list from the dashboard to start building out your public profile."
-    : "This curator has not published a list yet.";
+    : "This profile has not published a list yet.";
   const bio =
     profile.bio ||
-    "A Rankex curator building ordered lists, tiers, and personal canon.";
+    "A Rankex profile building ordered lists, tiers, and personal canon.";
 
   return (
     <div className="flex min-w-0 flex-col gap-10">
@@ -40,12 +44,14 @@ export function ProfilePageView({
           <div className="min-w-0 flex-1">
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0 flex-1">
-                <h1 className="font-display truncate text-5xl leading-none font-black sm:text-6xl">
+                <h1 className="font-display truncate text-5xl leading-tight font-black sm:text-6xl">
                   {profile.displayName}
                 </h1>
-                <p className="text-primary mt-1 truncate font-mono text-sm">
-                  {profile.username ? `@${profile.username}` : "Rankex profile"}
-                </p>
+                {usernameLabel ? (
+                  <p className="text-primary mt-1 truncate font-mono text-sm">
+                    {usernameLabel}
+                  </p>
+                ) : null}
 
                 {isCurrentUser ? (
                   <ButtonLink

@@ -60,10 +60,10 @@ const featureCards: FeatureCard[] = [
   },
   {
     accent: "oklch(0.78 0.06 320)",
-    description: "Build a feed of taste you trust. Profiles for every user.",
+    description: "Build a feed of taste you trust. Profiles for every person.",
     icon: Users,
     tilt: "tilt-l",
-    title: "Follow curators",
+    title: "Follow people",
   },
   {
     accent: "oklch(0.78 0.07 150)",

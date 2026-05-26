@@ -8,7 +8,10 @@ import type { RankedListSummary } from "@/features/lists/types";
 import { ListSocialActions } from "@/features/social/components/list-social-actions";
 import { Card } from "@/shared/components/ui/card";
 import { cn } from "@/shared/utils/cn";
-import { getProfileHref } from "@/shared/utils/profile";
+import {
+  getProfileHref,
+  getProfileUsernameLabel,
+} from "@/shared/utils/profile";
 
 type ListCardProps = {
   currentUserId?: string;
@@ -87,12 +90,7 @@ export function ListCard({
         ) : (
           <>
             {showOwner && list.owner ? (
-              <Link
-                className="text-muted-foreground hover:text-primary relative z-30 min-w-0 truncate text-xs font-bold transition"
-                href={getProfileHref(list.owner)}
-              >
-                @{list.owner.username ?? list.owner.displayName}
-              </Link>
+              <OwnerHandleLink owner={list.owner} />
             ) : (
               <ListCardSocialPills social={list.social} />
             )}
@@ -128,9 +126,7 @@ function ExploreCardFooter({
   showOwner: boolean;
 }) {
   const ownerHandle =
-    showOwner && list.owner
-      ? `@${list.owner.username ?? list.owner.displayName}`
-      : null;
+    showOwner && list.owner ? getProfileUsernameLabel(list.owner) : null;
 
   return (
     <div className="flex w-full items-center justify-between gap-3">
@@ -150,18 +146,40 @@ function ExploreCardFooter({
 
       <div className="pointer-events-none relative z-30 ml-auto flex min-w-0 items-center gap-1">
         {ownerHandle && list.owner ? (
-          <Link
-            className="text-muted-foreground hover:text-primary pointer-events-auto min-w-0 truncate text-xs font-bold transition"
-            href={getProfileHref(list.owner)}
-          >
-            {ownerHandle}
-          </Link>
+          <OwnerHandleLink
+            className="pointer-events-auto"
+            owner={list.owner}
+          />
         ) : null}
         <span className="text-primary group-hover:bg-primary/10 group-hover:text-accent grid size-7 place-items-center rounded-full transition group-hover:translate-x-0.5">
           <ArrowRight className="size-4" />
         </span>
       </div>
     </div>
+  );
+}
+
+function OwnerHandleLink({
+  className,
+  owner,
+}: {
+  className?: string;
+  owner: NonNullable<RankedListSummary["owner"]>;
+}) {
+  const ownerHandle = getProfileUsernameLabel(owner);
+
+  if (!ownerHandle) return null;
+
+  return (
+    <Link
+      className={cn(
+        "text-muted-foreground hover:text-primary relative z-30 min-w-0 truncate text-xs font-bold transition",
+        className,
+      )}
+      href={getProfileHref(owner)}
+    >
+      {ownerHandle}
+    </Link>
   );
 }
 

@@ -112,7 +112,7 @@ export function CommentSection({ currentUserId, list }: CommentSectionProps) {
       {list.comments.length > 0 ? (
         <div className="mt-5 flex flex-col gap-3">
           {list.comments.map((comment) => {
-            const authorName = comment.author?.displayName ?? "Rankex curator";
+            const authorName = comment.author?.displayName ?? "Rankex profile";
             const canDelete =
               comment.userId === currentUserId ||
               list.ownerId === currentUserId;
@@ -203,7 +203,7 @@ export function CommentSection({ currentUserId, list }: CommentSectionProps) {
             list.isPublic
               ? canComment
                 ? "Be the first to leave a quick reaction."
-                : "Comments from other users will appear here."
+                : "Comments from other people will appear here."
               : "Public rankings can collect a short thread of reactions."
           }
           title="No comments yet"

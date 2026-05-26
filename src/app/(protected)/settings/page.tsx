@@ -13,8 +13,8 @@ export default async function SettingsPage() {
             Settings
           </h1>
           <p className="mt-4 text-lg leading-8 text-muted-foreground">
-            Update the curator identity that appears on Rankex lists, profile
-            pages, and the public Explore surface.
+            Update the profile identity that appears on Rankex lists, profile
+            pages, and Explore.
           </p>
         </section>
 

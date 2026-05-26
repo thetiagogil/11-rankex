@@ -19,3 +19,9 @@ export function getProfileHandle(profile: Pick<Profile, "id" | "username">) {
 export function getProfileHref(profile: Pick<Profile, "id" | "username">) {
   return `/u/${encodeURIComponent(getProfileHandle(profile))}`;
 }
+
+export function getProfileUsernameLabel(
+  profile: Pick<Profile, "username">,
+) {
+  return profile.username ? `@${profile.username}` : null;
+}

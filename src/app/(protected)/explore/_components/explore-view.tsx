@@ -17,11 +17,15 @@ import { Card } from "@/shared/components/ui/card";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
 import type { Profile } from "@/shared/types";
-import { getProfileHref, getProfileInitials } from "@/shared/utils/profile";
+import {
+  getProfileHref,
+  getProfileInitials,
+  getProfileUsernameLabel,
+} from "@/shared/utils/profile";
 
 type ExploreSort = "following" | "newest" | "trending";
 
-type ExploreCuratorStats = {
+type ExplorePersonStats = {
   likeCount: number;
   publicListCount: number;
   topics: string[];
@@ -44,8 +48,8 @@ export function ExploreView({
   const [userQuery, setUserQuery] = useState("");
   const [topic, setTopic] = useState("All");
   const [sort, setSort] = useState<ExploreSort>("trending");
-  const curators = useMemo(
-    () => buildCuratorCards(lists, profiles, currentUserId),
+  const people = useMemo(
+    () => buildPeopleCards(lists, profiles, currentUserId),
     [currentUserId, lists, profiles],
   );
   const topics = useMemo(
@@ -58,19 +62,19 @@ export function ExploreView({
     [lists],
   );
 
-  const filteredCurators = useMemo(() => {
+  const filteredPeople = useMemo(() => {
     const normalizedQuery = userQuery.trim().toLowerCase();
 
-    if (!normalizedQuery) return curators;
+    if (!normalizedQuery) return people;
 
-    return curators.filter(({ profile, stats }) =>
+    return people.filter(({ profile, stats }) =>
       [profile.displayName, profile.username, ...stats.topics]
         .filter(Boolean)
         .join(" ")
         .toLowerCase()
         .includes(normalizedQuery),
     );
-  }, [curators, userQuery]);
+  }, [people, userQuery]);
 
   const filteredLists = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -114,28 +118,28 @@ export function ExploreView({
           <h2 className="font-display text-2xl font-bold">People to follow</h2>
           <div className="relative w-full lg:max-w-xs">
             <Label className="sr-only" htmlFor="explore-user-search">
-              Search users
+              Search people
             </Label>
             <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
             <Input
               className="h-9 pl-9"
               id="explore-user-search"
               onChange={(event) => setUserQuery(event.target.value)}
-              placeholder="Search users..."
+              placeholder="Search people..."
               value={userQuery}
             />
           </div>
         </div>
-        {filteredCurators.length ? (
+        {filteredPeople.length ? (
           <div className="scrollbar-themed -mx-4 overflow-x-auto px-4 pb-3 sm:mx-0 sm:px-0">
             <div className="flex w-max min-w-full snap-x gap-3">
-              {filteredCurators.map((curator) => (
+              {filteredPeople.map((person) => (
                 <ExploreUserCard
                   currentUserId={currentUserId}
-                  key={curator.profile.id}
-                  profile={curator.profile}
-                  isFollowing={followingIds.includes(curator.profile.id)}
-                  stats={curator.stats}
+                  key={person.profile.id}
+                  profile={person.profile}
+                  isFollowing={followingIds.includes(person.profile.id)}
+                  stats={person.stats}
                 />
               ))}
             </div>
@@ -143,10 +147,10 @@ export function ExploreView({
         ) : (
           <EmptyExploreBlock
             title={
-              curators.length ? "No users match that search." : "No users yet."
+              people.length ? "No people match that search." : "No people yet."
             }
             description={
-              curators.length
+              people.length
                 ? "Try another name, handle, or topic."
                 : "Public profiles will surface here."
             }
@@ -248,8 +252,10 @@ function ExploreUserCard({
   currentUserId: string;
   isFollowing: boolean;
   profile: Profile;
-  stats: ExploreCuratorStats;
+  stats: ExplorePersonStats;
 }) {
+  const usernameLabel = getProfileUsernameLabel(profile);
+
   return (
     <Card
       as="article"
@@ -265,14 +271,16 @@ function ExploreUserCard({
         </Link>
         <div className="min-w-0 flex-1">
           <Link
-            className="font-display hover:text-primary block truncate text-2xl leading-none font-bold transition"
+            className="font-display hover:text-primary block truncate text-2xl leading-tight font-bold transition"
             href={getProfileHref(profile)}
           >
             {profile.displayName}
           </Link>
-          <p className="text-primary truncate font-mono text-xs">
-            {profile.username ? `@${profile.username}` : "Rankex curator"}
-          </p>
+          {usernameLabel ? (
+            <p className="text-primary truncate font-mono text-xs">
+              {usernameLabel}
+            </p>
+          ) : null}
         </div>
       </div>
 
@@ -333,7 +341,7 @@ function EmptyExploreBlock({
   return <EmptyState description={description} title={title} />;
 }
 
-function buildCuratorCards(
+function buildPeopleCards(
   lists: RankedListSummary[],
   profiles: Profile[],
   currentUserId: string,
@@ -356,7 +364,7 @@ function buildCuratorCards(
     }));
 }
 
-function buildStats(lists: RankedListSummary[]): ExploreCuratorStats {
+function buildStats(lists: RankedListSummary[]): ExplorePersonStats {
   return {
     likeCount: lists.reduce((sum, list) => sum + list.social.likeCount, 0),
     publicListCount: lists.length,

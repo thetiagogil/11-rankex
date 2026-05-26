@@ -87,7 +87,7 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
 
           <SettingsBlock
             description="The name and handle people see before they open one of your rankings."
-            title="Public curator card"
+            title="Public profile"
           >
             <div className="grid gap-4">
               <FieldShell
@@ -114,7 +114,7 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
                   id="username"
                   maxLength={30}
                   onChange={(event) => setUsername(event.target.value)}
-                  placeholder="rank_curator"
+                  placeholder="rank_profile"
                   value={username}
                 />
                 <p className="text-muted-foreground text-xs">
