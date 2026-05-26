@@ -297,13 +297,10 @@ async function getSocialByListId(
       .select("list_id, user_id")
       .in("list_id", listIds),
     rankex(client).from("list_comments").select("list_id").in("list_id", listIds),
-    viewerId
-      ? rankex(client)
-          .from("list_bookmarks")
-          .select("list_id")
-          .eq("user_id", viewerId)
-          .in("list_id", listIds)
-      : Promise.resolve({ data: [], error: null }),
+    rankex(client)
+      .from("list_bookmarks")
+      .select("list_id, user_id")
+      .in("list_id", listIds),
   ]);
 
   if (likesResult.error) throw new Error(likesResult.error.message);
@@ -330,7 +327,9 @@ async function getSocialByListId(
   for (const bookmark of bookmarksResult.data ?? []) {
     const state =
       socialByListId.get(bookmark.list_id) ?? createEmptySocialState();
-    state.isBookmarkedByViewer = true;
+    state.bookmarkCount += 1;
+    state.isBookmarkedByViewer =
+      state.isBookmarkedByViewer || bookmark.user_id === viewerId;
     socialByListId.set(bookmark.list_id, state);
   }
 
@@ -339,6 +338,7 @@ async function getSocialByListId(
 
 function createEmptySocialState(): ListSocialState {
   return {
+    bookmarkCount: 0,
     commentCount: 0,
     isBookmarkedByViewer: false,
     isLikedByViewer: false,

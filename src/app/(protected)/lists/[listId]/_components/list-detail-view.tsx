@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  ArrowLeft,
-  LayoutGrid,
-  ListOrdered,
-  Pencil,
-  Plus,
-} from "lucide-react";
+import { ArrowLeft, LayoutGrid, List, Pencil, Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -22,13 +16,13 @@ import type { RankedList } from "@/features/lists/types";
 import { CommentSection } from "@/features/social/components/comment-section";
 import { ListSocialActions } from "@/features/social/components/list-social-actions";
 import { AppMain } from "@/shared/components/layout/app-main";
-import { Alert } from "@/shared/components/ui/alert";
-import { Button } from "@/shared/components/ui/button";
 import { Modal } from "@/shared/components/modal";
 import {
   SegmentedToggleGroup,
   SegmentedToggleGroupItem,
 } from "@/shared/components/segmented-toggle-group";
+import { Alert } from "@/shared/components/ui/alert";
+import { Button } from "@/shared/components/ui/button";
 import type { Profile } from "@/shared/types";
 import { getProfileHref, getProfileInitials } from "@/shared/utils/profile";
 
@@ -145,7 +139,7 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
                 labelStyle="plain"
                 value="ranked"
               >
-                <ListOrdered data-icon="inline-start" />
+                <List data-icon="inline-start" />
                 Ranked
               </SegmentedToggleGroupItem>
               <SegmentedToggleGroupItem

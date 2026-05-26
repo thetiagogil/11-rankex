@@ -56,6 +56,7 @@ export type RemixSource = {
 };
 
 export type ListSocialState = {
+  bookmarkCount: number;
   commentCount: number;
   isBookmarkedByViewer: boolean;
   isLikedByViewer: boolean;

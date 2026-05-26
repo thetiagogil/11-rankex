@@ -43,17 +43,39 @@ export async function getPublicProfileOverview(
 
 export async function getDiscoverableProfiles(
   client: AppSupabaseClient,
-  limit = 24,
+  options: {
+    excludeUserId?: string;
+    followingIds?: string[];
+    limit?: number;
+  } = {},
 ): Promise<Profile[]> {
-  const { data, error } = await core(client)
+  const { excludeUserId, followingIds = [], limit } = options;
+  let query = core(client)
     .from("profiles")
     .select("id, display_name, avatar_url, username, bio, created_at, updated_at")
-    .order("updated_at", { ascending: false })
-    .limit(limit);
+    .order("updated_at", { ascending: false });
+
+  if (excludeUserId) {
+    query = query.neq("id", excludeUserId);
+  }
+
+  const { data, error } = await query;
 
   if (error) throw new Error(error.message);
 
-  return (data ?? []).map(mapProfile);
+  const followingSet = new Set(followingIds);
+  const profiles = (data ?? []).map(mapProfile);
+  const nonFollowingProfiles = shuffleProfiles(
+    profiles.filter((profile) => !followingSet.has(profile.id)),
+  );
+  const followingProfiles = shuffleProfiles(
+    profiles.filter((profile) => followingSet.has(profile.id)),
+  );
+  const prioritizedProfiles = [...nonFollowingProfiles, ...followingProfiles];
+
+  return typeof limit === "number"
+    ? prioritizedProfiles.slice(0, limit)
+    : prioritizedProfiles;
 }
 
 async function getProfileByHandle(
@@ -95,11 +117,20 @@ async function getProfileByColumn(
 
 function buildProfileStats(lists: RankedListSummary[]): ProfileListStats {
   return {
-    itemCount: lists.reduce((sum, list) => sum + list.itemCount, 0),
     listCount: lists.length,
-    publicListCount: lists.filter((list) => list.isPublic).length,
-    topics: Array.from(
-      new Set(lists.map((list) => list.topic).filter(Boolean) as string[]),
-    ).sort((a, b) => a.localeCompare(b)),
   };
+}
+
+function shuffleProfiles(profiles: Profile[]) {
+  const shuffled = [...profiles];
+
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [shuffled[index], shuffled[swapIndex]] = [
+      shuffled[swapIndex],
+      shuffled[index],
+    ];
+  }
+
+  return shuffled;
 }

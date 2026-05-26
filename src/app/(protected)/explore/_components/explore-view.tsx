@@ -1,25 +1,31 @@
 "use client";
 
-import { ListFilter, Search, TrendingUp } from "lucide-react";
+import { Heart, List, ListFilter, Search, TrendingUp } from "lucide-react";
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
 
 import { ListCard } from "@/features/lists/components/list-card";
 import type { RankedListSummary } from "@/features/lists/types";
-import type { ProfileListStats } from "@/features/profile/types";
 import { FollowButton } from "@/features/social/components/follow-button";
-import { Card } from "@/shared/components/ui/card";
 import { EmptyState } from "@/shared/components/empty-state";
-import { Input } from "@/shared/components/ui/input";
-import { Label } from "@/shared/components/ui/label";
 import {
   SegmentedToggleGroup,
   SegmentedToggleGroupItem,
 } from "@/shared/components/segmented-toggle-group";
+import { Card } from "@/shared/components/ui/card";
+import { Input } from "@/shared/components/ui/input";
+import { Label } from "@/shared/components/ui/label";
 import type { Profile } from "@/shared/types";
 import { getProfileHref, getProfileInitials } from "@/shared/utils/profile";
 
 type ExploreSort = "following" | "newest" | "trending";
+
+type ExploreCuratorStats = {
+  likeCount: number;
+  publicListCount: number;
+  topics: string[];
+};
 
 type ExploreViewProps = {
   currentUserId: string;
@@ -39,11 +45,7 @@ export function ExploreView({
   const [topic, setTopic] = useState("All");
   const [sort, setSort] = useState<ExploreSort>("trending");
   const curators = useMemo(
-    () =>
-      buildCuratorCards(
-        lists,
-        profiles.filter((profile) => profile.id !== currentUserId),
-      ),
+    () => buildCuratorCards(lists, profiles, currentUserId),
     [currentUserId, lists, profiles],
   );
   const topics = useMemo(
@@ -192,10 +194,7 @@ export function ExploreView({
               wrap
             >
               {topics.map((topicOption) => (
-                <SegmentedToggleGroupItem
-                  key={topicOption}
-                  value={topicOption}
-                >
+                <SegmentedToggleGroupItem key={topicOption} value={topicOption}>
                   {topicOption}
                 </SegmentedToggleGroupItem>
               ))}
@@ -222,6 +221,7 @@ export function ExploreView({
             {filteredLists.map((list) => (
               <ListCard
                 currentUserId={currentUserId}
+                footerMode="explore"
                 key={list.id}
                 list={list}
                 showOwner
@@ -248,12 +248,12 @@ function ExploreUserCard({
   currentUserId: string;
   isFollowing: boolean;
   profile: Profile;
-  stats: ProfileListStats;
+  stats: ExploreCuratorStats;
 }) {
   return (
     <Card
       as="article"
-      className="w-60 shrink-0 snap-start p-4"
+      className="min-h-40 w-64 shrink-0 snap-start gap-0 p-4"
       variant="shadow"
     >
       <div className="flex items-start gap-3">
@@ -276,21 +276,50 @@ function ExploreUserCard({
         </div>
       </div>
 
-      <div className="border-border mt-4 flex items-center justify-between gap-3 border-t border-dashed pt-4">
-        <p className="text-muted-foreground text-xs leading-5">
-          <span className="font-display text-foreground text-base font-bold">
-            {stats.publicListCount}
-          </span>{" "}
-          public lists / {stats.itemCount} ranked
-        </p>
+      <div className="mt-auto flex items-center justify-between gap-2 pt-6">
+        <div className="text-muted-foreground flex min-w-0 items-center gap-1.5 text-xs font-bold">
+          <ExploreUserStatPill
+            icon={<List className="size-3.5" />}
+            label={pluralize(stats.publicListCount, "list")}
+            value={stats.publicListCount}
+          />
+          <ExploreUserStatPill
+            icon={<Heart className="size-3.5" />}
+            label={pluralize(stats.likeCount, "like")}
+            value={stats.likeCount}
+          />
+        </div>
         {profile.id !== currentUserId ? (
           <FollowButton
+            className="relative z-10"
             initialIsFollowing={isFollowing}
             profileId={profile.id}
+            size="xs"
           />
         ) : null}
       </div>
     </Card>
+  );
+}
+
+function ExploreUserStatPill({
+  icon,
+  label,
+  value,
+}: {
+  icon: ReactNode;
+  label: string;
+  value: number;
+}) {
+  return (
+    <span
+      aria-label={`${value} ${label}`}
+      className="border-border bg-background inline-flex h-7 items-center gap-1 rounded-full border px-2"
+      title={`${value} ${label}`}
+    >
+      {icon}
+      {value}
+    </span>
   );
 }
 
@@ -304,52 +333,39 @@ function EmptyExploreBlock({
   return <EmptyState description={description} title={title} />;
 }
 
-function buildCuratorCards(lists: RankedListSummary[], profiles: Profile[]) {
-  const curators = new Map<
-    string,
-    {
-      lists: RankedListSummary[];
-      profile: Profile;
-    }
-  >();
+function buildCuratorCards(
+  lists: RankedListSummary[],
+  profiles: Profile[],
+  currentUserId: string,
+) {
+  const listsByProfileId = new Map<string, RankedListSummary[]>();
 
   for (const list of lists) {
     if (!list.owner) continue;
 
-    const current = curators.get(list.owner.id);
-    if (current) {
-      current.lists.push(list);
-    } else {
-      curators.set(list.owner.id, { lists: [list], profile: list.owner });
-    }
+    const ownerLists = listsByProfileId.get(list.owner.id) ?? [];
+    ownerLists.push(list);
+    listsByProfileId.set(list.owner.id, ownerLists);
   }
 
-  for (const profile of profiles) {
-    if (!curators.has(profile.id)) {
-      curators.set(profile.id, { lists: [], profile });
-    }
-  }
-
-  return Array.from(curators.values())
-    .map(({ lists: curatorLists, profile }) => ({
+  return profiles
+    .filter((profile) => profile.id !== currentUserId)
+    .map((profile) => ({
       profile,
-      stats: buildStats(curatorLists),
-    }))
-    .sort(
-      (a, b) =>
-        b.stats.publicListCount - a.stats.publicListCount ||
-        b.stats.itemCount - a.stats.itemCount ||
-        a.profile.displayName.localeCompare(b.profile.displayName),
-    );
+      stats: buildStats(listsByProfileId.get(profile.id) ?? []),
+    }));
 }
 
-function buildStats(lists: RankedListSummary[]): ProfileListStats {
+function buildStats(lists: RankedListSummary[]): ExploreCuratorStats {
   return {
-    itemCount: lists.reduce((sum, list) => sum + list.itemCount, 0),
-    listCount: lists.length,
+    likeCount: lists.reduce((sum, list) => sum + list.social.likeCount, 0),
     publicListCount: lists.length,
     topics: Array.from(
       new Set(lists.map((list) => list.topic).filter(Boolean) as string[]),
     ).sort((a, b) => a.localeCompare(b)),
   };
+}
+
+function pluralize(value: number, singular: string) {
+  return value === 1 ? singular : `${singular}s`;
 }

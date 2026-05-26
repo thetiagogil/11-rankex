@@ -9,11 +9,14 @@ import { requireUser } from "@/shared/server/auth";
 export default async function ExplorePage() {
   const currentUser = await requireUser();
   const client = await createClient();
-  const [lists, profiles, followingIds] = await Promise.all([
+  const [lists, followingIds] = await Promise.all([
     getPublicListSummaries(client, 30, currentUser.id),
-    getDiscoverableProfiles(client),
     getFollowingIds(client, currentUser.id),
   ]);
+  const profiles = await getDiscoverableProfiles(client, {
+    excludeUserId: currentUser.id,
+    followingIds,
+  });
 
   return (
     <AppMain className="pb-20">

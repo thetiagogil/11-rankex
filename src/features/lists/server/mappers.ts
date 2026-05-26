@@ -13,6 +13,7 @@ import type {
 import type { RankexListItemRow } from "@/types/database.types";
 
 const defaultSocialState: ListSocialState = {
+  bookmarkCount: 0,
   commentCount: 0,
   isBookmarkedByViewer: false,
   isLikedByViewer: false,

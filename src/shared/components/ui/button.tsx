@@ -19,6 +19,7 @@ const buttonVariants = cva(
           "border-foreground/40 bg-secondary text-secondary-foreground shadow-[2px_2px_0_0_var(--shadow-ink)] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:bg-secondary/80 hover:shadow-[4px_4px_0_0_var(--shadow-ink)] aria-expanded:bg-secondary",
         ghost:
           "border-transparent text-foreground shadow-none hover:bg-foreground/5 aria-expanded:bg-foreground/5",
+        pill: "border-border bg-background text-muted-foreground shadow-none hover:bg-secondary/70 hover:text-foreground",
         destructive:
           "border-transparent bg-destructive text-destructive-foreground shadow-[3px_3px_0_0_var(--shadow-ink)] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[5px_5px_0_0_var(--shadow-ink)] focus-visible:border-destructive focus-visible:ring-destructive/20",
         danger:

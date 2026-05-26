@@ -9,7 +9,12 @@ import {
   Save,
   UserRound,
 } from "lucide-react";
-import { type ReactNode, type SubmitEvent, useState, useTransition } from "react";
+import {
+  type ReactNode,
+  type SubmitEvent,
+  useState,
+  useTransition,
+} from "react";
 
 import { updateProfileSettingsAction } from "@/features/settings/server/actions";
 import { Alert } from "@/shared/components/ui/alert";
@@ -72,6 +77,15 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
       <Card as="section" className="p-5 sm:p-7">
         <div className="flex flex-col gap-7">
           <SettingsBlock
+            description="Used only for logging in and account recovery. It is not shown on public Rankex pages."
+            title="Account anchor"
+          >
+            <FieldShell htmlFor="email" icon={<Mail />} label="Email">
+              <Input disabled id="email" value={currentUser.email ?? ""} />
+            </FieldShell>
+          </SettingsBlock>
+
+          <SettingsBlock
             description="The name and handle people see before they open one of your rankings."
             title="Public curator card"
           >
@@ -128,15 +142,6 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
               <p className="text-muted-foreground text-right font-mono text-[10px]">
                 {bio.length}/160
               </p>
-            </FieldShell>
-          </SettingsBlock>
-
-          <SettingsBlock
-            description="Used only for logging in and account recovery. It is not shown on public Rankex pages."
-            title="Account anchor"
-          >
-            <FieldShell htmlFor="email" icon={<Mail />} label="Email">
-              <Input disabled id="email" value={currentUser.email ?? ""} />
             </FieldShell>
           </SettingsBlock>
 

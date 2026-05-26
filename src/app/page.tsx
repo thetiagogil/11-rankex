@@ -4,7 +4,7 @@ import {
   Compass,
   Gamepad2,
   Heart,
-  ListOrdered,
+  List,
   Music,
   Star,
   Trophy,
@@ -12,11 +12,11 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import { ButtonLink } from "@/shared/components/button-link";
 import { AppHeader } from "@/shared/components/layout/app-header";
 import { AppMain } from "@/shared/components/layout/app-main";
 import { AppShell } from "@/shared/components/layout/app-shell";
 import { ProtectedAppShell } from "@/shared/components/layout/protected-app-shell";
-import { ButtonLink } from "@/shared/components/button-link";
 import { Card } from "@/shared/components/ui/card";
 import { getCurrentUser } from "@/shared/server/auth";
 import { cn } from "@/shared/utils/cn";
@@ -47,7 +47,7 @@ const featureCards: FeatureCard[] = [
   {
     accent: "oklch(0.78 0.1 50)",
     description: "Drag-and-drop ordering with scores, notes, and tiers.",
-    icon: ListOrdered,
+    icon: List,
     tilt: "tilt-l",
     title: "Ranked lists",
   },

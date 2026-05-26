@@ -74,15 +74,13 @@ export function ProfilePageView({
                   className="shrink-0 max-sm:hidden"
                   initialIsFollowing={social.isFollowedByViewer}
                   profileId={profile.id}
+                  size="default"
                 />
               ) : null}
             </div>
 
             <div className="border-border mt-5 grid grid-cols-3 gap-3 border-y border-dashed py-4 sm:hidden">
-              <ProfileStat
-                label={isCurrentUser ? "Lists" : "Public lists"}
-                value={stats.listCount}
-              />
+              <ProfileStat label="Lists" value={stats.listCount} />
               <ProfileStat label="Followers" value={social.followerCount} />
               <ProfileStat label="Likes" value={social.likesReceivedCount} />
             </div>
@@ -92,19 +90,7 @@ export function ProfilePageView({
                 <strong className="font-display text-foreground text-lg">
                   {stats.listCount}
                 </strong>{" "}
-                {isCurrentUser ? "lists" : "public lists"}
-              </span>
-              <span>
-                <strong className="font-display text-foreground text-lg">
-                  {stats.itemCount}
-                </strong>{" "}
-                ranked items
-              </span>
-              <span>
-                <strong className="font-display text-foreground text-lg">
-                  {stats.topics.length}
-                </strong>{" "}
-                topics
+                lists
               </span>
               <span>
                 <strong className="font-display text-foreground text-lg">
@@ -135,25 +121,13 @@ export function ProfilePageView({
                 <FollowButton
                   initialIsFollowing={social.isFollowedByViewer}
                   profileId={profile.id}
+                  size="default"
                 />
               </div>
             ) : null}
           </div>
         </div>
       </Card>
-
-      {stats.topics.length ? (
-        <section className="flex flex-wrap gap-2">
-          {stats.topics.map((topic) => (
-            <span
-              className="border-primary/25 bg-primary/10 text-primary rounded-lg border px-3 py-1 font-mono text-xs tracking-widest uppercase"
-              key={topic}
-            >
-              {topic}
-            </span>
-          ))}
-        </section>
-      ) : null}
 
       <section>
         <div className="mb-5">
@@ -165,6 +139,8 @@ export function ProfilePageView({
             {lists.map((list) => (
               <ListCard
                 currentUserId={currentUserId}
+                footerMode={isCurrentUser ? "default" : "explore"}
+                isTilted={false}
                 key={list.id}
                 list={list}
                 showOwner={!isCurrentUser}
