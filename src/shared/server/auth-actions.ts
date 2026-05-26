@@ -1,10 +1,10 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-
 import { isSupabaseConfigured } from "@/lib/env";
 import { createClient } from "@/lib/supabase/server";
+import { toActionError } from "./action-error";
 import type { ActionResult } from "./action-result";
+import { revalidateRankexAuthSurface } from "./revalidation";
 
 export async function signOutAction(): Promise<ActionResult<void>> {
   if (!isSupabaseConfigured()) {
@@ -19,16 +19,10 @@ export async function signOutAction(): Promise<ActionResult<void>> {
       return { ok: false, error: error.message };
     }
 
-    revalidatePath("/");
-    revalidatePath("/dashboard");
-    revalidatePath("/explore");
-    revalidatePath("/settings");
+    revalidateRankexAuthSurface();
 
     return { ok: true, data: undefined };
   } catch (error) {
-    return {
-      ok: false,
-      error: error instanceof Error ? error.message : "Sign out failed.",
-    };
+    return toActionError(error, "Sign out failed.");
   }
 }

@@ -17,7 +17,7 @@ import type {
 export const landingFeatureCards: LandingFeatureCard[] = [
   {
     accent: "oklch(0.78 0.1 50)",
-    description: "Drag-and-drop ordering with scores, notes, and tiers.",
+    description: "Manual rankings, score lists, and tier boards with notes.",
     icon: List,
     tilt: "tilt-l",
     title: "Ranked lists",

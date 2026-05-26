@@ -15,6 +15,7 @@ import type {
   ExploreViewData,
 } from "@/app/(protected)/explore/_types";
 import { ListCard } from "@/features/lists/components/list-card";
+import { ControlBar, ControlBarGroup } from "@/shared/components/control-bar";
 import { EmptyState } from "@/shared/components/empty-state";
 import { SearchInput } from "@/shared/components/search-input";
 import {
@@ -101,8 +102,8 @@ export function ExploreView({
           <h2 className="font-display text-2xl font-bold">Public lists</h2>
         </div>
 
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-stretch lg:justify-between">
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
+        <ControlBar>
+          <ControlBarGroup>
             <SegmentedToggleGroup
               aria-label="Sort public lists"
               onValueChange={(value) => {
@@ -140,7 +141,7 @@ export function ExploreView({
                 </SegmentedToggleGroupItem>
               ))}
             </SegmentedToggleGroup>
-          </div>
+          </ControlBarGroup>
 
           <SearchInput
             className="lg:max-w-xs"
@@ -151,7 +152,7 @@ export function ExploreView({
             placeholder="Search public lists..."
             value={query}
           />
-        </div>
+        </ControlBar>
 
         {filteredLists.length ? (
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

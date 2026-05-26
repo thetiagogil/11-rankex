@@ -15,6 +15,7 @@ import { ListCard } from "@/features/lists/components/list-card";
 import { ListFormDialog } from "@/features/lists/components/list-form-dialog";
 import type { RankedListSummary } from "@/features/lists/types";
 import { Button } from "@/shared/components/ui/button";
+import { ControlBar, ControlBarGroup } from "@/shared/components/control-bar";
 import { EmptyState } from "@/shared/components/empty-state";
 import { SearchInput } from "@/shared/components/search-input";
 import {
@@ -61,7 +62,7 @@ export function DashboardListBrowser({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-stretch lg:justify-between">
+      <ControlBar>
         <SearchInput
           className="min-w-0 flex-1"
           id="dashboard-list-search"
@@ -72,7 +73,7 @@ export function DashboardListBrowser({
           value={query}
         />
 
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
+        <ControlBarGroup className="gap-3">
           <SegmentedToggleGroup
             aria-label="Filter lists by visibility"
             onValueChange={(value) => {
@@ -111,8 +112,8 @@ export function DashboardListBrowser({
               </SelectContent>
             </Select>
           </div>
-        </div>
-      </div>
+        </ControlBarGroup>
+      </ControlBar>
 
       {filteredLists.length ? (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

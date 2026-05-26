@@ -18,28 +18,31 @@ import {
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
+import { DeleteItemDialog } from "@/features/lists/components/delete-item-dialog";
 import { ItemFormDialog } from "@/features/lists/components/item-form-dialog";
 import { SortableItemRow } from "@/features/lists/components/sortable-item-row";
 import {
   deleteItemAction,
   reorderItemsAction,
 } from "@/features/lists/server/actions";
-import type { RankedItem } from "@/features/lists/types";
+import type { RankedItem, RankingMode } from "@/features/lists/types";
 import { Alert } from "@/shared/components/ui/alert";
-import { Button } from "@/shared/components/ui/button";
 import { EmptyState } from "@/shared/components/empty-state";
-import { Modal } from "@/shared/components/modal";
 
 type SortableItemListProps = {
   canEdit: boolean;
+  canReorder: boolean;
   items: RankedItem[];
   listId: number;
+  rankingMode: RankingMode;
 };
 
 export function SortableItemList({
   canEdit,
+  canReorder,
   items,
   listId,
+  rankingMode,
 }: SortableItemListProps) {
   const router = useRouter();
   const [feedback, setFeedback] = useState<string | null>(null);
@@ -108,7 +111,11 @@ export function SortableItemList({
   if (items.length === 0) {
     return (
       <EmptyState
-        action={canEdit ? <ItemFormDialog listId={listId} /> : null}
+        action={
+          canEdit ? (
+            <ItemFormDialog listId={listId} rankingMode={rankingMode} />
+          ) : null
+        }
         description={
           canEdit
             ? "Add your first contender to start ranking."
@@ -124,12 +131,14 @@ export function SortableItemList({
       {items.map((item, index) => (
         <SortableItemRow
           canEdit={canEdit}
+          canReorder={canReorder}
           disabled={isPending}
           item={item}
           key={item.id}
           listId={listId}
           onDelete={requestDeleteItem}
           rank={index + 1}
+          rankingMode={rankingMode}
         />
       ))}
     </div>
@@ -138,7 +147,7 @@ export function SortableItemList({
   return (
     <div className="flex flex-col gap-3">
       {feedback ? <Alert tone="error">{feedback}</Alert> : null}
-      {canEdit ? (
+      {canReorder ? (
         <DndContext
           collisionDetection={closestCenter}
           id={`rankex-sortable-${listId}`}
@@ -155,38 +164,13 @@ export function SortableItemList({
       ) : (
         content
       )}
-      <Modal
-        description={
-          itemPendingDelete
-            ? `Delete ${itemPendingDelete.title} from this ranked list.`
-            : undefined
-        }
-        footer={
-          <>
-            <Button
-              disabled={isPending}
-              onClick={() => setItemPendingDelete(null)}
-              variant="ghost"
-            >
-              Cancel
-            </Button>
-            <Button disabled={isPending} onClick={deleteItem} variant="danger">
-              {isPending ? "Deleting..." : "Delete item"}
-            </Button>
-          </>
-        }
-        onClose={() => setItemPendingDelete(null)}
+      <DeleteItemDialog
+        isPending={isPending}
+        itemTitle={itemPendingDelete?.title}
+        onCancel={() => setItemPendingDelete(null)}
+        onConfirm={deleteItem}
         open={Boolean(itemPendingDelete)}
-        title="Delete this item?"
-      >
-        <div className="flex flex-col gap-5">
-          <p className="text-muted-foreground text-sm leading-6">
-            {itemPendingDelete
-              ? `This permanently removes "${itemPendingDelete.title}" from the ranking.`
-              : "This item will be removed from the ranking."}
-          </p>
-        </div>
-      </Modal>
+      />
     </div>
   );
 }

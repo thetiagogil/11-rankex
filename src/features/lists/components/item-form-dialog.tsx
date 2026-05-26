@@ -10,41 +10,41 @@ import {
   useTransition,
 } from "react";
 
+import { ItemFormFields } from "@/features/lists/components/item-form-fields";
 import {
   createItemAction,
   updateItemAction,
 } from "@/features/lists/server/actions";
-import { itemTierOptions } from "@/features/lists/lib/item-form-options";
-import type { RankedItem, Tier } from "@/features/lists/types";
-import { FormField } from "@/shared/components/form-field";
+import type { RankedItem, RankingMode, Tier } from "@/features/lists/types";
+import { FormActions } from "@/shared/components/form-actions";
 import { Alert } from "@/shared/components/ui/alert";
 import { Button } from "@/shared/components/ui/button";
-import { Input } from "@/shared/components/ui/input";
 import { Modal } from "@/shared/components/modal";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/shared/components/ui/select";
-import { Textarea } from "@/shared/components/ui/textarea";
 
 type ItemFormDialogProps = {
   item?: RankedItem;
   listId: number;
+  rankingMode: RankingMode;
   trigger?: ReactNode;
 };
 
-export function ItemFormDialog({ item, listId, trigger }: ItemFormDialogProps) {
+export function ItemFormDialog({
+  item,
+  listId,
+  rankingMode,
+  trigger,
+}: ItemFormDialogProps) {
   const router = useRouter();
   const generatedFormId = useId();
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState(item?.title ?? "");
   const [note, setNote] = useState(item?.note ?? "");
-  const [score, setScore] = useState(item?.score?.toString() ?? "");
-  const [tier, setTier] = useState(item?.tier ?? "none");
+  const [score, setScore] = useState(
+    rankingMode === "scored" ? (item?.score?.toString() ?? "") : "",
+  );
+  const [tier, setTier] = useState(
+    rankingMode === "tiered" ? (item?.tier ?? "S") : "none",
+  );
   const [feedback, setFeedback] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const isEditing = Boolean(item);
@@ -53,8 +53,8 @@ export function ItemFormDialog({ item, listId, trigger }: ItemFormDialogProps) {
   const openDialog = () => {
     setTitle(item?.title ?? "");
     setNote(item?.note ?? "");
-    setScore(item?.score?.toString() ?? "");
-    setTier(item?.tier ?? "none");
+    setScore(rankingMode === "scored" ? (item?.score?.toString() ?? "") : "");
+    setTier(rankingMode === "tiered" ? (item?.tier ?? "S") : "none");
     setFeedback(null);
     setOpen(true);
   };
@@ -66,8 +66,8 @@ export function ItemFormDialog({ item, listId, trigger }: ItemFormDialogProps) {
     startTransition(async () => {
       const input = {
         note,
-        score,
-        tier: tier === "none" ? null : (tier as Tier),
+        score: rankingMode === "scored" ? score : null,
+        tier: rankingMode === "tiered" ? (tier as Tier) : null,
         title,
       };
       const result = item
@@ -100,7 +100,7 @@ export function ItemFormDialog({ item, listId, trigger }: ItemFormDialogProps) {
       <Modal
         description="Add or edit a ranked list item."
         footer={
-          <>
+          <FormActions border={false}>
             <Button
               disabled={isPending}
               onClick={() => setOpen(false)}
@@ -112,7 +112,7 @@ export function ItemFormDialog({ item, listId, trigger }: ItemFormDialogProps) {
             <Button disabled={isPending} form={formId} type="submit">
               {isPending ? "Saving..." : "Save item"}
             </Button>
-          </>
+          </FormActions>
         }
         onClose={() => setOpen(false)}
         open={open}
@@ -121,67 +121,18 @@ export function ItemFormDialog({ item, listId, trigger }: ItemFormDialogProps) {
         <form className="flex flex-col gap-4" id={formId} onSubmit={submit}>
           {feedback ? <Alert tone="error">{feedback}</Alert> : null}
 
-          <FormField htmlFor="item-title" label="Title" required>
-            <Input
-              autoFocus
-              disabled={isPending}
-              id="item-title"
-              maxLength={120}
-              onChange={(event) => setTitle(event.target.value)}
-              placeholder="Inception"
-              required
-              value={title}
-            />
-          </FormField>
-
-          <FormField htmlFor="item-note" label="Note">
-            <Textarea
-              disabled={isPending}
-              id="item-note"
-              maxLength={800}
-              onChange={(event) => setNote(event.target.value)}
-              placeholder="Why this item belongs here."
-              rows={4}
-              value={note}
-            />
-          </FormField>
-
-          <div className="grid gap-3 sm:grid-cols-2">
-            <FormField htmlFor="item-score" label="Score">
-              <Input
-                disabled={isPending}
-                id="item-score"
-                inputMode="numeric"
-                max={100}
-                min={0}
-                onChange={(event) => setScore(event.target.value)}
-                placeholder="0-100"
-                type="number"
-                value={score}
-              />
-            </FormField>
-
-            <FormField htmlFor="item-tier" label="Tier">
-              <Select
-                disabled={isPending}
-                onValueChange={(value) => setTier(value || "none")}
-                value={tier}
-              >
-                <SelectTrigger className="w-full" id="item-tier">
-                  <SelectValue placeholder="No tier" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {itemTierOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </FormField>
-          </div>
+          <ItemFormFields
+            isPending={isPending}
+            note={note}
+            onNoteChange={setNote}
+            onScoreChange={setScore}
+            onTierChange={setTier}
+            onTitleChange={setTitle}
+            rankingMode={rankingMode}
+            score={score}
+            tier={tier}
+            title={title}
+          />
         </form>
       </Modal>
     </>

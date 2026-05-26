@@ -1,10 +1,13 @@
 import { isTier, type Tier } from "@/features/lists/lib/tiers";
 import { resolveListIconId } from "@/features/lists/lib/list-icon-data";
+import { isRankingMode } from "@/features/lists/lib/ranking-mode";
+import type { RankingMode } from "@/features/lists/types";
 
 export type ListInput = {
   description?: string | null;
   emoji?: string | null;
   isPublic: boolean;
+  rankingMode: RankingMode;
   title: string;
   topic?: string | null;
 };
@@ -13,6 +16,7 @@ export type NormalizedListInput = {
   description: string | null;
   emoji: string | null;
   isPublic: boolean;
+  rankingMode: RankingMode;
   title: string;
   topic: string | null;
 };
@@ -24,11 +28,21 @@ export type ItemInput = {
   title: string;
 };
 
+export type TierReorderInputItem = {
+  id: number | string;
+  tier?: Tier | "" | null;
+};
+
 export type NormalizedItemInput = {
   note: string | null;
   score: number | null;
   tier: Tier | null;
   title: string;
+};
+
+export type NormalizedTierReorderInputItem = {
+  id: number;
+  tier: Tier | null;
 };
 
 const titleMaxLength = 120;
@@ -46,6 +60,9 @@ export function normalizeListInput(
   const icon = input.emoji?.trim() || null;
 
   if (!title) return { ok: false, error: "List title is required." };
+  if (!isRankingMode(input.rankingMode)) {
+    return { ok: false, error: "Choose a valid ranking style." };
+  }
 
   if (title.length > titleMaxLength) {
     return {
@@ -78,6 +95,7 @@ export function normalizeListInput(
       description,
       emoji: resolveListIconId(icon, topic),
       isPublic: input.isPublic,
+      rankingMode: input.rankingMode,
       title,
       topic,
     },
@@ -86,6 +104,7 @@ export function normalizeListInput(
 
 export function normalizeItemInput(
   input: ItemInput,
+  rankingMode: RankingMode,
 ): { ok: true; data: NormalizedItemInput } | { ok: false; error: string } {
   const title = input.title.trim();
   const note = input.note?.trim() || null;
@@ -116,11 +135,57 @@ export function normalizeItemInput(
     return { ok: false, error: "Tier must be S, A, B, C, or D." };
   }
 
+  if (score !== null && tier !== null) {
+    return { ok: false, error: "Use either a score or a tier, not both." };
+  }
+
+  if (rankingMode === "ranked") {
+    if (score !== null || tier !== null) {
+      return { ok: false, error: "Ranked lists only use manual order." };
+    }
+
+    return {
+      ok: true,
+      data: {
+        note,
+        score: null,
+        tier: null,
+        title,
+      },
+    };
+  }
+
+  if (rankingMode === "scored") {
+    if (tier !== null) {
+      return { ok: false, error: "Scored lists do not use tiers." };
+    }
+    if (score === null) {
+      return { ok: false, error: "Score is required for scored lists." };
+    }
+
+    return {
+      ok: true,
+      data: {
+        note,
+        score,
+        tier: null,
+        title,
+      },
+    };
+  }
+
+  if (score !== null) {
+    return { ok: false, error: "Tiered lists do not use scores." };
+  }
+  if (tier === null) {
+    return { ok: false, error: "Tier is required for tiered lists." };
+  }
+
   return {
     ok: true,
     data: {
       note,
-      score,
+      score: null,
       tier,
       title,
     },
@@ -136,6 +201,33 @@ export function normalizeListId(value: string | number) {
   }
 
   return parsed;
+}
+
+export function normalizeTierReorderInput(
+  input: TierReorderInputItem[],
+):
+  | { ok: true; data: NormalizedTierReorderInputItem[] }
+  | { ok: false; error: string } {
+  const seenIds = new Set<number>();
+  const data: NormalizedTierReorderInputItem[] = [];
+
+  for (const item of input) {
+    const id = normalizeListId(item.id);
+    if (!id) return { ok: false, error: "Invalid item id." };
+    if (seenIds.has(id)) {
+      return { ok: false, error: "Each item can only appear once." };
+    }
+
+    const tier = item.tier ? item.tier : null;
+    if (tier && !isTier(tier)) {
+      return { ok: false, error: "Tier must be S, A, B, C, or D." };
+    }
+
+    seenIds.add(id);
+    data.push({ id, tier });
+  }
+
+  return { ok: true, data };
 }
 
 function normalizeScore(value: ItemInput["score"]): number | null | false {

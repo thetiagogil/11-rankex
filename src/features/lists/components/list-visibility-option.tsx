@@ -17,14 +17,14 @@ export function ListVisibilityOption({
 }: ListVisibilityOptionProps) {
   return (
     <ToggleGroupItem
-      className="border-border bg-secondary/45 hover:bg-secondary data-[state=on]:border-primary data-[state=on]:bg-primary/10 data-[state=on]:text-primary h-auto flex-col items-start rounded-xl border p-3 text-left [&_svg]:size-4"
+      className="border-border bg-secondary/45 hover:bg-secondary data-[state=on]:border-primary data-[state=on]:bg-primary/10 data-[state=on]:text-primary h-auto min-h-20 w-full min-w-0 shrink flex-col items-start justify-start whitespace-normal rounded-xl border p-3 text-left [&_svg]:size-4"
       value={value}
     >
-      <span className="flex items-center gap-2 text-sm font-semibold">
+      <span className="flex w-full min-w-0 items-center gap-2 text-sm font-semibold">
         {icon}
         {label}
       </span>
-      <span className="text-muted-foreground mt-1 block text-xs">
+      <span className="text-muted-foreground mt-1 block w-full min-w-0 text-wrap break-words text-xs leading-snug">
         {description}
       </span>
     </ToggleGroupItem>

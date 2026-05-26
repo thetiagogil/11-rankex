@@ -1,20 +1,24 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-
 import {
   normalizeItemInput,
   normalizeListId,
   normalizeListInput,
+  normalizeTierReorderInput,
   type ItemInput,
   type ListInput,
+  type TierReorderInputItem,
 } from "@/features/lists/lib/validation";
 import { mapItem } from "@/features/lists/server/mappers";
-import { assertOwnedList } from "@/features/lists/server/queries";
+import {
+  getOwnedListConfig,
+} from "@/features/lists/server/queries";
 import { rankex } from "@/lib/supabase/schemas";
 import { createClient } from "@/lib/supabase/server";
 import type { ActionResult } from "@/shared/server/action-result";
+import { toActionError } from "@/shared/server/action-error";
 import { requireAuthUser } from "@/shared/server/auth";
+import { revalidateRankexListSurface } from "@/shared/server/revalidation";
 import type { RankedItem } from "@/features/lists/types";
 
 type CreatedListResult = {
@@ -36,6 +40,7 @@ export async function createListAction(
         description: normalized.data.description,
         emoji: normalized.data.emoji,
         is_public: normalized.data.isPublic,
+        ranking_mode: normalized.data.rankingMode,
         title: normalized.data.title,
         topic: normalized.data.topic,
         user_id: user.id,
@@ -47,7 +52,7 @@ export async function createListAction(
       return { ok: false, error: error?.message ?? "Could not create list." };
     }
 
-    revalidateListPaths();
+    revalidateRankexListSurface();
 
     return { ok: true, data: { id: data.id } };
   } catch (error) {
@@ -68,6 +73,21 @@ export async function updateListAction(
   try {
     const client = await createClient();
     const user = await requireAuthUser(client);
+    const currentList = await getOwnedListConfig(client, listId, user.id);
+
+    if (!currentList) {
+      return { ok: false, error: "List not found." };
+    }
+
+    if (currentList.rankingMode !== normalized.data.rankingMode) {
+      const hasItems = await listHasItems(client, listId);
+      if (hasItems) {
+        return {
+          ok: false,
+          error: "Ranking style can only be changed before items are added.",
+        };
+      }
+    }
 
     const { data, error } = await rankex(client)
       .from("lists")
@@ -75,6 +95,7 @@ export async function updateListAction(
         description: normalized.data.description,
         emoji: normalized.data.emoji,
         is_public: normalized.data.isPublic,
+        ranking_mode: normalized.data.rankingMode,
         title: normalized.data.title,
         topic: normalized.data.topic,
       })
@@ -87,7 +108,7 @@ export async function updateListAction(
       return { ok: false, error: error?.message ?? "Could not update list." };
     }
 
-    revalidateListPaths(listId);
+    revalidateRankexListSurface(listId);
 
     return { ok: true, data: { id: data.id } };
   } catch (error) {
@@ -115,7 +136,7 @@ export async function deleteListAction(
       return { ok: false, error: error.message };
     }
 
-    revalidateListPaths(listId);
+    revalidateRankexListSurface(listId);
 
     return { ok: true, data: undefined };
   } catch (error) {
@@ -130,14 +151,14 @@ export async function createItemAction(
   const listId = normalizeListId(listIdInput);
   if (!listId) return { ok: false, error: "Invalid list id." };
 
-  const normalized = normalizeItemInput(input);
-  if (!normalized.ok) return normalized;
-
   try {
     const client = await createClient();
     const user = await requireAuthUser(client);
-    const ownsList = await assertOwnedList(client, listId, user.id);
-    if (!ownsList) return { ok: false, error: "List not found." };
+    const listConfig = await getOwnedListConfig(client, listId, user.id);
+    if (!listConfig) return { ok: false, error: "List not found." };
+
+    const normalized = normalizeItemInput(input, listConfig.rankingMode);
+    if (!normalized.ok) return normalized;
 
     const position = await getNextItemPosition(client, listId);
     const { data, error } = await rankex(client)
@@ -157,7 +178,7 @@ export async function createItemAction(
       return { ok: false, error: error?.message ?? "Could not add item." };
     }
 
-    revalidateListPaths(listId);
+    revalidateRankexListSurface(listId);
 
     return { ok: true, data: mapItem(data) };
   } catch (error) {
@@ -174,12 +195,14 @@ export async function updateItemAction(
   const itemId = normalizeListId(itemIdInput);
   if (!listId || !itemId) return { ok: false, error: "Invalid item id." };
 
-  const normalized = normalizeItemInput(input);
-  if (!normalized.ok) return normalized;
-
   try {
     const client = await createClient();
-    await requireAuthUser(client);
+    const user = await requireAuthUser(client);
+    const listConfig = await getOwnedListConfig(client, listId, user.id);
+    if (!listConfig) return { ok: false, error: "List not found." };
+
+    const normalized = normalizeItemInput(input, listConfig.rankingMode);
+    if (!normalized.ok) return normalized;
 
     const { data, error } = await rankex(client)
       .from("list_items")
@@ -198,7 +221,7 @@ export async function updateItemAction(
       return { ok: false, error: error?.message ?? "Could not update item." };
     }
 
-    revalidateListPaths(listId);
+    revalidateRankexListSurface(listId);
 
     return { ok: true, data: mapItem(data) };
   } catch (error) {
@@ -226,7 +249,7 @@ export async function deleteItemAction(
 
     if (error) return { ok: false, error: error.message };
 
-    revalidateListPaths(listId);
+    revalidateRankexListSurface(listId);
 
     return { ok: true, data: undefined };
   } catch (error) {
@@ -248,8 +271,14 @@ export async function reorderItemsAction(
   try {
     const client = await createClient();
     const user = await requireAuthUser(client);
-    const ownsList = await assertOwnedList(client, listId, user.id);
-    if (!ownsList) return { ok: false, error: "List not found." };
+    const listConfig = await getOwnedListConfig(client, listId, user.id);
+    if (!listConfig) return { ok: false, error: "List not found." };
+    if (listConfig.rankingMode !== "ranked") {
+      return {
+        ok: false,
+        error: "Only ranked-order lists can be manually reordered.",
+      };
+    }
 
     const { data, error } = await rankex(client)
       .from("list_items")
@@ -283,11 +312,83 @@ export async function reorderItemsAction(
       }
     }
 
-    revalidateListPaths(listId);
+    revalidateRankexListSurface(listId);
 
     return { ok: true, data: undefined };
   } catch (error) {
     return toActionError(error, "Could not reorder items.");
+  }
+}
+
+export async function reorderItemsWithTiersAction(
+  listIdInput: number,
+  orderedItemsInput: TierReorderInputItem[],
+): Promise<ActionResult<void>> {
+  const listId = normalizeListId(listIdInput);
+  if (!listId) return { ok: false, error: "Invalid list id." };
+
+  const normalized = normalizeTierReorderInput(orderedItemsInput);
+  if (!normalized.ok) return normalized;
+
+  if (normalized.data.length === 0) {
+    return { ok: true, data: undefined };
+  }
+
+  try {
+    const client = await createClient();
+    const user = await requireAuthUser(client);
+    const listConfig = await getOwnedListConfig(client, listId, user.id);
+    if (!listConfig) return { ok: false, error: "List not found." };
+    if (listConfig.rankingMode !== "tiered") {
+      return {
+        ok: false,
+        error: "Only tiered lists can be reordered by tier.",
+      };
+    }
+    if (normalized.data.some((item) => item.tier === null)) {
+      return {
+        ok: false,
+        error: "Tiered lists require every item to have a tier.",
+      };
+    }
+
+    const { data, error } = await rankex(client)
+      .from("list_items")
+      .select("id")
+      .eq("list_id", listId);
+
+    if (error) return { ok: false, error: error.message };
+
+    const existingIds = new Set((data ?? []).map((item) => item.id));
+    const orderedIds = new Set(normalized.data.map((item) => item.id));
+    const hasSameItems =
+      existingIds.size === orderedIds.size &&
+      normalized.data.every((item) => existingIds.has(item.id));
+
+    if (!hasSameItems) {
+      return {
+        ok: false,
+        error: "The ranking changed while you were editing. Refresh and try again.",
+      };
+    }
+
+    for (const [index, item] of normalized.data.entries()) {
+      const { error: updateError } = await rankex(client)
+        .from("list_items")
+        .update({ position: index + 1, tier: item.tier })
+        .eq("id", item.id)
+        .eq("list_id", listId);
+
+      if (updateError) {
+        return { ok: false, error: updateError.message };
+      }
+    }
+
+    revalidateRankexListSurface(listId);
+
+    return { ok: true, data: undefined };
+  } catch (error) {
+    return toActionError(error, "Could not reorder tiers.");
   }
 }
 
@@ -307,18 +408,17 @@ async function getNextItemPosition(
   return (data?.[0]?.position ?? 0) + 1;
 }
 
-function revalidateListPaths(listId?: number) {
-  revalidatePath("/dashboard");
-  revalidatePath("/explore");
+async function listHasItems(
+  client: Awaited<ReturnType<typeof createClient>>,
+  listId: number,
+) {
+  const { data, error } = await rankex(client)
+    .from("list_items")
+    .select("id")
+    .eq("list_id", listId)
+    .limit(1);
 
-  if (listId) {
-    revalidatePath(`/lists/${listId}`);
-  }
-}
+  if (error) throw new Error(error.message);
 
-function toActionError(error: unknown, fallback: string): ActionResult<never> {
-  return {
-    ok: false,
-    error: error instanceof Error ? error.message : fallback,
-  };
+  return Boolean(data?.length);
 }

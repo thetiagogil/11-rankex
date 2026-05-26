@@ -4,6 +4,7 @@ import type { Profile, ProfileRow } from "@/shared/types";
 import type {
   ListCommentRows,
   ListSocialState,
+  RankingMode,
   RankedList,
   RankedListSummary,
   RemixSource,
@@ -129,6 +130,27 @@ export async function assertOwnedList(
   if (error) throw new Error(error.message);
 
   return Boolean(data);
+}
+
+export async function getOwnedListConfig(
+  client: AppSupabaseClient,
+  listId: number,
+  userId: string,
+): Promise<{ id: number; rankingMode: RankingMode } | null> {
+  const { data, error } = await rankex(client)
+    .from("lists")
+    .select("id, ranking_mode")
+    .eq("id", listId)
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (error) throw new Error(error.message);
+  if (!data) return null;
+
+  return {
+    id: data.id,
+    rankingMode: data.ranking_mode,
+  };
 }
 
 async function buildSummaries(

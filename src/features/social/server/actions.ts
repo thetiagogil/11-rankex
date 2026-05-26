@@ -1,13 +1,16 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-
 import { getListById } from "@/features/lists/server/queries";
 import { normalizeListId } from "@/features/lists/lib/validation";
 import { rankex } from "@/lib/supabase/schemas";
 import { createClient } from "@/lib/supabase/server";
 import type { ActionResult } from "@/shared/server/action-result";
+import { toActionError } from "@/shared/server/action-error";
 import { requireAuthUser } from "@/shared/server/auth";
+import {
+  revalidateRankexListSurface,
+  revalidateRankexProfileSurface,
+} from "@/shared/server/revalidation";
 
 type CreatedRemixResult = {
   id: number;
@@ -45,7 +48,7 @@ export async function toggleFollowAction(
 
       if (error) return { ok: false, error: error.message };
 
-      revalidateSocialPaths();
+      revalidateRankexProfileSurface();
       return { ok: true, data: { following: false } };
     }
 
@@ -56,7 +59,7 @@ export async function toggleFollowAction(
 
     if (error) return { ok: false, error: error.message };
 
-    revalidateSocialPaths();
+    revalidateRankexProfileSurface();
     return { ok: true, data: { following: true } };
   } catch (error) {
     return toActionError(error, "Could not update follow.");
@@ -91,7 +94,7 @@ export async function toggleListLikeAction(
 
       if (error) return { ok: false, error: error.message };
 
-      revalidateListSocialPaths(listId);
+      revalidateRankexListSurface(listId);
       return { ok: true, data: { liked: false } };
     }
 
@@ -102,7 +105,7 @@ export async function toggleListLikeAction(
 
     if (error) return { ok: false, error: error.message };
 
-    revalidateListSocialPaths(listId);
+    revalidateRankexListSurface(listId);
     return { ok: true, data: { liked: true } };
   } catch (error) {
     return toActionError(error, "Could not update like.");
@@ -137,7 +140,7 @@ export async function toggleListBookmarkAction(
 
       if (error) return { ok: false, error: error.message };
 
-      revalidateListSocialPaths(listId);
+      revalidateRankexListSurface(listId);
       return { ok: true, data: { bookmarked: false } };
     }
 
@@ -148,7 +151,7 @@ export async function toggleListBookmarkAction(
 
     if (error) return { ok: false, error: error.message };
 
-    revalidateListSocialPaths(listId);
+    revalidateRankexListSurface(listId);
     return { ok: true, data: { bookmarked: true } };
   } catch (error) {
     return toActionError(error, "Could not update bookmark.");
@@ -199,7 +202,7 @@ export async function createListCommentAction(
 
     if (error) return { ok: false, error: error.message };
 
-    revalidateListSocialPaths(listId);
+    revalidateRankexListSurface(listId);
     return { ok: true, data: undefined };
   } catch (error) {
     return toActionError(error, "Could not post comment.");
@@ -226,7 +229,7 @@ export async function deleteListCommentAction(
 
     if (error) return { ok: false, error: error.message };
 
-    revalidateListSocialPaths(listId);
+    revalidateRankexListSurface(listId);
     return { ok: true, data: undefined };
   } catch (error) {
     return toActionError(error, "Could not delete comment.");
@@ -254,6 +257,7 @@ export async function remixListAction(
         description: source.description,
         emoji: source.emoji,
         is_public: false,
+        ranking_mode: source.rankingMode,
         remixed_from_list_id: source.id,
         remixed_from_user_id: source.ownerId,
         title: buildRemixTitle(source.title),
@@ -287,8 +291,7 @@ export async function remixListAction(
       if (itemsError) return { ok: false, error: itemsError.message };
     }
 
-    revalidateListSocialPaths(source.id);
-    revalidatePath("/dashboard");
+    revalidateRankexListSurface(source.id);
 
     return { ok: true, data: { id: list.id } };
   } catch (error) {
@@ -301,23 +304,4 @@ function buildRemixTitle(title: string) {
   const maxTitleLength = 120;
   if (title.length + suffix.length <= maxTitleLength) return `${title}${suffix}`;
   return `${title.slice(0, maxTitleLength - suffix.length).trimEnd()}${suffix}`;
-}
-
-function revalidateListSocialPaths(listId: number) {
-  revalidatePath("/dashboard");
-  revalidatePath("/explore");
-  revalidatePath(`/lists/${listId}`);
-}
-
-function revalidateSocialPaths() {
-  revalidatePath("/dashboard");
-  revalidatePath("/explore");
-  revalidatePath("/profile");
-}
-
-function toActionError(error: unknown, fallback: string): ActionResult<never> {
-  return {
-    ok: false,
-    error: error instanceof Error ? error.message : fallback,
-  };
 }

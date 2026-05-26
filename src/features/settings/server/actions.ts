@@ -1,7 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-
 import {
   normalizeProfileSettingsInput,
   type ProfileSettingsInput,
@@ -9,8 +7,10 @@ import {
 import { core } from "@/lib/supabase/schemas";
 import { createClient } from "@/lib/supabase/server";
 import type { ActionResult } from "@/shared/server/action-result";
+import { toActionError } from "@/shared/server/action-error";
 import { requireAuthUser } from "@/shared/server/auth";
 import { mapProfile } from "@/shared/server/mappers";
+import { revalidateRankexProfileSurface } from "@/shared/server/revalidation";
 import type { Profile } from "@/shared/types";
 
 export async function updateProfileSettingsAction(
@@ -49,18 +49,10 @@ export async function updateProfileSettingsAction(
       };
     }
 
-    revalidatePath("/settings");
-    revalidatePath("/dashboard");
-    revalidatePath("/explore");
+    revalidateRankexProfileSurface();
 
     return { ok: true, data: mapProfile(data) };
   } catch (error) {
-    return {
-      ok: false,
-      error:
-        error instanceof Error
-          ? error.message
-          : "Could not update profile settings.",
-    };
+    return toActionError(error, "Could not update profile settings.");
   }
 }

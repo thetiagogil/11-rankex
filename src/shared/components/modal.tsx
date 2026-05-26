@@ -6,6 +6,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/shared/components/ui/dialog";
@@ -45,39 +46,70 @@ export function Modal({
     >
       <DialogContent
         className={cn(
-          "bg-card grid max-h-[min(calc(100dvh-2rem),44rem)] grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden p-0 sm:max-w-lg",
+          "bg-card grid max-h-[min(calc(100dvh-2rem),44rem)] grid-rows-[auto_minmax(0,1fr)_auto] gap-0 overflow-hidden p-0 sm:max-w-lg",
           contentClassName,
         )}
       >
-        <DialogHeader className="border-border border-b-2 border-dashed px-5 pt-5 pb-4">
-          <DialogTitle className="font-display text-3xl font-bold">
-            {title}
-          </DialogTitle>
-          {description ? (
-            <DialogDescription className="sr-only">
-              {description}
-            </DialogDescription>
-          ) : null}
-        </DialogHeader>
-        <div
-          className={cn(
-            "scrollbar-themed min-h-0 overflow-y-auto px-5 py-5",
-            bodyClassName,
-          )}
-        >
-          {children}
-        </div>
+        <ModalHeader description={description} title={title} />
+        <ModalBody className={bodyClassName}>{children}</ModalBody>
         {footer ? (
-          <div
-            className={cn(
-              "border-border flex flex-col-reverse gap-2 border-t-2 border-dashed px-5 py-4 sm:flex-row sm:justify-end",
-              footerClassName,
-            )}
-          >
+          <ModalFooter className={footerClassName}>
             {footer}
-          </div>
+          </ModalFooter>
         ) : null}
       </DialogContent>
     </Dialog>
+  );
+}
+
+function ModalHeader({
+  description,
+  title,
+}: {
+  description?: string;
+  title: string;
+}) {
+  return (
+    <DialogHeader className="border-border border-b-2 border-dashed px-5 pt-5 pb-4">
+      <DialogTitle className="font-display text-3xl font-bold">
+        {title}
+      </DialogTitle>
+      {description ? (
+        <DialogDescription className="sr-only">{description}</DialogDescription>
+      ) : null}
+    </DialogHeader>
+  );
+}
+
+function ModalBody({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className="scrollbar-themed min-h-0 overflow-x-hidden overflow-y-auto">
+      <div className={cn("px-5 py-5", className)}>{children}</div>
+    </div>
+  );
+}
+
+function ModalFooter({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <DialogFooter
+      className={cn(
+        "border-border border-t-2 border-dashed px-5 py-4",
+        className,
+      )}
+    >
+      {children}
+    </DialogFooter>
   );
 }

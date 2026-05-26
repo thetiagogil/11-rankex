@@ -5,6 +5,7 @@ type EmptyRecord = {
 };
 
 export type RankexTier = "S" | "A" | "B" | "C" | "D";
+export type RankexRankingMode = "ranked" | "scored" | "tiered";
 
 export type RankexListRow = {
   created_at: string;
@@ -12,6 +13,7 @@ export type RankexListRow = {
   emoji: string | null;
   id: number;
   is_public: boolean;
+  ranking_mode: RankexRankingMode;
   remixed_from_list_id: number | null;
   remixed_from_user_id: string | null;
   title: string;
@@ -26,6 +28,7 @@ export type RankexListInsert = {
   emoji?: string | null;
   id?: never;
   is_public?: boolean;
+  ranking_mode?: RankexRankingMode;
   remixed_from_list_id?: number | null;
   remixed_from_user_id?: string | null;
   title: string;
@@ -40,6 +43,7 @@ export type RankexListUpdate = {
   emoji?: string | null;
   id?: never;
   is_public?: boolean;
+  ranking_mode?: RankexRankingMode;
   remixed_from_list_id?: number | null;
   remixed_from_user_id?: string | null;
   title?: string;

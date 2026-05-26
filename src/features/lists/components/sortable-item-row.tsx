@@ -7,27 +7,31 @@ import { GripVertical, Loader2, Pencil, Trash2 } from "lucide-react";
 import { ItemFormDialog } from "@/features/lists/components/item-form-dialog";
 import { RankBadge } from "@/features/lists/components/rank-badge";
 import { TierBadge } from "@/features/lists/components/tier-badge";
-import type { RankedItem } from "@/features/lists/types";
+import type { RankedItem, RankingMode } from "@/features/lists/types";
 import { Button } from "@/shared/components/ui/button";
 import { Card } from "@/shared/components/ui/card";
 import { cn } from "@/shared/utils/cn";
 
 type SortableItemRowProps = {
   canEdit: boolean;
+  canReorder: boolean;
   disabled: boolean;
   item: RankedItem;
   listId: number;
   onDelete: (item: RankedItem) => void;
   rank: number;
+  rankingMode: RankingMode;
 };
 
 export function SortableItemRow({
   canEdit,
+  canReorder,
   disabled,
   item,
   listId,
   onDelete,
   rank,
+  rankingMode,
 }: SortableItemRowProps) {
   const {
     attributes,
@@ -36,7 +40,7 @@ export function SortableItemRow({
     setNodeRef,
     transform,
     transition,
-  } = useSortable({ disabled: !canEdit || disabled, id: item.id });
+  } = useSortable({ disabled: !canReorder || disabled, id: item.id });
 
   return (
     <Card
@@ -55,7 +59,7 @@ export function SortableItemRow({
       variant="shadow"
     >
       <div className="flex items-center gap-3">
-        {canEdit ? (
+        {canReorder ? (
           <Button
             aria-label="Drag to reorder"
             className="text-muted-foreground hover:text-foreground cursor-grab touch-none active:cursor-grabbing"
@@ -97,6 +101,7 @@ export function SortableItemRow({
             <ItemFormDialog
               item={item}
               listId={listId}
+              rankingMode={rankingMode}
               trigger={
                 <Button
                   aria-label={`Edit ${item.title}`}

@@ -6,6 +6,7 @@ import type {
 } from "@/types/database.types";
 import type { Profile } from "@/shared/types";
 
+export type RankingMode = "ranked" | "scored" | "tiered";
 export type Tier = RankexTier;
 
 export type RankedItem = {
@@ -28,6 +29,7 @@ export type RankedList = {
   emoji: string | null;
   description: string | null;
   isPublic: boolean;
+  rankingMode: RankingMode;
   remixedFromListId: number | null;
   remixedFromUserId: string | null;
   createdAt: string;

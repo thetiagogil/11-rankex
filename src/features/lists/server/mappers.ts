@@ -4,6 +4,7 @@ import type {
   ListComment,
   ListCommentRows,
   ListSocialState,
+  RankingMode,
   RankedItem,
   RankedList,
   RankedListRows,
@@ -53,12 +54,13 @@ export function mapList(
     emoji: list.emoji,
     description: list.description,
     isPublic: list.is_public,
+    rankingMode: list.ranking_mode,
     remixedFromListId: list.remixed_from_list_id,
     remixedFromUserId: list.remixed_from_user_id,
     createdAt: list.created_at,
     updatedAt: list.updated_at,
     owner: owner ? mapProfile(owner) : null,
-    items: items.map(mapItem).sort(sortItems),
+    items: sortItemsForMode(items.map(mapItem), list.ranking_mode),
     remixSource: options.remixSource ?? null,
     social: options.social ?? defaultSocialState,
     comments: (options.comments ?? []).map(mapComment),
@@ -98,6 +100,33 @@ export function mapComment({ author, comment }: ListCommentRows): ListComment {
   };
 }
 
-function sortItems(a: RankedItem, b: RankedItem) {
+function sortItemsForMode(items: RankedItem[], mode: RankingMode) {
+  return [...items].sort((a, b) => {
+    if (mode === "scored") return sortScoredItems(a, b);
+    if (mode === "tiered") return sortTieredItems(a, b);
+    return sortPositionedItems(a, b);
+  });
+}
+
+function sortScoredItems(a: RankedItem, b: RankedItem) {
+  const aScore = a.score ?? Number.NEGATIVE_INFINITY;
+  const bScore = b.score ?? Number.NEGATIVE_INFINITY;
+  return bScore - aScore || sortPositionedItems(a, b);
+}
+
+function sortTieredItems(a: RankedItem, b: RankedItem) {
+  return getTierSortValue(a) - getTierSortValue(b) || sortPositionedItems(a, b);
+}
+
+function getTierSortValue(item: RankedItem) {
+  if (item.tier === "S") return 0;
+  if (item.tier === "A") return 1;
+  if (item.tier === "B") return 2;
+  if (item.tier === "C") return 3;
+  if (item.tier === "D") return 4;
+  return 5;
+}
+
+function sortPositionedItems(a: RankedItem, b: RankedItem) {
   return a.position - b.position || a.id - b.id;
 }

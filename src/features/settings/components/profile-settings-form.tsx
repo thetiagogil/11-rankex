@@ -13,6 +13,7 @@ import { type SubmitEvent, useState, useTransition } from "react";
 
 import { SettingsSection } from "@/features/settings/components/settings-section";
 import { updateProfileSettingsAction } from "@/features/settings/server/actions";
+import { FormActions } from "@/shared/components/form-actions";
 import { FormField } from "@/shared/components/form-field";
 import { Alert } from "@/shared/components/ui/alert";
 import { Button } from "@/shared/components/ui/button";
@@ -146,7 +147,7 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
             <Alert tone={feedback.tone}>{feedback.message}</Alert>
           ) : null}
 
-          <div className="border-border flex flex-col-reverse gap-2 border-t border-dashed pt-4 sm:flex-row sm:items-center sm:justify-end">
+          <FormActions>
             <Button
               disabled={isPending}
               onClick={reset}
@@ -164,7 +165,7 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
               )}
               Save profile
             </Button>
-          </div>
+          </FormActions>
         </div>
       </Card>
     </form>

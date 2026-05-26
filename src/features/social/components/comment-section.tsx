@@ -1,31 +1,23 @@
 "use client";
 
-import { Loader2, MessageCircle, Send, Trash2 } from "lucide-react";
-import Link from "next/link";
+import { MessageCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useRef, useState, useTransition } from "react";
 
 import type { RankedList } from "@/features/lists/types";
+import { CommentCard } from "@/features/social/components/comment-card";
+import { CommentComposer } from "@/features/social/components/comment-composer";
 import {
   createListCommentAction,
   deleteListCommentAction,
 } from "@/features/social/server/actions";
 import { Button } from "@/shared/components/ui/button";
-import { Card } from "@/shared/components/ui/card";
 import { EmptyState } from "@/shared/components/empty-state";
-import { ProfileAvatar } from "@/shared/components/profile-avatar";
-import { Textarea } from "@/shared/components/ui/textarea";
-import { getProfileHref } from "@/shared/utils/profile";
 
 type CommentSectionProps = {
   currentUserId: string;
   list: RankedList;
 };
-
-const commentDateFormatter = new Intl.DateTimeFormat("en", {
-  day: "numeric",
-  month: "short",
-});
 
 export function CommentSection({ currentUserId, list }: CommentSectionProps) {
   const router = useRouter();
@@ -61,129 +53,62 @@ export function CommentSection({ currentUserId, list }: CommentSectionProps) {
       </div>
 
       {canComment ? (
-        <Card className="p-4 sm:p-5">
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-              if (!trimmedBody || isPending) return;
-              setFeedback(null);
-              startTransition(async () => {
-                const result = await createListCommentAction(
-                  list.id,
-                  trimmedBody,
-                );
-                if (!result.ok) {
-                  setFeedback(result.error);
-                  return;
-                }
-                setBody("");
-                router.refresh();
-              });
-            }}
-          >
-            <Textarea
-              aria-label="Write a comment"
-              className="min-h-24 resize-none"
-              maxLength={500}
-              onChange={(event) => setBody(event.target.value)}
-              placeholder="Add a thought about this ranking..."
-              ref={commentInputRef}
-              value={body}
-            />
-            <div className="mt-3 flex items-center justify-between gap-3">
-              <p className="text-muted-foreground text-xs">
-                {trimmedBody.length}/500
-              </p>
-              <Button disabled={!trimmedBody || isPending} type="submit">
-                {isPending ? (
-                  <Loader2 className="animate-spin" data-icon="inline-start" />
-                ) : (
-                  <Send data-icon="inline-start" />
-                )}
-                Post
-              </Button>
-            </div>
-            {feedback ? (
-              <p className="text-destructive mt-3 text-sm">{feedback}</p>
-            ) : null}
-          </form>
-        </Card>
+        <CommentComposer
+          body={body}
+          feedback={feedback}
+          inputRef={commentInputRef}
+          isPending={isPending}
+          onBodyChange={setBody}
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (!trimmedBody || isPending) return;
+            setFeedback(null);
+            startTransition(async () => {
+              const result = await createListCommentAction(
+                list.id,
+                trimmedBody,
+              );
+              if (!result.ok) {
+                setFeedback(result.error);
+                return;
+              }
+              setBody("");
+              router.refresh();
+            });
+          }}
+        />
       ) : null}
 
       {list.comments.length > 0 ? (
         <div className="mt-5 flex flex-col gap-3">
           {list.comments.map((comment) => {
-            const authorName = comment.author?.displayName ?? "Rankex profile";
             const canDelete =
               comment.userId === currentUserId ||
               list.ownerId === currentUserId;
 
             return (
-              <Card as="article" className="p-4" key={comment.id} size="sm">
-                <div className="flex items-start gap-3">
-                  {comment.author ? (
-                    <Link
-                      className="shrink-0"
-                      href={getProfileHref(comment.author)}
-                    >
-                      <ProfileAvatar displayName={authorName} size="sm" />
-                    </Link>
-                  ) : (
-                    <ProfileAvatar displayName="?" size="sm" tone="muted" />
-                  )}
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                      {comment.author ? (
-                        <Link
-                          className="hover:text-primary font-bold transition"
-                          href={getProfileHref(comment.author)}
-                        >
-                          {authorName}
-                        </Link>
-                      ) : (
-                        <span className="font-bold">{authorName}</span>
-                      )}
-                      <span className="text-muted-foreground text-xs">
-                        {commentDateFormatter.format(
-                          new Date(comment.createdAt),
-                        )}
-                      </span>
-                    </div>
-                    <p className="text-muted-foreground mt-2 text-sm leading-6">
-                      {comment.body}
-                    </p>
-                  </div>
-                  {canDelete ? (
-                    <Button
-                      aria-label="Delete comment"
-                      disabled={isPending}
-                      onClick={() => {
-                        setDeletingCommentId(comment.id);
-                        startTransition(async () => {
-                          const result = await deleteListCommentAction(
-                            list.id,
-                            comment.id,
-                          );
-                          setDeletingCommentId(null);
-                          if (!result.ok) {
-                            setFeedback(result.error);
-                            return;
-                          }
-                          router.refresh();
-                        });
-                      }}
-                      size="icon-sm"
-                      variant="ghost"
-                    >
-                      {deletingCommentId === comment.id ? (
-                        <Loader2 className="animate-spin" />
-                      ) : (
-                        <Trash2 className="text-destructive" />
-                      )}
-                    </Button>
-                  ) : null}
-                </div>
-              </Card>
+              <CommentCard
+                canDelete={canDelete}
+                comment={comment}
+                isDeleting={deletingCommentId === comment.id}
+                isPending={isPending}
+                key={comment.id}
+                onDelete={(commentId) => {
+                  setDeletingCommentId(commentId);
+                  startTransition(async () => {
+                    const result = await deleteListCommentAction(
+                      list.id,
+                      commentId,
+                    );
+                    setDeletingCommentId(null);
+                    if (!result.ok) {
+                      setFeedback(result.error);
+                      return;
+                    }
+                    router.refresh();
+                  });
+                }}
+              />
             );
           })}
         </div>
