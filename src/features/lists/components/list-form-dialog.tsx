@@ -10,6 +10,7 @@ import {
   useTransition,
 } from "react";
 
+import { ListVisibilityOption } from "@/features/lists/components/list-visibility-option";
 import {
   getListIcon,
   listIconOptions,
@@ -20,11 +21,11 @@ import {
   updateListAction,
 } from "@/features/lists/server/actions";
 import type { RankedList } from "@/features/lists/types";
+import { FormField } from "@/shared/components/form-field";
 import { Modal } from "@/shared/components/modal";
 import { Alert } from "@/shared/components/ui/alert";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
-import { Label } from "@/shared/components/ui/label";
 import { Textarea } from "@/shared/components/ui/textarea";
 import {
   ToggleGroup,
@@ -161,10 +162,7 @@ export function ListFormDialog({
         <form className="flex flex-col gap-4" id={formId} onSubmit={submit}>
           {feedback ? <Alert tone="error">{feedback}</Alert> : null}
 
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="list-title" required>
-              List title
-            </Label>
+          <FormField htmlFor="list-title" label="List title" required>
             <Input
               autoFocus
               disabled={isPending}
@@ -175,10 +173,9 @@ export function ListFormDialog({
               required
               value={title}
             />
-          </div>
+          </FormField>
 
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="list-topic">Topic</Label>
+          <FormField htmlFor="list-topic" label="Topic">
             <Input
               disabled={isPending}
               id="list-topic"
@@ -187,10 +184,9 @@ export function ListFormDialog({
               placeholder="Movies, albums, restaurants..."
               value={topic}
             />
-          </div>
+          </FormField>
 
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="list-description">Description</Label>
+          <FormField htmlFor="list-description" label="Description">
             <Textarea
               disabled={isPending}
               id="list-description"
@@ -200,10 +196,9 @@ export function ListFormDialog({
               rows={3}
               value={description}
             />
-          </div>
+          </FormField>
 
-          <div className="flex flex-col gap-2">
-            <Label>Icon</Label>
+          <FormField className="gap-2" label="Icon">
             <ToggleGroup
               aria-label="Choose list icon"
               className="flex flex-wrap gap-2"
@@ -230,10 +225,9 @@ export function ListFormDialog({
                 );
               })}
             </ToggleGroup>
-          </div>
+          </FormField>
 
-          <div className="flex flex-col gap-2">
-            <Label>Visibility</Label>
+          <FormField className="gap-2" label="Visibility">
             <ToggleGroup
               aria-label="Choose list visibility"
               className="grid w-full gap-2 sm:grid-cols-2"
@@ -244,49 +238,22 @@ export function ListFormDialog({
               type="single"
               value={isPublic ? "public" : "private"}
             >
-              <VisibilityOption
+              <ListVisibilityOption
                 description="Shown in Explore."
                 icon={<Globe />}
                 label="Public"
                 value="public"
               />
-              <VisibilityOption
+              <ListVisibilityOption
                 description="Only visible to you."
                 icon={<LockKeyhole />}
                 label="Private"
                 value="private"
               />
             </ToggleGroup>
-          </div>
+          </FormField>
         </form>
       </Modal>
     </>
-  );
-}
-
-function VisibilityOption({
-  description,
-  icon,
-  label,
-  value,
-}: {
-  description: string;
-  icon: ReactNode;
-  label: string;
-  value: string;
-}) {
-  return (
-    <ToggleGroupItem
-      className="border-border bg-secondary/45 hover:bg-secondary data-[state=on]:border-primary data-[state=on]:bg-primary/10 data-[state=on]:text-primary h-auto flex-col items-start rounded-xl border p-3 text-left [&_svg]:size-4"
-      value={value}
-    >
-      <span className="flex items-center gap-2 text-sm font-semibold">
-        {icon}
-        {label}
-      </span>
-      <span className="text-muted-foreground mt-1 block text-xs">
-        {description}
-      </span>
-    </ToggleGroupItem>
   );
 }

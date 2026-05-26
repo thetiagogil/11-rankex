@@ -9,19 +9,15 @@ import {
   Save,
   UserRound,
 } from "lucide-react";
-import {
-  type ReactNode,
-  type SubmitEvent,
-  useState,
-  useTransition,
-} from "react";
+import { type SubmitEvent, useState, useTransition } from "react";
 
+import { SettingsSection } from "@/features/settings/components/settings-section";
 import { updateProfileSettingsAction } from "@/features/settings/server/actions";
+import { FormField } from "@/shared/components/form-field";
 import { Alert } from "@/shared/components/ui/alert";
 import { Button } from "@/shared/components/ui/button";
 import { Card } from "@/shared/components/ui/card";
 import { Input } from "@/shared/components/ui/input";
-import { Label } from "@/shared/components/ui/label";
 import { Textarea } from "@/shared/components/ui/textarea";
 import type { CurrentUser } from "@/shared/types";
 
@@ -76,21 +72,21 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
     <form className="w-full" onSubmit={submit}>
       <Card as="section" className="p-5 sm:p-7">
         <div className="flex flex-col gap-7">
-          <SettingsBlock
+          <SettingsSection
             description="Used only for logging in and account recovery. It is not shown on public Rankex pages."
             title="Account anchor"
           >
-            <FieldShell htmlFor="email" icon={<Mail />} label="Email">
+            <FormField htmlFor="email" icon={<Mail />} label="Email">
               <Input disabled id="email" value={currentUser.email ?? ""} />
-            </FieldShell>
-          </SettingsBlock>
+            </FormField>
+          </SettingsSection>
 
-          <SettingsBlock
+          <SettingsSection
             description="The name and handle people see before they open one of your rankings."
             title="Public profile"
           >
             <div className="grid gap-4">
-              <FieldShell
+              <FormField
                 htmlFor="displayName"
                 icon={<UserRound />}
                 label="Display name"
@@ -105,9 +101,14 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
                   required
                   value={displayName}
                 />
-              </FieldShell>
+              </FormField>
 
-              <FieldShell htmlFor="username" icon={<AtSign />} label="Username">
+              <FormField
+                description="Lowercase letters, numbers, and underscores. Leave blank to keep the generated profile URL."
+                htmlFor="username"
+                icon={<AtSign />}
+                label="Username"
+              >
                 <Input
                   autoComplete="username"
                   disabled={isPending}
@@ -117,19 +118,15 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
                   placeholder="rank_profile"
                   value={username}
                 />
-                <p className="text-muted-foreground text-xs">
-                  Lowercase letters, numbers, and underscores. Leave blank to
-                  keep the generated profile URL.
-                </p>
-              </FieldShell>
+              </FormField>
             </div>
-          </SettingsBlock>
+          </SettingsSection>
 
-          <SettingsBlock
+          <SettingsSection
             description="A short line that gives your rankings a recognizable point of view."
             title="Ranking voice"
           >
-            <FieldShell htmlFor="bio" icon={<MessageSquareText />} label="Bio">
+            <FormField htmlFor="bio" icon={<MessageSquareText />} label="Bio">
               <Textarea
                 disabled={isPending}
                 id="bio"
@@ -142,8 +139,8 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
               <p className="text-muted-foreground text-right font-mono text-[10px]">
                 {bio.length}/160
               </p>
-            </FieldShell>
-          </SettingsBlock>
+            </FormField>
+          </SettingsSection>
 
           {feedback ? (
             <Alert tone={feedback.tone}>{feedback.message}</Alert>
@@ -171,55 +168,5 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
         </div>
       </Card>
     </form>
-  );
-}
-
-function SettingsBlock({
-  children,
-  description,
-  title,
-}: {
-  children: ReactNode;
-  description: string;
-  title: string;
-}) {
-  return (
-    <section className="flex flex-col gap-4">
-      <div>
-        <h2 className="font-display text-xl font-bold">{title}</h2>
-        <p className="text-muted-foreground mt-1 text-sm leading-6">
-          {description}
-        </p>
-      </div>
-      {children}
-    </section>
-  );
-}
-
-function FieldShell({
-  children,
-  htmlFor,
-  icon,
-  label,
-  required = false,
-}: {
-  children: ReactNode;
-  htmlFor: string;
-  icon: ReactNode;
-  label: string;
-  required?: boolean;
-}) {
-  return (
-    <div className="flex w-full flex-col gap-1.5">
-      <Label
-        className="[&_svg]:text-primary inline-flex w-full items-center gap-2 [&_svg]:size-3.5"
-        htmlFor={htmlFor}
-        required={required}
-      >
-        {icon}
-        {label}
-      </Label>
-      {children}
-    </div>
   );
 }

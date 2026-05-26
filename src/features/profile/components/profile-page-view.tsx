@@ -1,15 +1,14 @@
 import { Settings } from "lucide-react";
 
 import { ListCard } from "@/features/lists/components/list-card";
+import { ProfileStat } from "@/features/profile/components/profile-stat";
 import type { ProfileOverview } from "@/features/profile/types";
 import { FollowButton } from "@/features/social/components/follow-button";
 import { ButtonLink } from "@/shared/components/button-link";
 import { Card } from "@/shared/components/ui/card";
 import { EmptyState } from "@/shared/components/empty-state";
-import {
-  getProfileInitials,
-  getProfileUsernameLabel,
-} from "@/shared/utils/profile";
+import { ProfileAvatar } from "@/shared/components/profile-avatar";
+import { getProfileUsernameLabel } from "@/shared/utils/profile";
 
 type ProfilePageViewProps = {
   currentUserId?: string;
@@ -36,9 +35,12 @@ export function ProfilePageView({
       <Card as="section" className="w-full max-w-full p-5 sm:p-7">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-6">
           <div className="sm:block">
-            <div className="border-foreground/45 bg-gradient-gold font-display text-primary-foreground shadow-elevated grid size-28 shrink-0 place-items-center rounded-3xl border text-5xl font-black sm:size-36 sm:text-6xl">
-              {getProfileInitials(profile.displayName)}
-            </div>
+            <ProfileAvatar
+              className="shadow-elevated"
+              displayName={profile.displayName}
+              rounded="3xl"
+              size="xl"
+            />
           </div>
 
           <div className="min-w-0 flex-1">
@@ -157,19 +159,6 @@ export function ProfilePageView({
           <EmptyState description={emptyCopy} title="No rankings here yet" />
         )}
       </section>
-    </div>
-  );
-}
-
-function ProfileStat({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="min-w-0">
-      <p className="font-display text-foreground text-xl leading-none font-bold">
-        {value}
-      </p>
-      <p className="text-muted-foreground mt-1 truncate font-mono text-[10px] tracking-widest uppercase">
-        {label}
-      </p>
     </div>
   );
 }

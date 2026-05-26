@@ -3,9 +3,13 @@
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { type ReactNode, type SubmitEvent, useMemo, useState } from "react";
+import { type SubmitEvent, useMemo, useState } from "react";
 
 import { AuthFeedback } from "@/features/auth/components/auth-feedback";
+import { getAuthModeHref } from "@/features/auth/lib/auth-routing";
+import type { AuthMode } from "@/features/auth/types";
+import { DividerLabel } from "@/shared/components/divider-label";
+import { FormField } from "@/shared/components/form-field";
 import { AppLogo } from "@/shared/components/layout/app-logo";
 import { AppMain } from "@/shared/components/layout/app-main";
 import { AppShell } from "@/shared/components/layout/app-shell";
@@ -18,11 +22,7 @@ import {
   CardTitle,
 } from "@/shared/components/ui/card";
 import { Input } from "@/shared/components/ui/input";
-import { Label } from "@/shared/components/ui/label";
-import { Separator } from "@/shared/components/ui/separator";
 import { createClient } from "@/lib/supabase/browser";
-
-export type AuthMode = "login" | "signup";
 
 type AuthFormProps = {
   initialError?: string | null;
@@ -52,7 +52,7 @@ export function AuthForm({
     () => `/auth/continue?next=${encodeURIComponent(next)}`,
     [next],
   );
-  const alternateHref = buildAuthHref(isSignup ? "/login" : "/signup", next);
+  const alternateHref = getAuthModeHref(isSignup ? "login" : "signup", next);
 
   const validate = () => {
     if (isSignup && !displayName.trim()) {
@@ -152,7 +152,7 @@ export function AuthForm({
 
               <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
                 {isSignup ? (
-                  <AuthField
+                  <FormField
                     htmlFor="displayName"
                     label="Display name"
                     required
@@ -168,10 +168,10 @@ export function AuthForm({
                       type="text"
                       value={displayName}
                     />
-                  </AuthField>
+                  </FormField>
                 ) : null}
 
-                <AuthField htmlFor="email" label="Email" required>
+                <FormField htmlFor="email" label="Email" required>
                   <Input
                     autoComplete="email"
                     disabled={pending}
@@ -182,9 +182,9 @@ export function AuthForm({
                     type="email"
                     value={email}
                   />
-                </AuthField>
+                </FormField>
 
-                <AuthField htmlFor="password" label="Password" required>
+                <FormField htmlFor="password" label="Password" required>
                   <Input
                     autoComplete={
                       isSignup ? "new-password" : "current-password"
@@ -198,10 +198,10 @@ export function AuthForm({
                     type="password"
                     value={password}
                   />
-                </AuthField>
+                </FormField>
 
                 {isSignup ? (
-                  <AuthField
+                  <FormField
                     htmlFor="confirmPassword"
                     label="Confirm password"
                     required
@@ -219,7 +219,7 @@ export function AuthForm({
                       type="password"
                       value={confirmPassword}
                     />
-                  </AuthField>
+                  </FormField>
                 ) : null}
 
                 <Button
@@ -241,7 +241,7 @@ export function AuthForm({
             <CardFooter className="flex-col gap-4 border-t-0 bg-transparent px-6 pb-6 sm:px-8 sm:pb-8">
               {!isSignup ? (
                 <>
-                  <AuthDivider />
+                  <DividerLabel>or</DividerLabel>
                   <form
                     action="/api/auth/demo"
                     className="w-full"
@@ -276,43 +276,4 @@ export function AuthForm({
       </AppMain>
     </AppShell>
   );
-}
-
-function AuthDivider() {
-  return (
-    <div className="text-muted-foreground flex w-full items-center gap-3 text-xs">
-      <Separator className="flex-1" />
-      <span>or</span>
-      <Separator className="flex-1" />
-    </div>
-  );
-}
-
-function AuthField({
-  children,
-  htmlFor,
-  label,
-  required = false,
-}: {
-  children: ReactNode;
-  htmlFor: string;
-  label: string;
-  required?: boolean;
-}) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <Label htmlFor={htmlFor} required={required}>
-        {label}
-      </Label>
-      {children}
-    </div>
-  );
-}
-
-function buildAuthHref(pathname: "/login" | "/signup", next: string) {
-  if (next === "/dashboard") {
-    return pathname;
-  }
-
-  return `${pathname}?next=${encodeURIComponent(next)}`;
 }

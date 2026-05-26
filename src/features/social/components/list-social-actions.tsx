@@ -10,6 +10,7 @@ import {
   toggleListLikeAction,
 } from "@/features/social/server/actions";
 import type { ListSocialState } from "@/features/lists/types";
+import { CountPill } from "@/shared/components/count-pill";
 import { Button } from "@/shared/components/ui/button";
 import { cn } from "@/shared/utils/cn";
 
@@ -50,14 +51,11 @@ export function ListSocialActions({
   const iconButtonSize = size === "compact" ? "icon-sm" : "icon";
   const bookmarkButtonSize = showBookmarkCount ? countButtonSize : iconButtonSize;
   const actionVariant = isPillAppearance ? "pill" : "outline";
-  const passivePillClass = cn(
-    "border-border bg-background text-muted-foreground inline-flex items-center justify-center gap-1 rounded-full border font-bold shadow-none",
-    isPillAppearance
-      ? "h-7 px-2 text-xs"
-      : size === "compact"
-        ? "h-8 px-2.5 text-xs"
-        : "h-10 px-2.5 text-sm",
-  );
+  const passivePillSize = isPillAppearance
+    ? "sm"
+    : size === "compact"
+      ? "default"
+      : "lg";
 
   const isBusy = (action: typeof pendingAction) =>
     isPending && pendingAction === action;
@@ -71,10 +69,12 @@ export function ListSocialActions({
       )}
     >
       {!isPillAppearance ? (
-        <span className={passivePillClass}>
-          <MessageCircle className="size-3.5" data-icon="inline-start" />
-          {social.commentCount}
-        </span>
+        <CountPill
+          icon={<MessageCircle data-icon="inline-start" />}
+          singularLabel="comment"
+          size={passivePillSize}
+          value={social.commentCount}
+        />
       ) : null}
 
       <Button
@@ -111,10 +111,12 @@ export function ListSocialActions({
       </Button>
 
       {isPillAppearance ? (
-        <span className={passivePillClass}>
-          <MessageCircle className="size-3.5" data-icon="inline-start" />
-          {social.commentCount}
-        </span>
+        <CountPill
+          icon={<MessageCircle data-icon="inline-start" />}
+          singularLabel="comment"
+          size={passivePillSize}
+          value={social.commentCount}
+        />
       ) : null}
 
       <Button

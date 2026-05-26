@@ -14,11 +14,12 @@ import {
   createItemAction,
   updateItemAction,
 } from "@/features/lists/server/actions";
+import { itemTierOptions } from "@/features/lists/lib/item-form-options";
 import type { RankedItem, Tier } from "@/features/lists/types";
+import { FormField } from "@/shared/components/form-field";
 import { Alert } from "@/shared/components/ui/alert";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
-import { Label } from "@/shared/components/ui/label";
 import { Modal } from "@/shared/components/modal";
 import {
   Select,
@@ -35,15 +36,6 @@ type ItemFormDialogProps = {
   listId: number;
   trigger?: ReactNode;
 };
-
-const tierOptions = [
-  { label: "No tier", value: "none" },
-  { label: "S - Essential", value: "S" },
-  { label: "A - Excellent", value: "A" },
-  { label: "B - Strong", value: "B" },
-  { label: "C - Mixed", value: "C" },
-  { label: "D - Low priority", value: "D" },
-];
 
 export function ItemFormDialog({ item, listId, trigger }: ItemFormDialogProps) {
   const router = useRouter();
@@ -129,10 +121,7 @@ export function ItemFormDialog({ item, listId, trigger }: ItemFormDialogProps) {
         <form className="flex flex-col gap-4" id={formId} onSubmit={submit}>
           {feedback ? <Alert tone="error">{feedback}</Alert> : null}
 
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="item-title" required>
-              Title
-            </Label>
+          <FormField htmlFor="item-title" label="Title" required>
             <Input
               autoFocus
               disabled={isPending}
@@ -143,10 +132,9 @@ export function ItemFormDialog({ item, listId, trigger }: ItemFormDialogProps) {
               required
               value={title}
             />
-          </div>
+          </FormField>
 
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="item-note">Note</Label>
+          <FormField htmlFor="item-note" label="Note">
             <Textarea
               disabled={isPending}
               id="item-note"
@@ -156,11 +144,10 @@ export function ItemFormDialog({ item, listId, trigger }: ItemFormDialogProps) {
               rows={4}
               value={note}
             />
-          </div>
+          </FormField>
 
           <div className="grid gap-3 sm:grid-cols-2">
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="item-score">Score</Label>
+            <FormField htmlFor="item-score" label="Score">
               <Input
                 disabled={isPending}
                 id="item-score"
@@ -172,10 +159,9 @@ export function ItemFormDialog({ item, listId, trigger }: ItemFormDialogProps) {
                 type="number"
                 value={score}
               />
-            </div>
+            </FormField>
 
-            <div className="flex flex-col gap-1.5">
-              <Label htmlFor="item-tier">Tier</Label>
+            <FormField htmlFor="item-tier" label="Tier">
               <Select
                 disabled={isPending}
                 onValueChange={(value) => setTier(value || "none")}
@@ -186,7 +172,7 @@ export function ItemFormDialog({ item, listId, trigger }: ItemFormDialogProps) {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    {tierOptions.map((option) => (
+                    {itemTierOptions.map((option) => (
                       <SelectItem key={option.value} value={option.value}>
                         {option.label}
                       </SelectItem>
@@ -194,7 +180,7 @@ export function ItemFormDialog({ item, listId, trigger }: ItemFormDialogProps) {
                   </SelectGroup>
                 </SelectContent>
               </Select>
-            </div>
+            </FormField>
           </div>
         </form>
       </Modal>

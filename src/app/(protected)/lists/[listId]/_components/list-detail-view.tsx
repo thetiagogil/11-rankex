@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
+import { ListOwnerMetadata } from "@/app/(protected)/lists/[listId]/_components/list-owner-metadata";
+import type { ListDetailViewMode } from "@/app/(protected)/lists/[listId]/_types";
 import { ItemFormDialog } from "@/features/lists/components/item-form-dialog";
 import { ListFormDialog } from "@/features/lists/components/list-form-dialog";
 import { SortableItemList } from "@/features/lists/components/sortable-item-list";
@@ -16,6 +18,7 @@ import type { RankedList } from "@/features/lists/types";
 import { CommentSection } from "@/features/social/components/comment-section";
 import { ListSocialActions } from "@/features/social/components/list-social-actions";
 import { AppMain } from "@/shared/components/layout/app-main";
+import { MetadataDot } from "@/shared/components/metadata-dot";
 import { Modal } from "@/shared/components/modal";
 import {
   SegmentedToggleGroup,
@@ -23,20 +26,16 @@ import {
 } from "@/shared/components/segmented-toggle-group";
 import { Alert } from "@/shared/components/ui/alert";
 import { Button } from "@/shared/components/ui/button";
-import type { Profile } from "@/shared/types";
-import { getProfileHref, getProfileInitials } from "@/shared/utils/profile";
 
 type ListDetailViewProps = {
   currentUserId: string;
   list: RankedList;
 };
 
-type ViewMode = "ranked" | "tiers";
-
 export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
   const router = useRouter();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [view, setView] = useState<ViewMode>("ranked");
+  const [view, setView] = useState<ListDetailViewMode>("ranked");
   const [feedback, setFeedback] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const canEdit = list.ownerId === currentUserId;
@@ -91,7 +90,7 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
           <div className="text-muted-foreground mt-3 flex flex-wrap items-center gap-x-2 gap-y-2 text-sm">
             {list.owner ? (
               <>
-                <OwnerMetadata profile={list.owner} />
+                <ListOwnerMetadata profile={list.owner} />
                 <MetadataDot />
               </>
             ) : null}
@@ -129,7 +128,7 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
             <SegmentedToggleGroup
               aria-label="Choose list view"
               onValueChange={(value) => {
-                if (value) setView(value as ViewMode);
+                if (value) setView(value as ListDetailViewMode);
               }}
               type="single"
               value={view}
@@ -243,29 +242,5 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
 
       <CommentSection currentUserId={currentUserId} list={list} />
     </AppMain>
-  );
-}
-
-function OwnerMetadata({ profile }: { profile: Profile }) {
-  return (
-    <Link
-      className="text-muted-foreground hover:text-foreground inline-flex min-w-0 items-center gap-2 transition"
-      href={getProfileHref(profile)}
-    >
-      <span className="bg-primary text-primary-foreground grid size-8 shrink-0 place-items-center rounded-full font-mono text-[10px] font-bold">
-        {getProfileInitials(profile.displayName)}
-      </span>
-      <span className="min-w-0">
-        by <span className="text-foreground">{profile.displayName}</span>
-      </span>
-    </Link>
-  );
-}
-
-function MetadataDot() {
-  return (
-    <span aria-hidden="true" className="text-muted-foreground/70">
-      ·
-    </span>
   );
 }

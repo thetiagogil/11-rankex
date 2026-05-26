@@ -13,8 +13,9 @@ import {
 import { Button } from "@/shared/components/ui/button";
 import { Card } from "@/shared/components/ui/card";
 import { EmptyState } from "@/shared/components/empty-state";
+import { ProfileAvatar } from "@/shared/components/profile-avatar";
 import { Textarea } from "@/shared/components/ui/textarea";
-import { getProfileHref, getProfileInitials } from "@/shared/utils/profile";
+import { getProfileHref } from "@/shared/utils/profile";
 
 type CommentSectionProps = {
   currentUserId: string;
@@ -122,15 +123,13 @@ export function CommentSection({ currentUserId, list }: CommentSectionProps) {
                 <div className="flex items-start gap-3">
                   {comment.author ? (
                     <Link
-                      className="border-foreground/45 bg-gradient-gold font-display text-primary-foreground grid size-10 shrink-0 place-items-center rounded-2xl border text-lg font-bold shadow-none"
+                      className="shrink-0"
                       href={getProfileHref(comment.author)}
                     >
-                      {getProfileInitials(authorName)}
+                      <ProfileAvatar displayName={authorName} size="sm" />
                     </Link>
                   ) : (
-                    <span className="border-foreground/45 bg-secondary font-display grid size-10 shrink-0 place-items-center rounded-2xl border text-lg font-bold">
-                      ?
-                    </span>
+                    <ProfileAvatar displayName="?" size="sm" tone="muted" />
                   )}
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-1">

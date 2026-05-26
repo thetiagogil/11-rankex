@@ -1,8 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 
-import { ProfilePageView } from "@/features/profile/components/profile-page-view";
+import { ProfilePageShell } from "@/features/profile/components/profile-page-shell";
 import { getPublicProfileOverview } from "@/features/profile/server/queries";
-import { AppMain } from "@/shared/components/layout/app-main";
 import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/shared/server/auth";
 import { getProfileHandle } from "@/shared/utils/profile";
@@ -30,9 +29,5 @@ export default async function PublicProfilePage({
     notFound();
   }
 
-  return (
-    <AppMain className="pb-20">
-      <ProfilePageView currentUserId={currentUser.id} overview={overview} />
-    </AppMain>
-  );
+  return <ProfilePageShell currentUserId={currentUser.id} overview={overview} />;
 }
