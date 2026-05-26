@@ -2,7 +2,7 @@ import {
   defaultLandingSampleDeckLayout,
   landingSampleDeckLayout,
   landingSampleRankings,
-} from "@/app/_lib/landing-content";
+} from "@/content/landing";
 import { SampleRankingCard } from "@/app/_components/sample-ranking-card";
 
 export function SampleRankingDeck() {

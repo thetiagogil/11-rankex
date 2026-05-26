@@ -12,7 +12,7 @@ import type {
   LandingFeatureCard,
   LandingSampleDeckLayout,
   LandingSampleRanking,
-} from "@/app/_types/landing";
+} from "@/content/landing.types";
 
 export const landingFeatureCards: LandingFeatureCard[] = [
   {

@@ -9,10 +9,9 @@ import {
   Save,
   UserRound,
 } from "lucide-react";
-import { type SubmitEvent, useState, useTransition } from "react";
 
 import { SettingsSection } from "@/features/settings/components/settings-section";
-import { updateProfileSettingsAction } from "@/features/settings/server/actions";
+import { useProfileSettingsForm } from "@/features/settings/hooks/use-profile-settings-form";
 import { FormActions } from "@/shared/components/form-actions";
 import { FormField } from "@/shared/components/form-field";
 import { Alert } from "@/shared/components/ui/alert";
@@ -27,50 +26,10 @@ type ProfileSettingsFormProps = {
 };
 
 export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
-  const initialDisplayName = currentUser.profile.displayName;
-  const initialBio = currentUser.profile.bio ?? "";
-  const initialUsername = currentUser.profile.username ?? "";
-  const [displayName, setDisplayName] = useState(initialDisplayName);
-  const [bio, setBio] = useState(initialBio);
-  const [username, setUsername] = useState(initialUsername);
-  const [feedback, setFeedback] = useState<{
-    message: string;
-    tone: "error" | "success";
-  } | null>(null);
-  const [isPending, startTransition] = useTransition();
-
-  const submit = (event: SubmitEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setFeedback(null);
-
-    startTransition(async () => {
-      const result = await updateProfileSettingsAction({
-        bio,
-        displayName,
-        username,
-      });
-
-      if (!result.ok) {
-        setFeedback({ message: result.error, tone: "error" });
-        return;
-      }
-
-      setDisplayName(result.data.displayName);
-      setBio(result.data.bio ?? "");
-      setUsername(result.data.username ?? "");
-      setFeedback({ message: "Profile settings saved.", tone: "success" });
-    });
-  };
-
-  const reset = () => {
-    setDisplayName(initialDisplayName);
-    setBio(initialBio);
-    setUsername(initialUsername);
-    setFeedback(null);
-  };
+  const form = useProfileSettingsForm(currentUser);
 
   return (
-    <form className="w-full" onSubmit={submit}>
+    <form className="w-full" onSubmit={form.submit}>
       <Card as="section" className="p-5 sm:p-7">
         <div className="flex flex-col gap-7">
           <SettingsSection
@@ -95,12 +54,12 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
               >
                 <Input
                   autoComplete="name"
-                  disabled={isPending}
+                  disabled={form.isPending}
                   id="displayName"
                   maxLength={80}
-                  onChange={(event) => setDisplayName(event.target.value)}
+                  onChange={(event) => form.setDisplayName(event.target.value)}
                   required
-                  value={displayName}
+                  value={form.displayName}
                 />
               </FormField>
 
@@ -112,12 +71,12 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
               >
                 <Input
                   autoComplete="username"
-                  disabled={isPending}
+                  disabled={form.isPending}
                   id="username"
                   maxLength={30}
-                  onChange={(event) => setUsername(event.target.value)}
+                  onChange={(event) => form.setUsername(event.target.value)}
                   placeholder="rank_profile"
-                  value={username}
+                  value={form.username}
                 />
               </FormField>
             </div>
@@ -129,36 +88,36 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
           >
             <FormField htmlFor="bio" icon={<MessageSquareText />} label="Bio">
               <Textarea
-                disabled={isPending}
+                disabled={form.isPending}
                 id="bio"
                 maxLength={160}
-                onChange={(event) => setBio(event.target.value)}
+                onChange={(event) => form.setBio(event.target.value)}
                 placeholder="A short note about what you like to rank."
                 rows={5}
-                value={bio}
+                value={form.bio}
               />
               <p className="text-muted-foreground text-right font-mono text-[10px]">
-                {bio.length}/160
+                {form.bio.length}/160
               </p>
             </FormField>
           </SettingsSection>
 
-          {feedback ? (
-            <Alert tone={feedback.tone}>{feedback.message}</Alert>
+          {form.feedback ? (
+            <Alert tone={form.feedback.tone}>{form.feedback.message}</Alert>
           ) : null}
 
           <FormActions>
             <Button
-              disabled={isPending}
-              onClick={reset}
+              disabled={form.isPending}
+              onClick={form.reset}
               type="button"
               variant="ghost"
             >
               <RotateCcw data-icon="inline-start" />
               Reset
             </Button>
-            <Button disabled={isPending} type="submit">
-              {isPending ? (
+            <Button disabled={form.isPending} type="submit">
+              {form.isPending ? (
                 <Loader2 className="animate-spin" data-icon="inline-start" />
               ) : (
                 <Save data-icon="inline-start" />

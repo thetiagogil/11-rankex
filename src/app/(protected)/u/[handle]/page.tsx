@@ -1,6 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 
-import { ProfilePageShell } from "@/features/profile/components/profile-page-shell";
+import { PublicProfilePageView } from "@/app/(protected)/u/[handle]/_components/public-profile-page-view";
 import { getPublicProfileOverview } from "@/features/profile/server/queries";
 import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/shared/server/auth";
@@ -29,5 +29,10 @@ export default async function PublicProfilePage({
     notFound();
   }
 
-  return <ProfilePageShell currentUserId={currentUser.id} overview={overview} />;
+  return (
+    <PublicProfilePageView
+      currentUserId={currentUser.id}
+      overview={overview}
+    />
+  );
 }

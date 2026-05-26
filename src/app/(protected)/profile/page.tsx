@@ -1,4 +1,4 @@
-import { ProfilePageShell } from "@/features/profile/components/profile-page-shell";
+import { CurrentProfilePageView } from "@/app/(protected)/profile/_components/current-profile-page-view";
 import { buildProfileOverview } from "@/features/profile/server/queries";
 import { getUserListSummaries } from "@/features/lists/server/queries";
 import { getProfileSocialStats } from "@/features/social/server/queries";
@@ -15,9 +15,8 @@ export default async function ProfilePage() {
   const overview = buildProfileOverview(currentUser.profile, lists, social);
 
   return (
-    <ProfilePageShell
+    <CurrentProfilePageView
       currentUserId={currentUser.id}
-      isCurrentUser
       overview={overview}
     />
   );

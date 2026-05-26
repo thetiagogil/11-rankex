@@ -3,13 +3,11 @@
 import type { ReactNode } from "react";
 
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/shared/components/ui/dialog";
+  ModalBody,
+  ModalFooter,
+  ModalHeader,
+} from "@/shared/components/modal-sections";
+import { Dialog, DialogContent } from "@/shared/components/ui/dialog";
 import { cn } from "@/shared/utils/cn";
 
 type ModalProps = {
@@ -59,57 +57,5 @@ export function Modal({
         ) : null}
       </DialogContent>
     </Dialog>
-  );
-}
-
-function ModalHeader({
-  description,
-  title,
-}: {
-  description?: string;
-  title: string;
-}) {
-  return (
-    <DialogHeader className="border-border border-b-2 border-dashed px-5 pt-5 pb-4">
-      <DialogTitle className="font-display text-3xl font-bold">
-        {title}
-      </DialogTitle>
-      {description ? (
-        <DialogDescription className="sr-only">{description}</DialogDescription>
-      ) : null}
-    </DialogHeader>
-  );
-}
-
-function ModalBody({
-  children,
-  className,
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
-  return (
-    <div className="scrollbar-themed min-h-0 overflow-x-hidden overflow-y-auto">
-      <div className={cn("px-5 py-5", className)}>{children}</div>
-    </div>
-  );
-}
-
-function ModalFooter({
-  children,
-  className,
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
-  return (
-    <DialogFooter
-      className={cn(
-        "border-border border-t-2 border-dashed px-5 py-4",
-        className,
-      )}
-    >
-      {children}
-    </DialogFooter>
   );
 }

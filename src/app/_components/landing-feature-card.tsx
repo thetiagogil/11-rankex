@@ -1,4 +1,4 @@
-import type { LandingFeatureCard as LandingFeatureCardData } from "@/app/_types/landing";
+import type { LandingFeatureCard as LandingFeatureCardData } from "@/content/landing.types";
 import { Card } from "@/shared/components/ui/card";
 import { cn } from "@/shared/utils/cn";
 

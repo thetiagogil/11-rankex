@@ -1,7 +1,7 @@
 import type {
   LandingSampleDeckLayout,
   LandingSampleRanking,
-} from "@/app/_types/landing";
+} from "@/content/landing.types";
 import { Card } from "@/shared/components/ui/card";
 
 type SampleRankingCardProps = {

@@ -5,7 +5,7 @@ import { SampleRankingDeck } from "@/app/_components/sample-ranking-deck";
 import {
   landingFeatureCards,
   marqueeTopicLoop,
-} from "@/app/_lib/landing-content";
+} from "@/content/landing";
 import { ButtonLink } from "@/shared/components/button-link";
 import { AppMain } from "@/shared/components/layout/app-main";
 import { Card } from "@/shared/components/ui/card";

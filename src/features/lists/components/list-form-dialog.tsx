@@ -1,22 +1,11 @@
 "use client";
 
 import { ListPlus } from "lucide-react";
-import { useRouter } from "next/navigation";
-import {
-  type ReactNode,
-  type SubmitEvent,
-  useId,
-  useState,
-  useTransition,
-} from "react";
+import { type ReactNode } from "react";
 
 import { ListFormFields } from "@/features/lists/components/list-form-fields";
-import { getListIcon } from "@/features/lists/lib/list-icons";
-import {
-  createListAction,
-  updateListAction,
-} from "@/features/lists/server/actions";
-import type { RankedList, RankingMode } from "@/features/lists/types";
+import { useListForm } from "@/features/lists/hooks/use-list-form";
+import type { RankedList } from "@/features/lists/types";
 import { FormActions } from "@/shared/components/form-actions";
 import { Modal } from "@/shared/components/modal";
 import { Alert } from "@/shared/components/ui/alert";
@@ -35,80 +24,16 @@ export function ListFormDialog({
   redirectToList = false,
   trigger,
 }: ListFormDialogProps) {
-  const router = useRouter();
-  const generatedFormId = useId();
-  const [open, setOpen] = useState(false);
-  const [title, setTitle] = useState(initialList?.title ?? "");
-  const [topic, setTopic] = useState(initialList?.topic ?? "");
-  const [description, setDescription] = useState(
-    initialList?.description ?? "",
-  );
-  const [iconId, setIconId] = useState(
-    getListIcon(initialList?.emoji ?? null, initialList?.topic ?? null).id,
-  );
-  const [isPublic, setIsPublic] = useState(initialList?.isPublic ?? true);
-  const [rankingMode, setRankingMode] = useState<RankingMode>(
-    initialList?.rankingMode ?? "ranked",
-  );
-  const [feedback, setFeedback] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
-  const isEditing = Boolean(initialList);
-  const rankingModeLocked = Boolean(initialList?.items.length);
-  const formId = `rankex-list-form-${generatedFormId}`;
-
-  const openDialog = () => {
-    setTitle(initialList?.title ?? "");
-    setTopic(initialList?.topic ?? "");
-    setDescription(initialList?.description ?? "");
-    setIconId(
-      getListIcon(initialList?.emoji ?? null, initialList?.topic ?? null).id,
-    );
-    setIsPublic(initialList?.isPublic ?? true);
-    setRankingMode(initialList?.rankingMode ?? "ranked");
-    setFeedback(null);
-    setOpen(true);
-  };
-
-  const submit = (event: SubmitEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setFeedback(null);
-
-    startTransition(async () => {
-      const input = {
-        description,
-        emoji: iconId,
-        isPublic,
-        rankingMode,
-        title,
-        topic,
-      };
-      const result = initialList
-        ? await updateListAction(initialList.id, input)
-        : await createListAction(input);
-
-      if (!result.ok) {
-        setFeedback(result.error);
-        return;
-      }
-
-      setOpen(false);
-
-      if (redirectToList) {
-        router.push(`/lists/${result.data.id}`);
-      } else {
-        router.refresh();
-      }
-    });
-  };
+  const form = useListForm({ initialList, redirectToList });
 
   return (
     <>
       {trigger ? (
-        <span className="contents" onClick={openDialog}>
+        <span className="contents" onClick={form.openDialog}>
           {trigger}
         </span>
       ) : (
-        <Button onClick={openDialog} size="lg">
+        <Button onClick={form.openDialog} size="lg">
           <ListPlus data-icon="inline-start" />
           New list
         </Button>
@@ -120,12 +45,12 @@ export function ListFormDialog({
           <FormActions
             border={false}
             leading={
-              isEditing && onRequestDelete ? (
+              form.isEditing && onRequestDelete ? (
                 <Button
                   className="text-destructive hover:text-destructive"
-                  disabled={isPending}
+                  disabled={form.isPending}
                   onClick={() => {
-                    setOpen(false);
+                    form.closeDialog();
                     onRequestDelete();
                   }}
                   type="button"
@@ -137,46 +62,50 @@ export function ListFormDialog({
             }
           >
             <Button
-              disabled={isPending}
-              onClick={() => setOpen(false)}
+              disabled={form.isPending}
+              onClick={form.closeDialog}
               type="button"
               variant="ghost"
             >
               Cancel
             </Button>
-            <Button disabled={isPending} form={formId} type="submit">
-              {isPending
-                ? isEditing
+            <Button disabled={form.isPending} form={form.formId} type="submit">
+              {form.isPending
+                ? form.isEditing
                   ? "Saving..."
                   : "Creating..."
-                : isEditing
+                : form.isEditing
                   ? "Save"
                   : "Create list"}
             </Button>
           </FormActions>
         }
-        onClose={() => setOpen(false)}
-        open={open}
-        title={isEditing ? "Edit list" : "Start a new top list"}
+        onClose={form.closeDialog}
+        open={form.open}
+        title={form.isEditing ? "Edit list" : "Start a new top list"}
       >
-        <form className="flex flex-col gap-4" id={formId} onSubmit={submit}>
-          {feedback ? <Alert tone="error">{feedback}</Alert> : null}
+        <form
+          className="flex flex-col gap-4"
+          id={form.formId}
+          onSubmit={form.submit}
+        >
+          {form.feedback ? <Alert tone="error">{form.feedback}</Alert> : null}
 
           <ListFormFields
-            description={description}
-            iconId={iconId}
-            isPending={isPending}
-            isPublic={isPublic}
-            onRankingModeChange={setRankingMode}
-            onDescriptionChange={setDescription}
-            onIconIdChange={setIconId}
-            onIsPublicChange={setIsPublic}
-            onTitleChange={setTitle}
-            onTopicChange={setTopic}
-            rankingModeLocked={rankingModeLocked}
-            rankingMode={rankingMode}
-            title={title}
-            topic={topic}
+            description={form.description}
+            iconId={form.iconId}
+            isPending={form.isPending}
+            isPublic={form.isPublic}
+            onDescriptionChange={form.setDescription}
+            onIconIdChange={form.setIconId}
+            onIsPublicChange={form.setIsPublic}
+            onRankingModeChange={form.setRankingMode}
+            onTitleChange={form.setTitle}
+            onTopicChange={form.setTopic}
+            rankingMode={form.rankingMode}
+            rankingModeLocked={form.rankingModeLocked}
+            title={form.title}
+            topic={form.topic}
           />
         </form>
       </Modal>
