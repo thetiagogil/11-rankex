@@ -27,7 +27,7 @@ export function AuthCardFooter({
           type="submit"
           variant="outline"
         >
-          Continue with test user
+          Continue with demo account
         </Button>
       </form>
 

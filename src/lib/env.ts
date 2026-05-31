@@ -18,7 +18,7 @@ export function getDemoUserEnv() {
   const password = process.env.DEMO_USER_PASSWORD;
 
   if (!email || !password) {
-    throw new Error("Missing demo user environment variables.");
+    throw new Error("Missing demo account environment variables.");
   }
 
   return { email, password };

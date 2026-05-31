@@ -17,7 +17,7 @@ export function LandingContent({ isAuthenticated }: LandingContentProps) {
   const primaryLabel = isAuthenticated ? "Go to dashboard" : "Get started";
   const secondaryLabel = isAuthenticated
     ? "Explore rankings"
-    : "Continue with test user";
+    : "Continue with demo account";
 
   return (
     <AppMain className="pb-20">
