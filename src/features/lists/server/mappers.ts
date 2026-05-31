@@ -1,5 +1,6 @@
 import { mapProfile } from "@/shared/server/mappers";
 import type { ProfileRow } from "@/shared/types";
+import { normalizeRankingMode } from "@/features/lists/lib/ranking-mode";
 import type {
   ListComment,
   ListCommentRows,
@@ -45,6 +46,7 @@ export function mapList(
   } = {},
 ): RankedList {
   const { list, items } = rows;
+  const rankingMode = normalizeRankingMode(list.ranking_mode);
 
   return {
     id: list.id,
@@ -54,13 +56,13 @@ export function mapList(
     emoji: list.emoji,
     description: list.description,
     isPublic: list.is_public,
-    rankingMode: list.ranking_mode,
+    rankingMode,
     remixedFromListId: list.remixed_from_list_id,
     remixedFromUserId: list.remixed_from_user_id,
     createdAt: list.created_at,
     updatedAt: list.updated_at,
     owner: owner ? mapProfile(owner) : null,
-    items: sortItemsForMode(items.map(mapItem), list.ranking_mode),
+    items: sortItemsForMode(items.map(mapItem), rankingMode),
     remixSource: options.remixSource ?? null,
     social: options.social ?? defaultSocialState,
     comments: (options.comments ?? []).map(mapComment),

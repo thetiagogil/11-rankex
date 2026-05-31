@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ListCardExploreFooter } from "@/features/lists/components/list-card-explore-footer";
 import { ListCardOwnerHandleLink } from "@/features/lists/components/list-card-owner-handle-link";
 import { ListCardSocialSummary } from "@/features/lists/components/list-card-social-summary";
+import { RankingModeBadge } from "@/features/lists/components/ranking-mode-badge";
 import { VisibilityBadge } from "@/features/lists/components/visibility-badge";
 import { getListIcon } from "@/features/lists/lib/list-icons";
 import {
@@ -13,27 +14,28 @@ import {
 import type { RankedListSummary } from "@/features/lists/types";
 import { ListSocialActions } from "@/features/social/components/list-social-actions";
 import { Card } from "@/shared/components/ui/card";
+import type { CardVariant } from "@/shared/components/ui/card";
 import { cn } from "@/shared/utils/cn";
 
 type ListCardProps = {
+  cardVariant?: Extract<CardVariant, "shadow" | "tilt">;
   currentUserId?: string;
   footerMode?: "default" | "explore";
-  isTilted?: boolean;
   list: RankedListSummary;
   showOwner?: boolean;
 };
 
 export function ListCard({
+  cardVariant = "shadow",
   currentUserId,
   footerMode = "default",
-  isTilted = true,
   list,
   showOwner = false,
 }: ListCardProps) {
   const listIcon = getListIcon(list.emoji, list.topic);
   const Icon = listIcon.Icon;
   const accent = getListCardAccent(list.id);
-  const tilt = isTilted ? getListCardTilt(list.id) : "";
+  const tilt = cardVariant === "tilt" ? getListCardTilt(list.id) : "";
   const canUseSocialActions = Boolean(
     currentUserId && list.isPublic && list.ownerId !== currentUserId,
   );
@@ -46,7 +48,7 @@ export function ListCard({
     <Card
       as="article"
       className={cn("group min-w-0 gap-0 p-0", tilt)}
-      variant={isTilted ? "tilt" : "shadow"}
+      variant={cardVariant}
     >
       <Link
         aria-label={`Open ${list.title}`}
@@ -68,7 +70,14 @@ export function ListCard({
                 {list.topic ?? "General"}
               </p>
             </div>
-            <VisibilityBadge isPublic={list.isPublic} />
+            {useExploreFooter ? (
+              <RankingModeBadge rankingMode={list.rankingMode} />
+            ) : (
+              <div className="flex shrink-0 items-center gap-1.5">
+                <RankingModeBadge rankingMode={list.rankingMode} />
+                <VisibilityBadge iconOnly isPublic={list.isPublic} />
+              </div>
+            )}
           </div>
 
           <div className="mt-4 min-w-0">

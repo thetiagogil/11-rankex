@@ -148,7 +148,6 @@ export function ProfilePageView({
               <ListCard
                 currentUserId={currentUserId}
                 footerMode={isCurrentUser ? "default" : "explore"}
-                isTilted={false}
                 key={list.id}
                 list={list}
                 showOwner={!isCurrentUser}

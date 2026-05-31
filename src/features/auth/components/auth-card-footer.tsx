@@ -18,23 +18,18 @@ export function AuthCardFooter({
 }: AuthCardFooterProps) {
   return (
     <>
-      {!isSignup ? (
-        <>
-          <DividerLabel>or</DividerLabel>
-          <form action="/api/auth/demo" className="w-full" method="post">
-            <input name="next" type="hidden" value={next} />
-            <Button
-              className="w-full"
-              disabled={pending}
-              size="lg"
-              type="submit"
-              variant="outline"
-            >
-              Use demo account
-            </Button>
-          </form>
-        </>
-      ) : null}
+      <DividerLabel>or</DividerLabel>
+      <form action="/api/auth/demo" className="w-full" method="post">
+        <input name="next" type="hidden" value={next} />
+        <Button
+          className="w-full"
+          disabled={pending}
+          type="submit"
+          variant="outline"
+        >
+          Continue with test user
+        </Button>
+      </form>
 
       <p className="text-muted-foreground w-full text-center text-sm">
         {isSignup ? "Already have an account?" : "No account yet?"}{" "}

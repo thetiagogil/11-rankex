@@ -87,7 +87,7 @@ export function AuthForm({
               </form>
             </CardContent>
 
-            <CardFooter className="flex-col gap-4 border-t-0 bg-transparent px-6 pb-6 sm:px-8 sm:pb-8">
+            <CardFooter className="flex-col gap-4 border-t-0 bg-transparent px-6 pt-0 pb-6 sm:px-8 sm:pb-8">
               <AuthCardFooter
                 alternateHref={authForm.alternateHref}
                 isSignup={authForm.isSignup}

@@ -21,6 +21,10 @@ export function isRankingMode(value: unknown): value is RankingMode {
   );
 }
 
-export function getRankingModeLabel(mode: RankingMode) {
-  return rankingModeLabels[mode];
+export function normalizeRankingMode(value: unknown): RankingMode {
+  return isRankingMode(value) ? value : "ranked";
+}
+
+export function getRankingModeLabel(mode: unknown) {
+  return rankingModeLabels[normalizeRankingMode(mode)];
 }

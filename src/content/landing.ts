@@ -17,28 +17,32 @@ import type {
 export const landingFeatureCards: LandingFeatureCard[] = [
   {
     accent: "oklch(0.78 0.1 50)",
-    description: "Manual rankings, score lists, and tier boards with notes.",
+    description:
+      "Build lists for anything, from your favorite artists to your favorite games.",
     icon: List,
     tilt: "tilt-l",
     title: "Ranked lists",
   },
   {
     accent: "oklch(0.68 0.09 245)",
-    description: "Trending lists by topic, surfaced from the community.",
+    description:
+      "Discover your friends tastes and find new favorites through their rankings.",
     icon: Compass,
     tilt: "tilt-r",
     title: "Explore feed",
   },
   {
     accent: "oklch(0.78 0.06 320)",
-    description: "Build a feed of taste you trust. Profiles for every person.",
+    description:
+      "Follow people, like their lists, and remix them into your own canon.",
     icon: Users,
     tilt: "tilt-l",
     title: "Follow people",
   },
   {
     accent: "oklch(0.78 0.07 150)",
-    description: "React to others, fork their lists, and make them yours.",
+    description:
+      "Engage with the community by liking, commenting, and remixing lists you love.",
     icon: Heart,
     tilt: "tilt-r",
     title: "Like, remix, comment",

@@ -2,10 +2,7 @@ import { ArrowRight, Star, Trophy } from "lucide-react";
 
 import { LandingFeatureCard } from "@/app/_components/landing-feature-card";
 import { SampleRankingDeck } from "@/app/_components/sample-ranking-deck";
-import {
-  landingFeatureCards,
-  marqueeTopicLoop,
-} from "@/content/landing";
+import { landingFeatureCards, marqueeTopicLoop } from "@/content/landing";
 import { ButtonLink } from "@/shared/components/button-link";
 import { AppMain } from "@/shared/components/layout/app-main";
 import { Card } from "@/shared/components/ui/card";
@@ -20,7 +17,7 @@ export function LandingContent({ isAuthenticated }: LandingContentProps) {
   const primaryLabel = isAuthenticated ? "Go to dashboard" : "Get started";
   const secondaryLabel = isAuthenticated
     ? "Explore rankings"
-    : "Test with demo account";
+    : "Continue with test user";
 
   return (
     <AppMain className="pb-20">
@@ -98,7 +95,7 @@ export function LandingContent({ isAuthenticated }: LandingContentProps) {
           What&apos;s on your top 10?
         </h2>
         <p className="text-primary-foreground/90 relative mx-auto mt-3 max-w-md">
-          Five minutes to your first list. No credit card. No nonsense.
+          Make your own lists, follow your friends, and discover new favorites.
         </p>
         <div className="relative mt-7">
           <ButtonLink href={primaryHref} size="lg" variant="outline">

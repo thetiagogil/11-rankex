@@ -15,6 +15,7 @@ import type {
   RankexListItemRow,
   RankexListRow,
 } from "@/types/database.types";
+import { normalizeRankingMode } from "@/features/lists/lib/ranking-mode";
 
 export async function getUserListSummaries(
   client: AppSupabaseClient,
@@ -149,7 +150,7 @@ export async function getOwnedListConfig(
 
   return {
     id: data.id,
-    rankingMode: data.ranking_mode,
+    rankingMode: normalizeRankingMode(data.ranking_mode),
   };
 }
 

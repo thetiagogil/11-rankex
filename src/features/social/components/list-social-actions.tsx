@@ -57,6 +57,7 @@ export function ListSocialActions({
           singularLabel="comment"
           size={passivePillSize}
           value={social.commentCount}
+          width="action"
         />
       ) : null}
 
@@ -84,6 +85,7 @@ export function ListSocialActions({
           singularLabel="comment"
           size={passivePillSize}
           value={social.commentCount}
+          width="action"
         />
       ) : null}
 
