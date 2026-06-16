@@ -1,7 +1,7 @@
 "use client";
 
 import { Loader2, Send } from "lucide-react";
-import type { RefObject, SubmitEvent } from "react";
+import type { ComponentProps, RefObject } from "react";
 
 import { Button } from "@/shared/components/ui/button";
 import { Card } from "@/shared/components/ui/card";
@@ -13,7 +13,7 @@ type CommentComposerProps = {
   inputRef: RefObject<HTMLTextAreaElement | null>;
   isPending: boolean;
   onBodyChange: (body: string) => void;
-  onSubmit: (event: SubmitEvent<HTMLFormElement>) => void;
+  onSubmit: NonNullable<ComponentProps<"form">["onSubmit"]>;
 };
 
 export function CommentComposer({
@@ -27,7 +27,7 @@ export function CommentComposer({
   const trimmedBody = body.trim();
 
   return (
-    <Card className="p-4 sm:p-5">
+    <Card className="p-4 sm:p-5" variant="shadow">
       <form onSubmit={onSubmit}>
         <Textarea
           aria-label="Write a comment"

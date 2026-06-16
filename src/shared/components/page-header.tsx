@@ -25,11 +25,11 @@ export function PageHeader({
         className,
       )}
     >
-      <h1 className="font-display text-4xl leading-tight font-black sm:text-6xl">
+      <h1 className="font-display text-4xl leading-[0.95] font-black text-balance sm:text-6xl">
         {title}
       </h1>
       {description ? (
-        <p className="text-muted-foreground mt-4 text-lg leading-8">
+        <p className="text-muted-foreground mt-4 max-w-2xl text-base leading-7 sm:text-lg sm:leading-8">
           {description}
         </p>
       ) : null}

@@ -1,3 +1,5 @@
+import { Bookmark, Heart, ListChecks, Users } from "lucide-react";
+
 import { DashboardListBrowser } from "@/app/(protected)/dashboard/_components/dashboard-list-browser";
 import { DashboardMetricCard } from "@/app/(protected)/dashboard/_components/dashboard-metric-card";
 import { ListFormDialog } from "@/features/lists/components/list-form-dialog";
@@ -33,24 +35,28 @@ export function DashboardPageView({
         }
       />
 
-      <section className="mt-10 grid gap-4 sm:grid-cols-4">
+      <section className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
         <DashboardMetricCard
           accent="primary"
+          icon={ListChecks}
           label="My lists"
           value={lists.length}
         />
         <DashboardMetricCard
           accent="accent"
+          icon={Heart}
           label="Likes"
           value={social.likesReceivedCount}
         />
         <DashboardMetricCard
           accent="cyan"
+          icon={Users}
           label="Following"
           value={social.followingCount}
         />
         <DashboardMetricCard
           accent="gold"
+          icon={Bookmark}
           label="Bookmarks"
           value={social.savedListCount}
         />

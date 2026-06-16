@@ -14,7 +14,6 @@ import type {
 import { ListCard } from "@/features/lists/components/list-card";
 import { ListFormDialog } from "@/features/lists/components/list-form-dialog";
 import type { RankedListSummary } from "@/features/lists/types";
-import { Button } from "@/shared/components/ui/button";
 import { ControlBar, ControlBarGroup } from "@/shared/components/control-bar";
 import { EmptyState } from "@/shared/components/empty-state";
 import { SearchInput } from "@/shared/components/search-input";
@@ -22,6 +21,7 @@ import {
   SegmentedToggleGroup,
   SegmentedToggleGroupItem,
 } from "@/shared/components/segmented-toggle-group";
+import { Button } from "@/shared/components/ui/button";
 import {
   Select,
   SelectContent,

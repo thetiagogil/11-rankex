@@ -122,7 +122,7 @@ export function CommentSection({ currentUserId, list }: CommentSectionProps) {
               </Button>
             ) : undefined
           }
-          className="mt-5 min-h-48 border-border/70 bg-background/30 py-12"
+          className="mt-5 min-h-48 py-12"
           description={
             list.isPublic
               ? canComment

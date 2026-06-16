@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { ListOwnerMetadata } from "@/app/(protected)/lists/[listId]/_components/list-owner-metadata";
+import { RankingModeBadge } from "@/features/lists/components/ranking-mode-badge";
 import { VisibilityBadge } from "@/features/lists/components/visibility-badge";
 import { getListIcon } from "@/features/lists/lib/list-icons";
 import type { RankedList } from "@/features/lists/types";
@@ -19,11 +20,15 @@ export function ListDetailHeader({ canEdit, list }: ListDetailHeaderProps) {
     <section className="mt-6">
       <div className="min-w-0">
         <div className="flex items-start gap-4">
-          <div className="border-foreground/45 bg-gradient-gold shadow-elevated text-foreground grid size-16 shrink-0 place-items-center rounded-3xl border">
-            <Icon aria-hidden="true" className="size-8" strokeWidth={2.5} />
+          <div className="border-foreground/45 bg-gradient-gold shadow-elevated text-foreground grid size-14 shrink-0 place-items-center rounded-2xl border sm:size-16 sm:rounded-3xl">
+            <Icon
+              aria-hidden="true"
+              className="size-7 sm:size-8"
+              strokeWidth={2.5}
+            />
           </div>
           <div className="min-w-0">
-            <h1 className="font-display text-5xl leading-none font-black sm:text-6xl">
+            <h1 className="font-display text-4xl leading-none font-black sm:text-6xl">
               {list.title}
             </h1>
           </div>
@@ -35,7 +40,7 @@ export function ListDetailHeader({ canEdit, list }: ListDetailHeaderProps) {
           </p>
         ) : null}
 
-        <div className="text-muted-foreground mt-3 flex flex-wrap items-center gap-x-2 gap-y-2 text-sm">
+        <div className="text-muted-foreground mt-4 flex flex-wrap items-center gap-x-2 gap-y-2 text-sm">
           {list.owner ? (
             <>
               <ListOwnerMetadata profile={list.owner} />
@@ -64,9 +69,10 @@ export function ListDetailHeader({ canEdit, list }: ListDetailHeaderProps) {
           {canEdit ? (
             <>
               <MetadataDot />
-              <VisibilityBadge isPublic={list.isPublic} />
+              <VisibilityBadge iconOnly isPublic={list.isPublic} />
             </>
           ) : null}
+          <RankingModeBadge rankingMode={list.rankingMode} />
         </div>
       </div>
     </section>

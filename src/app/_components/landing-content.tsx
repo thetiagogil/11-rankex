@@ -5,6 +5,7 @@ import { SampleRankingDeck } from "@/app/_components/sample-ranking-deck";
 import { landingFeatureCards, marqueeTopicLoop } from "@/content/landing";
 import { ButtonLink } from "@/shared/components/button-link";
 import { AppMain } from "@/shared/components/layout/app-main";
+import { Button } from "@/shared/components/ui/button";
 import { Card } from "@/shared/components/ui/card";
 
 type LandingContentProps = {
@@ -15,36 +16,51 @@ export function LandingContent({ isAuthenticated }: LandingContentProps) {
   const primaryHref = isAuthenticated ? "/dashboard" : "/signup";
   const secondaryHref = isAuthenticated ? "/explore" : "/login";
   const primaryLabel = isAuthenticated ? "Go to dashboard" : "Get started";
-  const secondaryLabel = isAuthenticated
-    ? "Explore rankings"
-    : "Continue with demo account";
 
   return (
     <AppMain className="pb-20">
-      <section className="relative grid items-center gap-10 pt-14 sm:pt-20 lg:grid-cols-[1.3fr_1fr] lg:pt-24">
+      <section className="relative grid items-center gap-10 pt-12 sm:pt-18 lg:grid-cols-[1.25fr_1fr] lg:pt-22">
         <div className="max-w-3xl">
-          <h1 className="font-display mt-5 text-6xl leading-[0.92] font-black text-balance sm:text-7xl lg:text-8xl">
+          <h1 className="font-display text-6xl leading-[0.92] font-black text-balance sm:text-7xl lg:text-8xl">
             Rank <span className="text-gradient-gold">what matters</span>
           </h1>
-          <p className="text-muted-foreground mt-6 max-w-2xl text-lg leading-8">
+          <p className="text-muted-foreground mt-6 max-w-2xl text-base leading-7 sm:text-lg sm:leading-8">
             Build top lists for anything worth ordering. Follow people, like,
             comment, and remix the community&apos;s picks into your own canon.
           </p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <ButtonLink href={primaryHref} size="lg">
               {primaryLabel}
               <ArrowRight data-icon="inline-end" />
             </ButtonLink>
-            <ButtonLink href={secondaryHref} size="lg" variant="outline">
-              {secondaryLabel}
-            </ButtonLink>
+            {isAuthenticated ? (
+              <ButtonLink href={secondaryHref} size="lg" variant="outline">
+                Explore rankings
+              </ButtonLink>
+            ) : (
+              <form
+                action="/api/auth/demo"
+                className="w-full sm:w-auto"
+                method="post"
+              >
+                <input name="next" type="hidden" value="/dashboard" />
+                <Button
+                  className="w-full sm:w-auto"
+                  size="lg"
+                  type="submit"
+                  variant="outline"
+                >
+                  Test with demo account
+                </Button>
+              </form>
+            )}
           </div>
         </div>
 
         <SampleRankingDeck />
       </section>
 
-      <section className="border-foreground/35 bg-foreground text-background mt-16 overflow-hidden border-y py-4">
+      <section className="border-foreground/25 bg-foreground text-background mt-14 overflow-hidden border-y py-3 sm:mt-16 sm:py-4">
         <div className="marquee">
           <div className="marquee-track">
             {marqueeTopicLoop.map(({ copyIndex, topic, topicIndex }) => (
@@ -67,12 +83,12 @@ export function LandingContent({ isAuthenticated }: LandingContentProps) {
         </div>
       </section>
 
-      <section className="mt-18">
-        <div className="mb-10 flex items-end justify-between gap-4">
+      <section className="mt-16 sm:mt-18">
+        <div className="mb-8 flex flex-col gap-3 sm:mb-10 sm:flex-row sm:items-end sm:justify-between">
           <h2 className="font-display max-w-xl text-4xl leading-none font-black sm:text-5xl">
             Built for <span className="text-gradient-gold">opinions</span>
           </h2>
-          <p className="text-muted-foreground hidden max-w-xs text-sm leading-6 sm:block">
+          <p className="text-muted-foreground max-w-xs text-sm leading-6">
             Drag, drop, rank, remix. Then put it in front of people who care.
           </p>
         </div>
@@ -86,7 +102,7 @@ export function LandingContent({ isAuthenticated }: LandingContentProps) {
 
       <Card
         as="section"
-        className="bg-gradient-gold relative mt-20 overflow-hidden rounded-3xl px-6 py-12 text-center sm:px-12 sm:py-16"
+        className="bg-gradient-gold relative mt-18 overflow-hidden rounded-3xl px-6 py-10 text-center sm:mt-20 sm:px-12 sm:py-16"
         color="navy"
       >
         <Trophy className="text-primary-foreground/30 absolute top-6 left-6 size-12 rotate-[-14deg]" />

@@ -58,7 +58,7 @@ export function ListCard({
 
       <div className="relative z-10 min-w-0 p-4 pb-3">
         <div className="flex flex-col">
-          <div className="flex items-center justify-between gap-3">
+          <div className="flex items-start justify-between gap-3">
             <div className="flex min-w-0 items-center gap-2.5">
               <span
                 className="border-foreground/35 text-foreground grid size-11 shrink-0 place-items-center rounded-xl border"
@@ -73,7 +73,7 @@ export function ListCard({
             {useExploreFooter ? (
               <RankingModeBadge rankingMode={list.rankingMode} />
             ) : (
-              <div className="flex shrink-0 items-center gap-1.5">
+              <div className="flex shrink-0 flex-wrap justify-end gap-1.5">
                 <RankingModeBadge rankingMode={list.rankingMode} />
                 <VisibilityBadge iconOnly isPublic={list.isPublic} />
               </div>
@@ -91,7 +91,7 @@ export function ListCard({
         </div>
       </div>
 
-      <div className="border-border relative z-10 flex flex-wrap items-center justify-between gap-3 border-t border-dashed px-4 py-3">
+      <div className="border-border bg-background/20 relative z-10 flex min-h-14 flex-wrap items-center justify-between gap-3 border-t border-dashed px-4 py-3">
         {useExploreFooter ? (
           <ListCardExploreFooter
             canUseSocialActions={canUseSocialActions}

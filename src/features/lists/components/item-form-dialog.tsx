@@ -3,8 +3,8 @@
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
+  type ComponentProps,
   type ReactNode,
-  type SubmitEvent,
   useId,
   useState,
   useTransition,
@@ -59,7 +59,7 @@ export function ItemFormDialog({
     setOpen(true);
   };
 
-  const submit = (event: SubmitEvent<HTMLFormElement>) => {
+  const submit: NonNullable<ComponentProps<"form">["onSubmit"]> = (event) => {
     event.preventDefault();
     setFeedback(null);
 

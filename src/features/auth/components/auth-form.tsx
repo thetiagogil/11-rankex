@@ -33,7 +33,7 @@ export function AuthForm({
         <section className="flex w-full max-w-md flex-col items-center">
           <AppLogo href="/" />
 
-          <Card className="bg-card/90 mt-8 w-full p-0 backdrop-blur">
+          <Card className="bg-card/95 mt-8 w-full p-0 backdrop-blur">
             <CardHeader className="gap-1 px-6 pt-7 sm:px-8 sm:pt-8">
               <CardTitle className="text-3xl">
                 {authForm.isSignup ? "Create your account" : "Welcome back"}

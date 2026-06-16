@@ -25,13 +25,13 @@ export function SearchInput({
   value,
 }: SearchInputProps) {
   return (
-    <div className={cn("relative w-full", className)}>
+    <div className={cn("relative w-full self-start", className)}>
       <Label className="sr-only" htmlFor={id}>
         {label}
       </Label>
       <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2" />
       <Input
-        className={cn("pl-9", inputClassName)}
+        className={cn("h-10 rounded-2xl pl-9", inputClassName)}
         id={id}
         onChange={onChange}
         placeholder={placeholder}

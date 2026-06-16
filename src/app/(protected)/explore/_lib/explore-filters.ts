@@ -29,15 +29,6 @@ export function buildExplorePeople(
     }));
 }
 
-export function getExploreTopics(lists: RankedListSummary[]) {
-  return [
-    "All",
-    ...Array.from(
-      new Set(lists.map((list) => list.topic).filter(Boolean) as string[]),
-    ).sort((a, b) => a.localeCompare(b)),
-  ];
-}
-
 export function filterExplorePeople(
   people: ExplorePersonCard[],
   query: string,
@@ -60,27 +51,24 @@ export function filterAndSortExploreLists({
   lists,
   query,
   sort,
-  topic,
 }: {
   followingIds: string[];
   lists: RankedListSummary[];
   query: string;
   sort: ExploreSort;
-  topic: string;
 }) {
   const normalizedQuery = query.trim().toLowerCase();
 
   const filtered = lists.filter((list) => {
-    const matchesTopic = topic === "All" || list.topic === topic;
     const matchesQuery =
       !normalizedQuery ||
-      [list.title, list.topic, list.description, list.owner?.displayName]
+      [list.title, list.topic]
         .filter(Boolean)
         .join(" ")
         .toLowerCase()
         .includes(normalizedQuery);
 
-    return matchesTopic && matchesQuery;
+    return matchesQuery;
   });
 
   const scoped =

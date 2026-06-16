@@ -32,7 +32,7 @@ export function ProfilePageView({
 
   return (
     <div className="flex min-w-0 flex-col gap-10">
-      <Card as="section" className="w-full max-w-full p-5 sm:p-7">
+      <Card as="section" className="w-full max-w-full p-5 sm:p-7" variant="shadow">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-6">
           <div className="sm:block">
             <ProfileAvatar
@@ -46,7 +46,7 @@ export function ProfilePageView({
           <div className="min-w-0 flex-1">
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0 flex-1">
-                <h1 className="font-display truncate text-5xl leading-tight font-black sm:text-6xl">
+                <h1 className="font-display truncate pb-1 text-4xl leading-[1.02] font-black sm:text-6xl">
                   {profile.displayName}
                 </h1>
                 {usernameLabel ? (
@@ -138,12 +138,12 @@ export function ProfilePageView({
       </Card>
 
       <section>
-        <div className="mb-5">
+        <div className="mb-5 flex items-end justify-between gap-3">
           <h2 className="font-display text-2xl font-bold">Ranked lists</h2>
         </div>
 
         {lists.length ? (
-          <div className="grid min-w-0 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid min-w-0 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {lists.map((list) => (
               <ListCard
                 currentUserId={currentUserId}

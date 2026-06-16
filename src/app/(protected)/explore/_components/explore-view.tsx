@@ -8,7 +8,6 @@ import {
   buildExplorePeople,
   filterAndSortExploreLists,
   filterExplorePeople,
-  getExploreTopics,
 } from "@/app/(protected)/explore/_lib/explore-filters";
 import type {
   ExploreSort,
@@ -31,13 +30,11 @@ export function ExploreView({
 }: ExploreViewData) {
   const [query, setQuery] = useState("");
   const [userQuery, setUserQuery] = useState("");
-  const [topic, setTopic] = useState("All");
   const [sort, setSort] = useState<ExploreSort>("trending");
   const people = useMemo(
     () => buildExplorePeople(lists, profiles, currentUserId),
     [currentUserId, lists, profiles],
   );
-  const topics = useMemo(() => getExploreTopics(lists), [lists]);
 
   const filteredPeople = useMemo(() => {
     return filterExplorePeople(people, userQuery);
@@ -49,14 +46,13 @@ export function ExploreView({
       lists,
       query,
       sort,
-      topic,
     });
-  }, [followingIds, lists, query, sort, topic]);
+  }, [followingIds, lists, query, sort]);
 
   return (
     <div className="mt-10 flex flex-col gap-12">
       <section>
-        <div className="mb-5 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+        <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="font-display text-2xl font-bold">People to follow</h2>
           <SearchInput
             className="lg:max-w-xs"
@@ -70,7 +66,7 @@ export function ExploreView({
         </div>
         {filteredPeople.length ? (
           <div className="scrollbar-themed -mx-4 overflow-x-auto px-4 pb-3 sm:mx-0 sm:px-0">
-            <div className="flex w-max min-w-full snap-x gap-3">
+            <div className="flex w-max min-w-full snap-x gap-4">
               {filteredPeople.map((person) => (
                 <ExploreUserCard
                   currentUserId={currentUserId}
@@ -103,7 +99,17 @@ export function ExploreView({
         </div>
 
         <ControlBar>
-          <ControlBarGroup>
+          <SearchInput
+            className="min-w-0 flex-1"
+            id="explore-list-search"
+            inputClassName="border-foreground/25 bg-background/35 focus-visible:border-primary/45 h-10 rounded-2xl shadow-none"
+            label="Search public lists by title or category"
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Search by title and/or category..."
+            value={query}
+          />
+
+          <ControlBarGroup className="gap-3">
             <SegmentedToggleGroup
               aria-label="Sort public lists"
               onValueChange={(value) => {
@@ -111,7 +117,6 @@ export function ExploreView({
               }}
               type="single"
               value={sort}
-              wrap
             >
               {(["trending", "newest", "following"] as const).map(
                 (sortOption) => (
@@ -124,38 +129,11 @@ export function ExploreView({
                 ),
               )}
             </SegmentedToggleGroup>
-
-            <SegmentedToggleGroup
-              aria-label="Filter public lists by topic"
-              className="w-full lg:w-auto"
-              onValueChange={(value) => {
-                if (value) setTopic(value);
-              }}
-              type="single"
-              value={topic}
-              wrap
-            >
-              {topics.map((topicOption) => (
-                <SegmentedToggleGroupItem key={topicOption} value={topicOption}>
-                  {topicOption}
-                </SegmentedToggleGroupItem>
-              ))}
-            </SegmentedToggleGroup>
           </ControlBarGroup>
-
-          <SearchInput
-            className="lg:max-w-xs"
-            id="explore-list-search"
-            inputClassName="h-9"
-            label="Search lists"
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search public lists..."
-            value={query}
-          />
         </ControlBar>
 
         {filteredLists.length ? (
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {filteredLists.map((list) => (
               <ListCard
                 currentUserId={currentUserId}
@@ -169,7 +147,7 @@ export function ExploreView({
         ) : (
           <EmptyState
             title="No public lists match that view."
-            description="Try a different topic or search term."
+            description="Try a different title, category, or search term."
           />
         )}
       </section>

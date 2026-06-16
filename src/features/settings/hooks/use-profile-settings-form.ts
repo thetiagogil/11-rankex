@@ -1,6 +1,6 @@
 "use client";
 
-import { type SubmitEvent, useState, useTransition } from "react";
+import { type ComponentProps, useState, useTransition } from "react";
 
 import { updateProfileSettingsAction } from "@/features/settings/server/actions";
 import type { CurrentUser } from "@/shared/types";
@@ -22,7 +22,7 @@ export function useProfileSettingsForm(currentUser: CurrentUser) {
   );
   const [isPending, startTransition] = useTransition();
 
-  const submit = (event: SubmitEvent<HTMLFormElement>) => {
+  const submit: NonNullable<ComponentProps<"form">["onSubmit"]> = (event) => {
     event.preventDefault();
     setFeedback(null);
 

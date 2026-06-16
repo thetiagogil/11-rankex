@@ -16,7 +16,7 @@ export function ControlBar({ children, className }: ControlBarProps) {
   return (
     <div
       className={cn(
-        "flex flex-col gap-3 lg:flex-row lg:items-stretch lg:justify-between",
+        "flex w-full flex-col gap-3 lg:flex-row lg:items-stretch lg:justify-between",
         className,
       )}
     >
@@ -29,7 +29,7 @@ export function ControlBarGroup({ children, className }: ControlBarGroupProps) {
   return (
     <div
       className={cn(
-        "flex flex-col gap-2 sm:flex-row sm:items-stretch",
+        "flex min-w-0 flex-col gap-2 sm:flex-row sm:items-stretch",
         className,
       )}
     >

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { type SubmitEvent, useMemo, useState } from "react";
+import { type ComponentProps, useMemo, useState } from "react";
 
 import { getAuthModeHref } from "@/features/auth/lib/auth-routing";
 import { validateAuthInput } from "@/features/auth/lib/auth-validation";
@@ -30,7 +30,9 @@ export function useAuthForm({
   );
   const alternateHref = getAuthModeHref(isSignup ? "login" : "signup", next);
 
-  const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
+  const handleSubmit: NonNullable<ComponentProps<"form">["onSubmit"]> = async (
+    event,
+  ) => {
     event.preventDefault();
 
     const validationError = validateAuthInput({

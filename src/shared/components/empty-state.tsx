@@ -25,7 +25,7 @@ export function EmptyState({
   return (
     <Empty
       className={cn(
-        "border-foreground/20 bg-background/25 min-h-64 rounded-[1.75rem] border px-6 py-16",
+        "confetti-bg border-foreground/20 bg-background/35 min-h-64 rounded-3xl border border-dashed px-6 py-16 text-center",
         className,
       )}
     >
@@ -37,7 +37,7 @@ export function EmptyState({
           {description}
         </EmptyDescription>
       </EmptyHeader>
-      {action ? <EmptyContent className="mt-2">{action}</EmptyContent> : null}
+      {action ? <EmptyContent className="mt-3">{action}</EmptyContent> : null}
     </Empty>
   );
 }

@@ -30,7 +30,7 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
 
   return (
     <form className="w-full" onSubmit={form.submit}>
-      <Card as="section" className="p-5 sm:p-7">
+      <Card as="section" className="p-5 sm:p-7" variant="shadow">
         <div className="flex flex-col gap-7">
           <SettingsSection
             description="Used only for logging in and account recovery. It is not shown on public Rankex pages."
@@ -106,7 +106,7 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
             <Alert tone={form.feedback.tone}>{form.feedback.message}</Alert>
           ) : null}
 
-          <FormActions>
+          <FormActions className="pt-5">
             <Button
               disabled={form.isPending}
               onClick={form.reset}

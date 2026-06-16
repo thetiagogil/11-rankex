@@ -28,7 +28,7 @@ export function CommentCard({
   const authorName = comment.author?.displayName ?? "Rankex profile";
 
   return (
-    <Card as="article" className="p-4" size="sm">
+    <Card as="article" className="p-4" size="sm" variant="shadow">
       <div className="flex items-start gap-3">
         {comment.author ? (
           <Link className="shrink-0" href={getProfileHref(comment.author)}>

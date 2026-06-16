@@ -30,7 +30,7 @@ export function ExploreUserCard({
   return (
     <Card
       as="article"
-      className="min-h-40 w-64 shrink-0 snap-start gap-0 p-4"
+      className="w-72 shrink-0 snap-start gap-5 p-4"
       variant="shadow"
     >
       <div className="flex items-start gap-3">
@@ -55,7 +55,7 @@ export function ExploreUserCard({
         </div>
       </div>
 
-      <div className="mt-auto flex items-center justify-between gap-2 pt-6">
+      <div className="flex items-center justify-between gap-3">
         <div className="text-muted-foreground flex min-w-0 items-center gap-1.5 text-xs font-bold">
           <CountPill
             icon={<List data-icon="inline-start" />}
@@ -73,7 +73,7 @@ export function ExploreUserCard({
             className="relative z-10"
             initialIsFollowing={isFollowing}
             profileId={profile.id}
-            size="xs"
+            size="sm"
           />
         ) : null}
       </div>

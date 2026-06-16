@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { type SubmitEvent, useId, useState, useTransition } from "react";
+import { type ComponentProps, useId, useState, useTransition } from "react";
 
 import { getListIcon } from "@/features/lists/lib/list-icons";
 import {
@@ -57,7 +57,7 @@ export function useListForm({
     setOpen(false);
   };
 
-  const submit = (event: SubmitEvent<HTMLFormElement>) => {
+  const submit: NonNullable<ComponentProps<"form">["onSubmit"]> = (event) => {
     event.preventDefault();
     setFeedback(null);
 
