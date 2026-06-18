@@ -61,10 +61,10 @@ const legacyEmojiIconMap = new Map<string, ListIconId>([
   ["\u{1f4bb}", "work"],
 ]);
 
-export function resolveListIconId(
+export const resolveListIconId = (
   value: string | null,
   topic: string | null,
-): ListIconId {
+): ListIconId => {
   const normalizedValue = value?.trim().toLowerCase();
 
   if (normalizedValue && isListIconId(normalizedValue)) {
@@ -93,8 +93,8 @@ export function resolveListIconId(
   }
 
   return fallbackIconId;
-}
+};
 
-export function isListIconId(value: string): value is ListIconId {
+export const isListIconId = (value: string): value is ListIconId => {
   return listIconIds.includes(value as ListIconId);
-}
+};

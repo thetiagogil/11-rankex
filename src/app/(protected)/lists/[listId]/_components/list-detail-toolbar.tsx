@@ -14,11 +14,11 @@ type ListDetailToolbarProps = {
   onRequestDelete: () => void;
 };
 
-export function ListDetailToolbar({
+export const ListDetailToolbar = ({
   canEdit,
   list,
   onRequestDelete,
-}: ListDetailToolbarProps) {
+}: ListDetailToolbarProps) => {
   return (
     <div className="mt-6 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
       <div className="flex flex-wrap items-center gap-3">
@@ -60,4 +60,4 @@ export function ListDetailToolbar({
       ) : null}
     </div>
   );
-}
+};

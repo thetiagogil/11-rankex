@@ -18,13 +18,13 @@ type CommentCardProps = {
   onDelete: (commentId: number) => void;
 };
 
-export function CommentCard({
+export const CommentCard = ({
   canDelete,
   comment,
   isDeleting,
   isPending,
   onDelete,
-}: CommentCardProps) {
+}: CommentCardProps) => {
   const authorName = comment.author?.displayName ?? "Rankex profile";
 
   return (
@@ -75,4 +75,4 @@ export function CommentCard({
       </div>
     </Card>
   );
-}
+};

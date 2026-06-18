@@ -6,11 +6,11 @@ type SettingsSectionProps = {
   title: string;
 };
 
-export function SettingsSection({
+export const SettingsSection = ({
   children,
   description,
   title,
-}: SettingsSectionProps) {
+}: SettingsSectionProps) => {
   return (
     <section className="flex flex-col gap-4">
       <div>
@@ -22,4 +22,4 @@ export function SettingsSection({
       {children}
     </section>
   );
-}
+};

@@ -42,6 +42,6 @@ const listIconMap = new Map<ListIconId, ListIconOption>(
   listIconOptions.map((option) => [option.id, option]),
 );
 
-export function getListIcon(value: string | null, topic: string | null) {
+export const getListIcon = (value: string | null, topic: string | null) => {
   return listIconMap.get(resolveListIconId(value, topic)) ?? listIconOptions[0];
-}
+};

@@ -11,7 +11,7 @@ type ProtectedNavLinksProps = {
   pathname: string;
 };
 
-export function ProtectedNavLinks({ pathname }: ProtectedNavLinksProps) {
+export const ProtectedNavLinks = ({ pathname }: ProtectedNavLinksProps) => {
   return (
     <div className="border-foreground/20 bg-background/35 flex items-center gap-1 rounded-2xl border p-1">
       {protectedNavLinks.map((link) => {
@@ -37,21 +37,21 @@ export function ProtectedNavLinks({ pathname }: ProtectedNavLinksProps) {
       })}
     </div>
   );
-}
+};
 
-export function isProtectedNavActive(pathname: string, href: string) {
+export const isProtectedNavActive = (pathname: string, href: string) => {
   return pathname === href || pathname.startsWith(`${href}/`);
-}
+};
 
-export function ProtectedNavLinkIcon({
+export const ProtectedNavLinkIcon = ({
   icon,
 }: {
   icon: ProtectedNavLink["icon"];
-}) {
+}) => {
   const Icon = protectedNavIconMap[icon];
 
   return <Icon aria-hidden="true" className="size-4" />;
-}
+};
 
 const protectedNavIconMap = {
   dashboard: LayoutDashboard,

@@ -3,15 +3,18 @@ import type { ExploreViewData } from "@/app/(protected)/explore/_types";
 import { AppMain } from "@/shared/components/layout/app-main";
 import { PageHeader } from "@/shared/components/page-header";
 
-export function ExplorePageView({
+export const ExplorePageView = ({
   currentUserId,
   followingIds,
   lists,
   profiles,
-}: ExploreViewData) {
+}: ExploreViewData) => {
   return (
     <AppMain className="pb-20">
-      <PageHeader description="Browse public rankings, discover people, and follow the topics that keep showing up in the community canon." title="Explore" />
+      <PageHeader
+        description="Browse public rankings, discover people, and follow the topics that keep showing up in the community canon."
+        title="Explore"
+      />
 
       <ExploreView
         currentUserId={currentUserId}
@@ -21,4 +24,4 @@ export function ExplorePageView({
       />
     </AppMain>
   );
-}
+};

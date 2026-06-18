@@ -4,6 +4,6 @@ import type { ReactNode } from "react";
 
 import { TooltipProvider } from "@/shared/components/ui/tooltip";
 
-export function Providers({ children }: { children: ReactNode }) {
+export const Providers = ({ children }: { children: ReactNode }) => {
   return <TooltipProvider>{children}</TooltipProvider>;
-}
+};

@@ -6,7 +6,7 @@ import { toActionError } from "./action-error";
 import type { ActionResult } from "./action-result";
 import { revalidateRankexAuthSurface } from "./revalidation";
 
-export async function signOutAction(): Promise<ActionResult<void>> {
+export const signOutAction = async (): Promise<ActionResult<void>> => {
   if (!isSupabaseConfigured()) {
     return { ok: false, error: "Supabase is not configured." };
   }
@@ -25,4 +25,4 @@ export async function signOutAction(): Promise<ActionResult<void>> {
   } catch (error) {
     return toActionError(error, "Sign out failed.");
   }
-}
+};

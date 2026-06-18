@@ -11,7 +11,8 @@ const alertVariants = cva(
     variants: {
       variant: {
         default: "bg-card text-card-foreground",
-        destructive: "border-destructive bg-destructive text-destructive-foreground",
+        destructive:
+          "border-destructive bg-destructive text-destructive-foreground",
         success: "border-foreground bg-tier-c text-foreground",
       },
     },
@@ -33,7 +34,7 @@ type AlertProps = React.ComponentProps<"div"> &
     tone?: AlertTone;
   };
 
-function Alert({ className, tone, variant, ...props }: AlertProps) {
+const Alert = ({ className, tone, variant, ...props }: AlertProps) => {
   const resolvedVariant = variant ?? (tone ? toneVariants[tone] : "default");
 
   return (
@@ -48,38 +49,38 @@ function Alert({ className, tone, variant, ...props }: AlertProps) {
       {...props}
     />
   );
-}
+};
 
-function AlertTitle({ className, ...props }: React.ComponentProps<"div">) {
+const AlertTitle = ({ className, ...props }: React.ComponentProps<"div">) => {
   return (
     <div
       className={cn(
-        "font-medium group-has-[>svg]/alert:col-start-2 [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground",
+        "[&_a]:hover:text-foreground font-medium group-has-[>svg]/alert:col-start-2 [&_a]:underline [&_a]:underline-offset-3",
         className,
       )}
       data-slot="alert-title"
       {...props}
     />
   );
-}
+};
 
-function AlertDescription({
+const AlertDescription = ({
   className,
   ...props
-}: React.ComponentProps<"div">) {
+}: React.ComponentProps<"div">) => {
   return (
     <div
       className={cn(
-        "text-muted-foreground text-sm text-balance md:text-pretty [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-foreground [&_p:not(:last-child)]:mb-4",
+        "text-muted-foreground [&_a]:hover:text-foreground text-sm text-balance md:text-pretty [&_a]:underline [&_a]:underline-offset-3 [&_p:not(:last-child)]:mb-4",
         className,
       )}
       data-slot="alert-description"
       {...props}
     />
   );
-}
+};
 
-function AlertAction({ className, ...props }: React.ComponentProps<"div">) {
+const AlertAction = ({ className, ...props }: React.ComponentProps<"div">) => {
   return (
     <div
       className={cn("absolute top-2 right-2", className)}
@@ -87,6 +88,6 @@ function AlertAction({ className, ...props }: React.ComponentProps<"div">) {
       {...props}
     />
   );
-}
+};
 
 export { Alert, AlertAction, AlertDescription, AlertTitle };

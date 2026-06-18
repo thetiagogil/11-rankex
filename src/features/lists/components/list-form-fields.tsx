@@ -1,4 +1,10 @@
-import { Globe, LayoutGrid, ListOrdered, LockKeyhole, Star } from "lucide-react";
+import {
+  Globe,
+  LayoutGrid,
+  ListOrdered,
+  LockKeyhole,
+  Star,
+} from "lucide-react";
 import type { ReactNode } from "react";
 
 import { ListVisibilityOption } from "@/features/lists/components/list-visibility-option";
@@ -44,7 +50,7 @@ const rankingModeIcons: Record<RankingMode, ReactNode> = {
   tiered: <LayoutGrid />,
 };
 
-export function ListFormFields({
+export const ListFormFields = ({
   description,
   iconId,
   isPending,
@@ -59,7 +65,7 @@ export function ListFormFields({
   rankingModeLocked,
   title,
   topic,
-}: ListFormFieldsProps) {
+}: ListFormFieldsProps) => {
   return (
     <>
       <FormField htmlFor="list-title" label="List title" required>
@@ -185,4 +191,4 @@ export function ListFormFields({
       </FormField>
     </>
   );
-}
+};

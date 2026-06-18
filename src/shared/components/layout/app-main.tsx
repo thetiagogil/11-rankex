@@ -6,12 +6,12 @@ type AppMainProps = ComponentPropsWithoutRef<"main"> & {
   constrained?: boolean;
 };
 
-export function AppMain({
+export const AppMain = ({
   children,
   className,
   constrained = true,
   ...props
-}: AppMainProps) {
+}: AppMainProps) => {
   return (
     <main
       className={cn(
@@ -24,4 +24,4 @@ export function AppMain({
       {children}
     </main>
   );
-}
+};

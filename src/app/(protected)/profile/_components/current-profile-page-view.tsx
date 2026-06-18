@@ -6,10 +6,10 @@ type CurrentProfilePageViewProps = {
   overview: ProfileOverview;
 };
 
-export function CurrentProfilePageView({
+export const CurrentProfilePageView = ({
   currentUserId,
   overview,
-}: CurrentProfilePageViewProps) {
+}: CurrentProfilePageViewProps) => {
   return (
     <ProfilePageShell
       currentUserId={currentUserId}
@@ -17,4 +17,4 @@ export function CurrentProfilePageView({
       overview={overview}
     />
   );
-}
+};

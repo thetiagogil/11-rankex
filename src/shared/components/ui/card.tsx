@@ -106,7 +106,7 @@ const Card = React.forwardRef<HTMLElement, CardProps>(function Card(
   );
 });
 
-function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
+const CardHeader = ({ className, ...props }: React.ComponentProps<"div">) => {
   return (
     <div
       className={cn(
@@ -117,9 +117,9 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
       {...props}
     />
   );
-}
+};
 
-function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
+const CardTitle = ({ className, ...props }: React.ComponentProps<"div">) => {
   return (
     <div
       className={cn(
@@ -130,9 +130,12 @@ function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
       {...props}
     />
   );
-}
+};
 
-function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
+const CardDescription = ({
+  className,
+  ...props
+}: React.ComponentProps<"div">) => {
   return (
     <div
       className={cn("text-muted-foreground text-sm", className)}
@@ -140,9 +143,9 @@ function CardDescription({ className, ...props }: React.ComponentProps<"div">) {
       {...props}
     />
   );
-}
+};
 
-function CardAction({ className, ...props }: React.ComponentProps<"div">) {
+const CardAction = ({ className, ...props }: React.ComponentProps<"div">) => {
   return (
     <div
       className={cn(
@@ -153,9 +156,9 @@ function CardAction({ className, ...props }: React.ComponentProps<"div">) {
       {...props}
     />
   );
-}
+};
 
-function CardContent({ className, ...props }: React.ComponentProps<"div">) {
+const CardContent = ({ className, ...props }: React.ComponentProps<"div">) => {
   return (
     <div
       className={cn(
@@ -166,9 +169,9 @@ function CardContent({ className, ...props }: React.ComponentProps<"div">) {
       {...props}
     />
   );
-}
+};
 
-function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
+const CardFooter = ({ className, ...props }: React.ComponentProps<"div">) => {
   return (
     <div
       className={cn(
@@ -179,7 +182,7 @@ function CardFooter({ className, ...props }: React.ComponentProps<"div">) {
       {...props}
     />
   );
-}
+};
 
 export {
   Card,

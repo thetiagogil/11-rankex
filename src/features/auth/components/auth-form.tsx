@@ -20,11 +20,11 @@ import {
   CardTitle,
 } from "@/shared/components/ui/card";
 
-export function AuthForm({
+export const AuthForm = ({
   initialError,
   mode,
   next = "/dashboard",
-}: AuthFormProps) {
+}: AuthFormProps) => {
   const authForm = useAuthForm({ initialError, mode, next });
 
   return (
@@ -100,4 +100,4 @@ export function AuthForm({
       </AppMain>
     </AppShell>
   );
-}
+};

@@ -18,12 +18,12 @@ type SegmentedToggleGroupItemProps = React.ComponentProps<
   labelStyle?: "mono" | "plain";
 };
 
-function SegmentedToggleGroup({
+const SegmentedToggleGroup = ({
   className,
   spacing = 1,
   wrap = false,
   ...props
-}: SegmentedToggleGroupProps) {
+}: SegmentedToggleGroupProps) => {
   return (
     <ToggleGroup
       className={cn(
@@ -35,13 +35,13 @@ function SegmentedToggleGroup({
       {...props}
     />
   );
-}
+};
 
-function SegmentedToggleGroupItem({
+const SegmentedToggleGroupItem = ({
   className,
   labelStyle = "mono",
   ...props
-}: SegmentedToggleGroupItemProps) {
+}: SegmentedToggleGroupItemProps) => {
   return (
     <ToggleGroupItem
       className={cn(
@@ -54,6 +54,6 @@ function SegmentedToggleGroupItem({
       {...props}
     />
   );
-}
+};
 
 export { SegmentedToggleGroup, SegmentedToggleGroupItem };

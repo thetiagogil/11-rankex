@@ -6,14 +6,14 @@ import type { Database } from "@/types/database.types";
 
 const SUPABASE_AUTH_COOKIE_PREFIX = "sb-";
 
-function isSupabaseAuthCookie(name: string) {
+const isSupabaseAuthCookie = (name: string) => {
   return (
     name.startsWith(SUPABASE_AUTH_COOKIE_PREFIX) &&
     (name.includes("auth-token") || name.includes("code-verifier"))
   );
-}
+};
 
-function isInvalidRefreshTokenError(error: unknown) {
+const isInvalidRefreshTokenError = (error: unknown) => {
   if (!(error instanceof Error)) {
     return false;
   }
@@ -25,9 +25,9 @@ function isInvalidRefreshTokenError(error: unknown) {
     error.message.includes("Invalid Refresh Token") ||
     error.message.includes("Refresh Token Not Found")
   );
-}
+};
 
-export async function updateSession(request: NextRequest) {
+export const updateSession = async (request: NextRequest) => {
   let response = NextResponse.next({ request });
 
   if (!isSupabaseConfigured()) {
@@ -79,4 +79,4 @@ export async function updateSession(request: NextRequest) {
   }
 
   return response;
-}
+};

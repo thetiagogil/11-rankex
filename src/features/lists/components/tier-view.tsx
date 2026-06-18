@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  closestCenter,
-  DndContext,
-} from "@dnd-kit/core";
+import { closestCenter, DndContext } from "@dnd-kit/core";
 import { type ReactNode } from "react";
 
 import { TierLane } from "@/features/lists/components/tier-lane";
@@ -20,12 +17,12 @@ type TierViewProps = {
   listId: number;
 };
 
-export function TierView({
+export const TierView = ({
   canEdit,
   emptyAction,
   items,
   listId,
-}: TierViewProps) {
+}: TierViewProps) => {
   const tierReorder = useTierReorder({ items, listId });
 
   if (items.length === 0) {
@@ -71,4 +68,4 @@ export function TierView({
       )}
     </div>
   );
-}
+};

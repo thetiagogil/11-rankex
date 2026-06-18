@@ -16,12 +16,12 @@ type EmptyStateProps = {
   title: ReactNode;
 };
 
-export function EmptyState({
+export const EmptyState = ({
   action,
   className,
   description,
   title,
-}: EmptyStateProps) {
+}: EmptyStateProps) => {
   return (
     <Empty
       className={cn(
@@ -40,4 +40,4 @@ export function EmptyState({
       {action ? <EmptyContent className="mt-3">{action}</EmptyContent> : null}
     </Empty>
   );
-}
+};

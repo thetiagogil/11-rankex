@@ -7,7 +7,7 @@ type SettingsPageViewProps = {
   currentUser: CurrentUser;
 };
 
-export function SettingsPageView({ currentUser }: SettingsPageViewProps) {
+export const SettingsPageView = ({ currentUser }: SettingsPageViewProps) => {
   return (
     <AppMain className="pb-20">
       <div className="mx-auto w-full max-w-3xl">
@@ -22,4 +22,4 @@ export function SettingsPageView({ currentUser }: SettingsPageViewProps) {
       </div>
     </AppMain>
   );
-}
+};

@@ -7,10 +7,10 @@ type VisibilityBadgeProps = {
   isPublic: boolean;
 };
 
-export function VisibilityBadge({
+export const VisibilityBadge = ({
   iconOnly = false,
   isPublic,
-}: VisibilityBadgeProps) {
+}: VisibilityBadgeProps) => {
   const Icon = isPublic ? Globe : LockKeyhole;
   const label = isPublic ? "Public" : "Private";
 
@@ -25,4 +25,4 @@ export function VisibilityBadge({
       {iconOnly ? null : label}
     </Badge>
   );
-}
+};

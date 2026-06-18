@@ -12,7 +12,7 @@ type ListDetailHeaderProps = {
   list: RankedList;
 };
 
-export function ListDetailHeader({ canEdit, list }: ListDetailHeaderProps) {
+export const ListDetailHeader = ({ canEdit, list }: ListDetailHeaderProps) => {
   const listIcon = getListIcon(list.emoji, list.topic);
   const Icon = listIcon.Icon;
 
@@ -77,4 +77,4 @@ export function ListDetailHeader({ canEdit, list }: ListDetailHeaderProps) {
       </div>
     </section>
   );
-}
+};

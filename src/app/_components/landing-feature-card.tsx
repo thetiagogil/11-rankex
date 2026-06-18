@@ -6,7 +6,7 @@ type LandingFeatureCardProps = {
   feature: LandingFeatureCardData;
 };
 
-export function LandingFeatureCard({ feature }: LandingFeatureCardProps) {
+export const LandingFeatureCard = ({ feature }: LandingFeatureCardProps) => {
   const Icon = feature.icon;
 
   return (
@@ -31,4 +31,4 @@ export function LandingFeatureCard({ feature }: LandingFeatureCardProps) {
       </p>
     </Card>
   );
-}
+};

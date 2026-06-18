@@ -15,7 +15,7 @@ type FormFieldProps = {
   required?: boolean;
 };
 
-export function FormField({
+export const FormField = ({
   children,
   className,
   description,
@@ -25,7 +25,7 @@ export function FormField({
   label,
   labelClassName,
   required = false,
-}: FormFieldProps) {
+}: FormFieldProps) => {
   return (
     <div className={cn("flex w-full flex-col gap-1.5", className)}>
       <Label
@@ -42,10 +42,12 @@ export function FormField({
       </Label>
       {children}
       {description ? (
-        <p className={cn("text-muted-foreground text-xs", descriptionClassName)}>
+        <p
+          className={cn("text-muted-foreground text-xs", descriptionClassName)}
+        >
           {description}
         </p>
       ) : null}
     </div>
   );
-}
+};

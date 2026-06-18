@@ -10,13 +10,13 @@ type DeleteListDialogProps = {
   open: boolean;
 };
 
-export function DeleteListDialog({
+export const DeleteListDialog = ({
   isPending,
   listTitle,
   onCancel,
   onConfirm,
   open,
-}: DeleteListDialogProps) {
+}: DeleteListDialogProps) => {
   return (
     <Modal
       description={`Delete ${listTitle} and all ranked items.`}
@@ -42,4 +42,4 @@ export function DeleteListDialog({
       </div>
     </Modal>
   );
-}
+};

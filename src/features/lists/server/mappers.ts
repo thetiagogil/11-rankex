@@ -1,18 +1,20 @@
 import { mapProfile } from "@/shared/server/mappers";
 import type { ProfileRow } from "@/shared/types";
 import { normalizeRankingMode } from "@/features/lists/lib/ranking-mode";
+import { isTier } from "@/features/lists/lib/tiers";
 import type {
   ListComment,
   ListCommentRows,
   ListSocialState,
+  RankexListItemRow,
   RankingMode,
   RankedItem,
   RankedList,
   RankedListRows,
   RankedListSummary,
   RemixSource,
+  Tier,
 } from "@/features/lists/types";
-import type { RankexListItemRow } from "@/types/database.types";
 
 const defaultSocialState: ListSocialState = {
   bookmarkCount: 0,
@@ -22,21 +24,21 @@ const defaultSocialState: ListSocialState = {
   likeCount: 0,
 };
 
-export function mapItem(row: RankexListItemRow): RankedItem {
+export const mapItem = (row: RankexListItemRow): RankedItem => {
   return {
     id: row.id,
     listId: row.list_id,
     title: row.title,
     note: row.note,
     score: row.score,
-    tier: row.tier,
+    tier: mapTier(row.tier),
     position: row.position,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
-}
+};
 
-export function mapList(
+export const mapList = (
   rows: RankedListRows,
   owner: ProfileRow | null,
   options: {
@@ -44,7 +46,7 @@ export function mapList(
     remixSource?: RemixSource | null;
     social?: ListSocialState;
   } = {},
-): RankedList {
+): RankedList => {
   const { list, items } = rows;
   const rankingMode = normalizeRankingMode(list.ranking_mode);
 
@@ -67,16 +69,16 @@ export function mapList(
     social: options.social ?? defaultSocialState,
     comments: (options.comments ?? []).map(mapComment),
   };
-}
+};
 
-export function mapListSummary(
+export const mapListSummary = (
   rows: RankedListRows,
   owner: ProfileRow | null,
   options: {
     remixSource?: RemixSource | null;
     social?: ListSocialState;
   } = {},
-): RankedListSummary {
+): RankedListSummary => {
   const list = mapList(rows, owner, options);
 
   return {
@@ -88,9 +90,12 @@ export function mapListSummary(
       title: item.title,
     })),
   };
-}
+};
 
-export function mapComment({ author, comment }: ListCommentRows): ListComment {
+export const mapComment = ({
+  author,
+  comment,
+}: ListCommentRows): ListComment => {
   return {
     author,
     body: comment.body,
@@ -100,35 +105,41 @@ export function mapComment({ author, comment }: ListCommentRows): ListComment {
     updatedAt: comment.updated_at,
     userId: comment.user_id,
   };
-}
+};
 
-function sortItemsForMode(items: RankedItem[], mode: RankingMode) {
+const sortItemsForMode = (items: RankedItem[], mode: RankingMode) => {
   return [...items].sort((a, b) => {
     if (mode === "scored") return sortScoredItems(a, b);
     if (mode === "tiered") return sortTieredItems(a, b);
     return sortPositionedItems(a, b);
   });
-}
+};
 
-function sortScoredItems(a: RankedItem, b: RankedItem) {
+const sortScoredItems = (a: RankedItem, b: RankedItem) => {
   const aScore = a.score ?? Number.NEGATIVE_INFINITY;
   const bScore = b.score ?? Number.NEGATIVE_INFINITY;
   return bScore - aScore || sortPositionedItems(a, b);
-}
+};
 
-function sortTieredItems(a: RankedItem, b: RankedItem) {
+const sortTieredItems = (a: RankedItem, b: RankedItem) => {
   return getTierSortValue(a) - getTierSortValue(b) || sortPositionedItems(a, b);
-}
+};
 
-function getTierSortValue(item: RankedItem) {
+const getTierSortValue = (item: RankedItem) => {
   if (item.tier === "S") return 0;
   if (item.tier === "A") return 1;
   if (item.tier === "B") return 2;
   if (item.tier === "C") return 3;
   if (item.tier === "D") return 4;
   return 5;
-}
+};
 
-function sortPositionedItems(a: RankedItem, b: RankedItem) {
+const sortPositionedItems = (a: RankedItem, b: RankedItem) => {
   return a.position - b.position || a.id - b.id;
-}
+};
+
+const mapTier = (value: string | null): Tier | null => {
+  if (!value) return null;
+
+  return isTier(value) ? value : null;
+};

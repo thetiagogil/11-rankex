@@ -736,7 +736,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      remix_list: { Args: { p_source_list_id: number }; Returns: number }
+      reorder_ranked_items: {
+        Args: { p_list_id: number; p_ordered_item_ids: number[] }
+        Returns: undefined
+      }
+      reorder_tiered_items: {
+        Args: { p_list_id: number; p_ordered_items: Json }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
@@ -1092,12 +1100,3 @@ export const Constants = {
     Enums: {},
   },
 } as const
-
-export type RankexListRow = Tables<{ schema: "rankex" }, "lists">;
-export type RankexListItemRow = Tables<{ schema: "rankex" }, "list_items">;
-export type RankexFollowRow = Tables<{ schema: "rankex" }, "follows">;
-export type RankexListLikeRow = Tables<{ schema: "rankex" }, "list_likes">;
-export type RankexListBookmarkRow = Tables<{ schema: "rankex" }, "list_bookmarks">;
-export type RankexListCommentRow = Tables<{ schema: "rankex" }, "list_comments">;
-export type RankexTier = NonNullable<RankexListItemRow["tier"]>;
-export type RankexRankingMode = RankexListRow["ranking_mode"];

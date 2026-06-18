@@ -14,7 +14,7 @@ const tierClasses: Record<Tier, string> = {
   D: "bg-tier-d text-white",
 };
 
-export function TierBadge({ size = "md", tier }: TierBadgeProps) {
+export const TierBadge = ({ size = "md", tier }: TierBadgeProps) => {
   return (
     <span
       className={cn(
@@ -26,4 +26,4 @@ export function TierBadge({ size = "md", tier }: TierBadgeProps) {
       {tier}
     </span>
   );
-}
+};

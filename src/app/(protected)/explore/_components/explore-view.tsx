@@ -22,12 +22,12 @@ import {
   SegmentedToggleGroupItem,
 } from "@/shared/components/segmented-toggle-group";
 
-export function ExploreView({
+export const ExploreView = ({
   currentUserId,
   followingIds,
   lists,
   profiles,
-}: ExploreViewData) {
+}: ExploreViewData) => {
   const [query, setQuery] = useState("");
   const [userQuery, setUserQuery] = useState("");
   const [sort, setSort] = useState<ExploreSort>("trending");
@@ -153,4 +153,4 @@ export function ExploreView({
       </section>
     </div>
   );
-}
+};

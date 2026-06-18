@@ -9,12 +9,12 @@ type FormActionsProps = {
   leading?: ReactNode;
 };
 
-export function FormActions({
+export const FormActions = ({
   border = true,
   children,
   className,
   leading,
-}: FormActionsProps) {
+}: FormActionsProps) => {
   return (
     <div
       className={cn(
@@ -30,4 +30,4 @@ export function FormActions({
       </div>
     </div>
   );
-}
+};

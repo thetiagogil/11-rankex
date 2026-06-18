@@ -1,6 +1,6 @@
 import type { AuthMode } from "@/features/auth/types";
 
-export function getAuthModeHref(mode: AuthMode, next: string) {
+export const getAuthModeHref = (mode: AuthMode, next: string) => {
   const pathname = mode === "login" ? "/login" : "/signup";
 
   if (next === "/dashboard") {
@@ -8,4 +8,4 @@ export function getAuthModeHref(mode: AuthMode, next: string) {
   }
 
   return `${pathname}?next=${encodeURIComponent(next)}`;
-}
+};

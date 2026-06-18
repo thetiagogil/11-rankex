@@ -8,7 +8,7 @@ type DividerLabelProps = {
   className?: string;
 };
 
-export function DividerLabel({ children, className }: DividerLabelProps) {
+export const DividerLabel = ({ children, className }: DividerLabelProps) => {
   return (
     <div
       className={cn(
@@ -21,4 +21,4 @@ export function DividerLabel({ children, className }: DividerLabelProps) {
       <Separator className="flex-1" />
     </div>
   );
-}
+};

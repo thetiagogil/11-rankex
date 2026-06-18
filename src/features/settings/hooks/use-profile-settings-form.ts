@@ -10,7 +10,7 @@ type ProfileSettingsFeedback = {
   tone: "error" | "success";
 };
 
-export function useProfileSettingsForm(currentUser: CurrentUser) {
+export const useProfileSettingsForm = (currentUser: CurrentUser) => {
   const initialDisplayName = currentUser.profile.displayName;
   const initialBio = currentUser.profile.bio ?? "";
   const initialUsername = currentUser.profile.username ?? "";
@@ -64,4 +64,4 @@ export function useProfileSettingsForm(currentUser: CurrentUser) {
     submit,
     username,
   };
-}
+};

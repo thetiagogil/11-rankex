@@ -16,11 +16,11 @@ type SortableTierChipProps = {
   item: RankedItem;
 };
 
-export function SortableTierChip({
+export const SortableTierChip = ({
   disabled,
   groupId,
   item,
-}: SortableTierChipProps) {
+}: SortableTierChipProps) => {
   const {
     attributes,
     isDragging,
@@ -44,8 +44,8 @@ export function SortableTierChip({
         "border-foreground/45 bg-secondary inline-flex touch-none items-center rounded-xl border px-3 py-2 text-left text-sm font-semibold shadow-none transition",
         disabled
           ? "cursor-default"
-          : "cursor-grab hover:border-primary active:cursor-grabbing",
-        isDragging && "border-primary opacity-70 ring-2 ring-primary/30",
+          : "hover:border-primary cursor-grab active:cursor-grabbing",
+        isDragging && "border-primary ring-primary/30 opacity-70 ring-2",
       )}
       ref={setNodeRef}
       style={{
@@ -60,4 +60,4 @@ export function SortableTierChip({
       {item.title}
     </button>
   );
-}
+};

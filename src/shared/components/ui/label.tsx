@@ -9,7 +9,12 @@ type LabelProps = React.ComponentProps<typeof LabelPrimitive.Root> & {
   required?: boolean;
 };
 
-export function Label({ children, className, required, ...props }: LabelProps) {
+export const Label = ({
+  children,
+  className,
+  required,
+  ...props
+}: LabelProps) => {
   return (
     <LabelPrimitive.Root
       className={cn(
@@ -33,4 +38,4 @@ export function Label({ children, className, required, ...props }: LabelProps) {
       ) : null}
     </LabelPrimitive.Root>
   );
-}
+};

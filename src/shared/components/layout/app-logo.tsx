@@ -7,7 +7,7 @@ type AppLogoProps = {
   href?: string;
 };
 
-export function AppLogo({ href }: AppLogoProps) {
+export const AppLogo = ({ href }: AppLogoProps) => {
   const content = (
     <span className="group/logo flex items-center gap-2.5">
       <span className="grid size-11 rotate-[-6deg] place-items-center transition-transform duration-300 group-hover/logo:rotate-[6deg]">
@@ -19,7 +19,11 @@ export function AppLogo({ href }: AppLogoProps) {
           width={44}
         />
       </span>
-      <span className={cn("font-display text-3xl font-bold leading-none tracking-normal")}>
+      <span
+        className={cn(
+          "font-display text-3xl leading-none font-bold tracking-normal",
+        )}
+      >
         Rank<span className="text-primary">ex</span>
       </span>
     </span>
@@ -34,4 +38,4 @@ export function AppLogo({ href }: AppLogoProps) {
       {content}
     </Link>
   );
-}
+};

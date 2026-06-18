@@ -14,17 +14,17 @@ export const rankingModeDescriptions: Record<RankingMode, string> = {
   tiered: "S to D groups. Items are grouped by tier, not exact order.",
 };
 
-export function isRankingMode(value: unknown): value is RankingMode {
+export const isRankingMode = (value: unknown): value is RankingMode => {
   return (
     typeof value === "string" &&
     (rankingModes as readonly string[]).includes(value)
   );
-}
+};
 
-export function normalizeRankingMode(value: unknown): RankingMode {
+export const normalizeRankingMode = (value: unknown): RankingMode => {
   return isRankingMode(value) ? value : "ranked";
-}
+};
 
-export function getRankingModeLabel(mode: unknown) {
+export const getRankingModeLabel = (mode: unknown) => {
   return rankingModeLabels[normalizeRankingMode(mode)];
-}
+};

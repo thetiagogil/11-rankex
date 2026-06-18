@@ -22,7 +22,12 @@ type TierLaneProps = {
   items: RankedItem[];
 };
 
-export function TierLane({ canEdit, disabled, groupId, items }: TierLaneProps) {
+export const TierLane = ({
+  canEdit,
+  disabled,
+  groupId,
+  items,
+}: TierLaneProps) => {
   const { isOver, setNodeRef } = useDroppable({
     data: { tierGroupId: groupId },
     disabled: !canEdit || disabled,
@@ -69,4 +74,4 @@ export function TierLane({ canEdit, disabled, groupId, items }: TierLaneProps) {
       </SortableContext>
     </Card>
   );
-}
+};

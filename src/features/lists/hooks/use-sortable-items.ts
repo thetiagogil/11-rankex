@@ -7,10 +7,7 @@ import {
   useSensors,
   type DragEndEvent,
 } from "@dnd-kit/core";
-import {
-  arrayMove,
-  sortableKeyboardCoordinates,
-} from "@dnd-kit/sortable";
+import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { useRouter } from "next/navigation";
 import { useMemo, useState, useTransition } from "react";
 
@@ -25,10 +22,10 @@ type UseSortableItemsOptions = {
   listId: number;
 };
 
-export function useSortableItems({
+export const useSortableItems = ({
   items,
   listId,
-}: UseSortableItemsOptions) {
+}: UseSortableItemsOptions) => {
   const router = useRouter();
   const [feedback, setFeedback] = useState<string | null>(null);
   const [itemPendingDelete, setItemPendingDelete] = useState<RankedItem | null>(
@@ -108,4 +105,4 @@ export function useSortableItems({
     sensors,
     sortableIds,
   };
-}
+};

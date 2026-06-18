@@ -8,7 +8,7 @@ type LandingPageViewProps = {
   isAuthenticated: boolean;
 };
 
-export function LandingPageView({ isAuthenticated }: LandingPageViewProps) {
+export const LandingPageView = ({ isAuthenticated }: LandingPageViewProps) => {
   if (isAuthenticated) {
     return (
       <ProtectedAppShell>
@@ -30,4 +30,4 @@ export function LandingPageView({ isAuthenticated }: LandingPageViewProps) {
       <LandingContent isAuthenticated={false} />
     </AppShell>
   );
-}
+};

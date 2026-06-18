@@ -28,12 +28,12 @@ type ItemFormDialogProps = {
   trigger?: ReactNode;
 };
 
-export function ItemFormDialog({
+export const ItemFormDialog = ({
   item,
   listId,
   rankingMode,
   trigger,
-}: ItemFormDialogProps) {
+}: ItemFormDialogProps) => {
   const router = useRouter();
   const generatedFormId = useId();
   const [open, setOpen] = useState(false);
@@ -137,4 +137,4 @@ export function ItemFormDialog({
       </Modal>
     </>
   );
-}
+};

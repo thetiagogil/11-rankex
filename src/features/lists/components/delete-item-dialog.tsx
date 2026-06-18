@@ -10,13 +10,13 @@ type DeleteItemDialogProps = {
   open: boolean;
 };
 
-export function DeleteItemDialog({
+export const DeleteItemDialog = ({
   isPending,
   itemTitle,
   onCancel,
   onConfirm,
   open,
-}: DeleteItemDialogProps) {
+}: DeleteItemDialogProps) => {
   return (
     <Modal
       description={
@@ -45,4 +45,4 @@ export function DeleteItemDialog({
       </div>
     </Modal>
   );
-}
+};

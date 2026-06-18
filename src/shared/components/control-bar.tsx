@@ -12,7 +12,7 @@ type ControlBarGroupProps = {
   className?: string;
 };
 
-export function ControlBar({ children, className }: ControlBarProps) {
+export const ControlBar = ({ children, className }: ControlBarProps) => {
   return (
     <div
       className={cn(
@@ -23,9 +23,12 @@ export function ControlBar({ children, className }: ControlBarProps) {
       {children}
     </div>
   );
-}
+};
 
-export function ControlBarGroup({ children, className }: ControlBarGroupProps) {
+export const ControlBarGroup = ({
+  children,
+  className,
+}: ControlBarGroupProps) => {
   return (
     <div
       className={cn(
@@ -36,4 +39,4 @@ export function ControlBarGroup({ children, className }: ControlBarGroupProps) {
       {children}
     </div>
   );
-}
+};

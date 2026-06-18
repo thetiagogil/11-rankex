@@ -1,6 +1,9 @@
 import { getPublicListSummariesByUser } from "@/features/lists/server/queries";
 import type { RankedListSummary } from "@/features/lists/types";
-import type { ProfileOverview, ProfileListStats } from "@/features/profile/types";
+import type {
+  ProfileOverview,
+  ProfileListStats,
+} from "@/features/profile/types";
 import { getProfileSocialStats } from "@/features/social/server/queries";
 import type { ProfileSocialStats } from "@/features/social/types";
 import { core, type AppSupabaseClient } from "@/lib/supabase/schemas";
@@ -10,24 +13,24 @@ import type { Profile, ProfileRow } from "@/shared/types";
 const uuidPattern =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
-export function buildProfileOverview(
+export const buildProfileOverview = (
   profile: Profile,
   lists: RankedListSummary[],
   social: ProfileSocialStats,
-): ProfileOverview {
+): ProfileOverview => {
   return {
     lists,
     profile,
     social,
     stats: buildProfileStats(lists),
   };
-}
+};
 
-export async function getPublicProfileOverview(
+export const getPublicProfileOverview = async (
   client: AppSupabaseClient,
   handle: string,
   viewerId?: string,
-): Promise<ProfileOverview | null> {
+): Promise<ProfileOverview | null> => {
   const profileRow = await getProfileByHandle(client, handle);
 
   if (!profileRow) return null;
@@ -39,20 +42,22 @@ export async function getPublicProfileOverview(
   ]);
 
   return buildProfileOverview(profile, lists, social);
-}
+};
 
-export async function getDiscoverableProfiles(
+export const getDiscoverableProfiles = async (
   client: AppSupabaseClient,
   options: {
     excludeUserId?: string;
     followingIds?: string[];
     limit?: number;
   } = {},
-): Promise<Profile[]> {
+): Promise<Profile[]> => {
   const { excludeUserId, followingIds = [], limit } = options;
   let query = core(client)
     .from("profiles")
-    .select("id, display_name, avatar_url, username, bio, created_at, updated_at")
+    .select(
+      "id, display_name, avatar_url, username, bio, created_at, updated_at",
+    )
     .order("updated_at", { ascending: false });
 
   if (excludeUserId) {
@@ -76,12 +81,12 @@ export async function getDiscoverableProfiles(
   return typeof limit === "number"
     ? prioritizedProfiles.slice(0, limit)
     : prioritizedProfiles;
-}
+};
 
-async function getProfileByHandle(
+const getProfileByHandle = async (
   client: AppSupabaseClient,
   handle: string,
-): Promise<ProfileRow | null> {
+): Promise<ProfileRow | null> => {
   const normalizedHandle = decodeURIComponent(handle).trim();
   if (!normalizedHandle) return null;
 
@@ -97,31 +102,33 @@ async function getProfileByHandle(
   }
 
   return getProfileByColumn(client, "id", normalizedHandle);
-}
+};
 
-async function getProfileByColumn(
+const getProfileByColumn = async (
   client: AppSupabaseClient,
   column: "id" | "username",
   value: string,
-) {
+) => {
   const { data, error } = await core(client)
     .from("profiles")
-    .select("id, display_name, avatar_url, username, bio, created_at, updated_at")
+    .select(
+      "id, display_name, avatar_url, username, bio, created_at, updated_at",
+    )
     .eq(column, value)
     .maybeSingle();
 
   if (error) throw new Error(error.message);
 
   return data;
-}
+};
 
-function buildProfileStats(lists: RankedListSummary[]): ProfileListStats {
+const buildProfileStats = (lists: RankedListSummary[]): ProfileListStats => {
   return {
     listCount: lists.length,
   };
-}
+};
 
-function shuffleProfiles(profiles: Profile[]) {
+const shuffleProfiles = (profiles: Profile[]) => {
   const shuffled = [...profiles];
 
   for (let index = shuffled.length - 1; index > 0; index -= 1) {
@@ -133,4 +140,4 @@ function shuffleProfiles(profiles: Profile[]) {
   }
 
   return shuffled;
-}
+};

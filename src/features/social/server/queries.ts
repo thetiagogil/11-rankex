@@ -1,10 +1,10 @@
 import { rankex, type AppSupabaseClient } from "@/lib/supabase/schemas";
 import type { ProfileSocialStats } from "@/features/social/types";
 
-export async function getFollowingIds(
+export const getFollowingIds = async (
   client: AppSupabaseClient,
   userId: string,
-): Promise<string[]> {
+): Promise<string[]> => {
   const { data, error } = await rankex(client)
     .from("follows")
     .select("following_id")
@@ -13,17 +13,23 @@ export async function getFollowingIds(
   if (error) throw new Error(error.message);
 
   return (data ?? []).map((follow) => follow.following_id);
-}
+};
 
-export async function getProfileSocialStats(
+export const getProfileSocialStats = async (
   client: AppSupabaseClient,
   profileId: string,
   viewerId?: string,
-): Promise<ProfileSocialStats> {
+): Promise<ProfileSocialStats> => {
   const [followersResult, followingResult, publicListsResult, savedResult] =
     await Promise.all([
-      rankex(client).from("follows").select("follower_id").eq("following_id", profileId),
-      rankex(client).from("follows").select("following_id").eq("follower_id", profileId),
+      rankex(client)
+        .from("follows")
+        .select("follower_id")
+        .eq("following_id", profileId),
+      rankex(client)
+        .from("follows")
+        .select("following_id")
+        .eq("follower_id", profileId),
       rankex(client)
         .from("lists")
         .select("id")
@@ -57,12 +63,12 @@ export async function getProfileSocialStats(
     likesReceivedCount,
     savedListCount: savedResult.data?.length ?? 0,
   };
-}
+};
 
-async function getLikesReceivedCount(
+const getLikesReceivedCount = async (
   client: AppSupabaseClient,
   publicListIds: number[],
-) {
+) => {
   if (publicListIds.length === 0) return 0;
 
   const { data, error } = await rankex(client)
@@ -73,4 +79,4 @@ async function getLikesReceivedCount(
   if (error) throw new Error(error.message);
 
   return data?.length ?? 0;
-}
+};

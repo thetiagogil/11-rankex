@@ -4,7 +4,7 @@ import type {
 } from "@/app/(protected)/dashboard/_types";
 import type { RankedListSummary } from "@/features/lists/types";
 
-export function filterDashboardLists({
+export const filterDashboardLists = ({
   lists,
   query,
   sort,
@@ -14,7 +14,7 @@ export function filterDashboardLists({
   query: string;
   sort: DashboardSortMode;
   visibility: DashboardVisibilityFilter;
-}) {
+}) => {
   const normalizedQuery = query.trim().toLowerCase();
 
   return [...lists]
@@ -54,4 +54,4 @@ export function filterDashboardLists({
 
       return second.updatedAt.localeCompare(first.updatedAt);
     });
-}
+};

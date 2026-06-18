@@ -6,11 +6,11 @@ import type {
 import type { RankedListSummary } from "@/features/lists/types";
 import type { Profile } from "@/shared/types";
 
-export function buildExplorePeople(
+export const buildExplorePeople = (
   lists: RankedListSummary[],
   profiles: Profile[],
   currentUserId: string,
-) {
+) => {
   const listsByProfileId = new Map<string, RankedListSummary[]>();
 
   for (const list of lists) {
@@ -27,12 +27,12 @@ export function buildExplorePeople(
       profile,
       stats: buildExplorePersonStats(listsByProfileId.get(profile.id) ?? []),
     }));
-}
+};
 
-export function filterExplorePeople(
+export const filterExplorePeople = (
   people: ExplorePersonCard[],
   query: string,
-) {
+) => {
   const normalizedQuery = query.trim().toLowerCase();
 
   if (!normalizedQuery) return people;
@@ -44,9 +44,9 @@ export function filterExplorePeople(
       .toLowerCase()
       .includes(normalizedQuery),
   );
-}
+};
 
-export function filterAndSortExploreLists({
+export const filterAndSortExploreLists = ({
   followingIds,
   lists,
   query,
@@ -56,7 +56,7 @@ export function filterAndSortExploreLists({
   lists: RankedListSummary[];
   query: string;
   sort: ExploreSort;
-}) {
+}) => {
   const normalizedQuery = query.trim().toLowerCase();
 
   const filtered = lists.filter((list) => {
@@ -88,11 +88,11 @@ export function filterAndSortExploreLists({
       b.updatedAt.localeCompare(a.updatedAt)
     );
   });
-}
+};
 
-function buildExplorePersonStats(
+const buildExplorePersonStats = (
   lists: RankedListSummary[],
-): ExplorePersonStats {
+): ExplorePersonStats => {
   return {
     likeCount: lists.reduce((sum, list) => sum + list.social.likeCount, 0),
     publicListCount: lists.length,
@@ -100,4 +100,4 @@ function buildExplorePersonStats(
       new Set(lists.map((list) => list.topic).filter(Boolean) as string[]),
     ).sort((a, b) => a.localeCompare(b)),
   };
-}
+};

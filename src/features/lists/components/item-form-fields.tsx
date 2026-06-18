@@ -25,7 +25,7 @@ type ItemFormFieldsProps = {
   title: string;
 };
 
-export function ItemFormFields({
+export const ItemFormFields = ({
   isPending,
   note,
   onNoteChange,
@@ -36,7 +36,7 @@ export function ItemFormFields({
   score,
   tier,
   title,
-}: ItemFormFieldsProps) {
+}: ItemFormFieldsProps) => {
   return (
     <>
       <FormField htmlFor="item-title" label="Title" required>
@@ -108,4 +108,4 @@ export function ItemFormFields({
       ) : null}
     </>
   );
-}
+};

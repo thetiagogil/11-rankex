@@ -16,11 +16,11 @@ type ProfilePageViewProps = {
   overview: ProfileOverview;
 };
 
-export function ProfilePageView({
+export const ProfilePageView = ({
   currentUserId,
   isCurrentUser = false,
   overview,
-}: ProfilePageViewProps) {
+}: ProfilePageViewProps) => {
   const { lists, profile, social, stats } = overview;
   const usernameLabel = getProfileUsernameLabel(profile);
   const emptyCopy = isCurrentUser
@@ -32,7 +32,11 @@ export function ProfilePageView({
 
   return (
     <div className="flex min-w-0 flex-col gap-10">
-      <Card as="section" className="w-full max-w-full p-5 sm:p-7" variant="shadow">
+      <Card
+        as="section"
+        className="w-full max-w-full p-5 sm:p-7"
+        variant="shadow"
+      >
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-6">
           <div className="sm:block">
             <ProfileAvatar
@@ -160,4 +164,4 @@ export function ProfilePageView({
       </section>
     </div>
   );
-}
+};

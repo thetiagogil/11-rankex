@@ -1,24 +1,24 @@
 import { revalidatePath } from "next/cache";
 
-export function revalidateRankexListSurface(listId?: number) {
+export const revalidateRankexListSurface = (listId?: number) => {
   revalidatePath("/dashboard");
   revalidatePath("/explore");
 
   if (listId) {
     revalidatePath(`/lists/${listId}`);
   }
-}
+};
 
-export function revalidateRankexProfileSurface() {
+export const revalidateRankexProfileSurface = () => {
   revalidatePath("/dashboard");
   revalidatePath("/explore");
   revalidatePath("/profile");
   revalidatePath("/settings");
-}
+};
 
-export function revalidateRankexAuthSurface() {
+export const revalidateRankexAuthSurface = () => {
   revalidatePath("/");
   revalidatePath("/dashboard");
   revalidatePath("/explore");
   revalidatePath("/settings");
-}
+};

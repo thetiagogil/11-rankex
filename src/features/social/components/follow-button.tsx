@@ -14,12 +14,12 @@ type FollowButtonProps = {
   size?: ButtonSize;
 };
 
-export function FollowButton({
+export const FollowButton = ({
   className,
   initialIsFollowing,
   profileId,
   size = "sm",
-}: FollowButtonProps) {
+}: FollowButtonProps) => {
   const router = useRouter();
   const [isFollowing, setIsFollowing] = useState(initialIsFollowing);
   const [isPending, startTransition] = useTransition();
@@ -49,4 +49,4 @@ export function FollowButton({
       {isFollowing ? "Following" : "Follow"}
     </Button>
   );
-}
+};

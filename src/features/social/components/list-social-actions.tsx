@@ -18,7 +18,7 @@ type ListSocialActionsProps = {
   social: ListSocialState;
 };
 
-export function ListSocialActions({
+export const ListSocialActions = ({
   appearance = "buttons",
   canRemix = false,
   className,
@@ -26,7 +26,7 @@ export function ListSocialActions({
   showBookmarkCount = false,
   size = "default",
   social,
-}: ListSocialActionsProps) {
+}: ListSocialActionsProps) => {
   const actions = useListSocialActions({ listId, social });
   const isPillAppearance = appearance === "pills";
   const countButtonSize = isPillAppearance
@@ -35,7 +35,9 @@ export function ListSocialActions({
       ? "sm"
       : "default";
   const iconButtonSize = size === "compact" ? "icon-sm" : "icon";
-  const bookmarkButtonSize = showBookmarkCount ? countButtonSize : iconButtonSize;
+  const bookmarkButtonSize = showBookmarkCount
+    ? countButtonSize
+    : iconButtonSize;
   const actionVariant = isPillAppearance ? "pill" : "outline";
   const passivePillSize = isPillAppearance
     ? "sm"
@@ -90,9 +92,7 @@ export function ListSocialActions({
       ) : null}
 
       <Button
-        aria-label={
-          actions.bookmarked ? "Remove bookmark" : "Bookmark list"
-        }
+        aria-label={actions.bookmarked ? "Remove bookmark" : "Bookmark list"}
         disabled={actions.isPending}
         onClick={actions.toggleBookmark}
         size={bookmarkButtonSize}
@@ -126,4 +126,4 @@ export function ListSocialActions({
       ) : null}
     </div>
   );
-}
+};

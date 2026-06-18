@@ -8,11 +8,11 @@ type ProfilePageShellProps = {
   overview: ProfileOverview;
 };
 
-export function ProfilePageShell({
+export const ProfilePageShell = ({
   currentUserId,
   isCurrentUser = false,
   overview,
-}: ProfilePageShellProps) {
+}: ProfilePageShellProps) => {
   return (
     <AppMain className="pb-20">
       <ProfilePageView
@@ -22,4 +22,4 @@ export function ProfilePageShell({
       />
     </AppMain>
   );
-}
+};

@@ -53,7 +53,7 @@ export type ButtonSize = NonNullable<
   VariantProps<typeof buttonVariants>["size"]
 >;
 
-function Button({
+const Button = ({
   asChild = false,
   className,
   size = "default",
@@ -63,7 +63,7 @@ function Button({
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
-  }) {
+  }) => {
   const Comp = asChild ? Slot.Root : "button";
 
   return (
@@ -76,6 +76,6 @@ function Button({
       {...props}
     />
   );
-}
+};
 
 export { Button, buttonVariants };

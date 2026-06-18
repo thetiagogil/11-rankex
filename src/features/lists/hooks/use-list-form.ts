@@ -15,10 +15,10 @@ type UseListFormOptions = {
   redirectToList: boolean;
 };
 
-export function useListForm({
+export const useListForm = ({
   initialList,
   redirectToList,
-}: UseListFormOptions) {
+}: UseListFormOptions) => {
   const router = useRouter();
   const generatedFormId = useId();
   const [open, setOpen] = useState(false);
@@ -112,4 +112,4 @@ export function useListForm({
     title,
     topic,
   };
-}
+};

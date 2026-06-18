@@ -36,10 +36,10 @@ type DashboardListBrowserProps = {
   lists: RankedListSummary[];
 };
 
-export function DashboardListBrowser({
+export const DashboardListBrowser = ({
   currentUserId,
   lists,
-}: DashboardListBrowserProps) {
+}: DashboardListBrowserProps) => {
   const [query, setQuery] = useState("");
   const [visibility, setVisibility] =
     useState<DashboardVisibilityFilter>("all");
@@ -141,4 +141,4 @@ export function DashboardListBrowser({
       )}
     </div>
   );
-}
+};

@@ -15,7 +15,7 @@ type ProtectedAppShellProps = {
   children: ReactNode;
 };
 
-export function ProtectedAppShell({ children }: ProtectedAppShellProps) {
+export const ProtectedAppShell = ({ children }: ProtectedAppShellProps) => {
   const pathname = usePathname();
   const router = useRouter();
   const [feedback, setFeedback] = useState<string | null>(null);
@@ -62,4 +62,4 @@ export function ProtectedAppShell({ children }: ProtectedAppShellProps) {
       {children}
     </AppShell>
   );
-}
+};

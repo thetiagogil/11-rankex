@@ -15,7 +15,7 @@ type SearchInputProps = {
   value: string;
 };
 
-export function SearchInput({
+export const SearchInput = ({
   className,
   id,
   inputClassName,
@@ -23,7 +23,7 @@ export function SearchInput({
   onChange,
   placeholder,
   value,
-}: SearchInputProps) {
+}: SearchInputProps) => {
   return (
     <div className={cn("relative w-full self-start", className)}>
       <Label className="sr-only" htmlFor={id}>
@@ -39,4 +39,4 @@ export function SearchInput({
       />
     </div>
   );
-}
+};

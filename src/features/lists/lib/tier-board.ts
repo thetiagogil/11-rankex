@@ -22,73 +22,75 @@ export const tierGroupIds = [
   untieredGroupId,
 ] as const satisfies readonly TierGroupId[];
 
-export function getTierGroupId(tier: Tier | null): TierGroupId {
+export const getTierGroupId = (tier: Tier | null): TierGroupId => {
   return tier ?? untieredGroupId;
-}
+};
 
-export function getTierFromGroupId(groupId: TierGroupId): Tier | null {
+export const getTierFromGroupId = (groupId: TierGroupId): Tier | null => {
   return groupId === untieredGroupId ? null : groupId;
-}
+};
 
-export function getTierItemSortableId(itemId: number) {
+export const getTierItemSortableId = (itemId: number) => {
   return `${tierItemIdPrefix}${itemId}`;
-}
+};
 
-export function getTierGroupDroppableId(groupId: TierGroupId) {
+export const getTierGroupDroppableId = (groupId: TierGroupId) => {
   return `${tierGroupIdPrefix}${groupId}`;
-}
+};
 
-export function parseTierItemSortableId(value: string | number) {
+export const parseTierItemSortableId = (value: string | number) => {
   if (typeof value === "number") return value;
   if (!value.startsWith(tierItemIdPrefix)) return null;
 
   const parsed = Number.parseInt(value.slice(tierItemIdPrefix.length), 10);
   return Number.isSafeInteger(parsed) && parsed > 0 ? parsed : null;
-}
+};
 
-export function parseTierGroupDroppableId(
+export const parseTierGroupDroppableId = (
   value: string | number,
-): TierGroupId | null {
+): TierGroupId | null => {
   if (typeof value !== "string" || !value.startsWith(tierGroupIdPrefix)) {
     return null;
   }
 
   const groupId = value.slice(tierGroupIdPrefix.length);
   return isTierGroupId(groupId) ? groupId : null;
-}
+};
 
-export function getTierGroupFromDragTarget(
+export const getTierGroupFromDragTarget = (
   overId: string | number,
   overData?: TierDragData,
-): TierGroupId | null {
-  if (isTierGroupId(overData?.tierGroupId)) {
-    return overData.tierGroupId;
+): TierGroupId | null => {
+  const tierGroupId = overData?.tierGroupId;
+
+  if (isTierGroupId(tierGroupId)) {
+    return tierGroupId;
   }
 
   return parseTierGroupDroppableId(overId);
-}
+};
 
-export function isTierGroupId(value: unknown): value is TierGroupId {
+export const isTierGroupId = (value: unknown): value is TierGroupId => {
   return (
     value === untieredGroupId ||
     (typeof value === "string" && TIERS.includes(value as Tier))
   );
-}
+};
 
-export function getItemsForTierGroup(
+export const getItemsForTierGroup = (
   items: RankedItem[],
   groupId: TierGroupId,
-) {
+) => {
   return items.filter((item) => getTierGroupId(item.tier) === groupId);
-}
+};
 
-export function getTierItemsSourceKey(items: RankedItem[]) {
+export const getTierItemsSourceKey = (items: RankedItem[]) => {
   return items
     .map((item) => `${item.id}:${item.position}:${item.tier ?? "none"}`)
     .join("|");
-}
+};
 
-export function reorderItemsForTierDrop({
+export const reorderItemsForTierDrop = ({
   activeItemId,
   items,
   overGroupId,
@@ -98,7 +100,7 @@ export function reorderItemsForTierDrop({
   items: RankedItem[];
   overGroupId: TierGroupId;
   overItemId: number | null;
-}) {
+}) => {
   const activeItem = items.find((item) => item.id === activeItemId);
   if (!activeItem) return items;
 
@@ -132,13 +134,13 @@ export function reorderItemsForTierDrop({
   return tierGroupIds
     .flatMap((groupId) => groups.get(groupId) ?? [])
     .map((item, index) => ({ ...item, position: index + 1 }));
-}
+};
 
-export function toTierReorderPayload(
+export const toTierReorderPayload = (
   items: RankedItem[],
-): TierReorderPayloadItem[] {
+): TierReorderPayloadItem[] => {
   return items.map((item) => ({
     id: item.id,
     tier: item.tier,
   }));
-}
+};

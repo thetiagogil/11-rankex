@@ -22,7 +22,10 @@ type ListDetailViewProps = {
   list: RankedList;
 };
 
-export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
+export const ListDetailView = ({
+  currentUserId,
+  list,
+}: ListDetailViewProps) => {
   const router = useRouter();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
@@ -107,4 +110,4 @@ export function ListDetailView({ currentUserId, list }: ListDetailViewProps) {
       <CommentSection currentUserId={currentUserId} list={list} />
     </AppMain>
   );
-}
+};

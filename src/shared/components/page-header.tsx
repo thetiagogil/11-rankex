@@ -10,13 +10,13 @@ type PageHeaderProps = {
   title: ReactNode;
 };
 
-export function PageHeader({
+export const PageHeader = ({
   align = "start",
   children,
   className,
   description,
   title,
-}: PageHeaderProps) {
+}: PageHeaderProps) => {
   return (
     <section
       className={cn(
@@ -36,4 +36,4 @@ export function PageHeader({
       {children}
     </section>
   );
-}
+};

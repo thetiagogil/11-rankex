@@ -1,13 +1,14 @@
-import type {
-  RankexListCommentRow,
-  RankexListItemRow,
-  RankexListRow,
-  RankexTier,
-} from "@/types/database.types";
 import type { Profile } from "@/shared/types";
+import type { Tables } from "@/types/database.types";
 
 export type RankingMode = "ranked" | "scored" | "tiered";
-export type Tier = RankexTier;
+export type Tier = "S" | "A" | "B" | "C" | "D";
+export type RankexListRow = Tables<{ schema: "rankex" }, "lists">;
+export type RankexListItemRow = Tables<{ schema: "rankex" }, "list_items">;
+export type RankexListCommentRow = Tables<
+  { schema: "rankex" },
+  "list_comments"
+>;
 
 export type RankedItem = {
   id: number;

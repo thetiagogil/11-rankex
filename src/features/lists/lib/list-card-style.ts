@@ -8,10 +8,10 @@ export const listCardAccents = [
 
 export const listCardTilts = ["", "", "tilt-r", "", "", "tilt-l"] as const;
 
-export function getListCardAccent(id: number) {
+export const getListCardAccent = (id: number) => {
   return listCardAccents[id % listCardAccents.length];
-}
+};
 
-export function getListCardTilt(id: number) {
+export const getListCardTilt = (id: number) => {
   return listCardTilts[id % listCardTilts.length];
-}
+};

@@ -8,10 +8,10 @@ type ListCardSocialSummaryProps = {
   social: RankedListSummary["social"];
 };
 
-export function ListCardSocialSummary({
+export const ListCardSocialSummary = ({
   includeBookmarks = false,
   social,
-}: ListCardSocialSummaryProps) {
+}: ListCardSocialSummaryProps) => {
   return (
     <div className="text-muted-foreground flex items-center gap-1.5 text-xs font-bold">
       <CountPill
@@ -33,4 +33,4 @@ export function ListCardSocialSummary({
       ) : null}
     </div>
   );
-}
+};

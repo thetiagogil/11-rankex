@@ -19,12 +19,12 @@ type ExploreUserCardProps = {
   stats: ExplorePersonStats;
 };
 
-export function ExploreUserCard({
+export const ExploreUserCard = ({
   currentUserId,
   isFollowing,
   profile,
   stats,
-}: ExploreUserCardProps) {
+}: ExploreUserCardProps) => {
   const usernameLabel = getProfileUsernameLabel(profile);
 
   return (
@@ -34,10 +34,7 @@ export function ExploreUserCard({
       variant="shadow"
     >
       <div className="flex items-start gap-3">
-        <Link
-          className="shrink-0"
-          href={getProfileHref(profile)}
-        >
+        <Link className="shrink-0" href={getProfileHref(profile)}>
           <ProfileAvatar displayName={profile.displayName} />
         </Link>
         <div className="min-w-0 flex-1">
@@ -79,4 +76,4 @@ export function ExploreUserCard({
       </div>
     </Card>
   );
-}
+};

@@ -6,3 +6,4 @@ coverage
 .turbo
 .vercel
 package-lock.json
+src/types/database.types.ts

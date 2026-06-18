@@ -4,7 +4,7 @@ type RankBadgeProps = {
   rank: number;
 };
 
-export function RankBadge({ rank }: RankBadgeProps) {
+export const RankBadge = ({ rank }: RankBadgeProps) => {
   return (
     <span
       className={cn(
@@ -17,4 +17,4 @@ export function RankBadge({ rank }: RankBadgeProps) {
       {rank}
     </span>
   );
-}
+};

@@ -25,11 +25,11 @@ type ProfileMenuProps = {
   pathname: string;
 };
 
-export function ProfileMenu({
+export const ProfileMenu = ({
   isPending,
   onSignOut,
   pathname,
-}: ProfileMenuProps) {
+}: ProfileMenuProps) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -38,7 +38,7 @@ export function ProfileMenu({
         <Button
           aria-label={open ? "Close account menu" : "Open account menu"}
           className={cn(
-            "size-11 rounded-full text-primary hover:border-primary/50",
+            "text-primary hover:border-primary/50 size-11 rounded-full",
             open && "border-primary/50",
           )}
           disabled={isPending}
@@ -97,4 +97,4 @@ export function ProfileMenu({
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+};

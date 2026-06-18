@@ -16,11 +16,11 @@ const usernameMaxLength = 30;
 const usernameMinLength = 3;
 const usernamePattern = /^[a-z0-9_]+$/;
 
-export function normalizeProfileSettingsInput(
+export const normalizeProfileSettingsInput = (
   input: ProfileSettingsInput,
 ):
   | { ok: true; data: NormalizedProfileSettingsInput }
-  | { ok: false; error: string } {
+  | { ok: false; error: string } => {
   const displayName = input.displayName.trim();
   const bio = input.bio?.trim() || null;
   const username = input.username?.trim().toLowerCase() || null;
@@ -57,10 +57,11 @@ export function normalizeProfileSettingsInput(
     if (!usernamePattern.test(username)) {
       return {
         ok: false,
-        error: "Username can only use lowercase letters, numbers, and underscores.",
+        error:
+          "Username can only use lowercase letters, numbers, and underscores.",
       };
     }
   }
 
   return { ok: true, data: { bio, displayName, username } };
-}
+};

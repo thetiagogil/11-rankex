@@ -12,14 +12,14 @@ const sizes: Record<ProgressSize, string> = {
   sm: "h-1.5",
 };
 
-function Progress({
+const Progress = ({
   className,
   size = "md",
   value,
   ...props
 }: React.ComponentProps<typeof ProgressPrimitive.Root> & {
   size?: ProgressSize;
-}) {
+}) => {
   const boundedValue = Math.max(0, Math.min(100, value ?? 0));
 
   return (
@@ -44,6 +44,6 @@ function Progress({
       />
     </ProgressPrimitive.Root>
   );
-}
+};
 
 export { Progress };

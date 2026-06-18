@@ -10,12 +10,12 @@ type AuthCardFooterProps = {
   pending: boolean;
 };
 
-export function AuthCardFooter({
+export const AuthCardFooter = ({
   alternateHref,
   isSignup,
   next,
   pending,
-}: AuthCardFooterProps) {
+}: AuthCardFooterProps) => {
   return (
     <>
       <DividerLabel>or</DividerLabel>
@@ -42,4 +42,4 @@ export function AuthCardFooter({
       </p>
     </>
   );
-}
+};

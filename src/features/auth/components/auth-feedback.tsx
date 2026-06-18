@@ -7,11 +7,11 @@ type AuthFeedbackProps = {
   tone: "error" | "success";
 };
 
-export function AuthFeedback({ children, tone }: AuthFeedbackProps) {
+export const AuthFeedback = ({ children, tone }: AuthFeedbackProps) => {
   return (
     <Alert className="mb-5" tone={tone}>
       {tone === "error" ? "! " : null}
       {children}
     </Alert>
   );
-}
+};

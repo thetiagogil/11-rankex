@@ -33,13 +33,13 @@ const toneClasses: Record<NonNullable<ProfileAvatarProps["tone"]>, string> = {
   primary: "border-primary bg-primary text-primary-foreground shadow-none",
 };
 
-export function ProfileAvatar({
+export const ProfileAvatar = ({
   className,
   displayName,
   rounded = "2xl",
   size = "md",
   tone = "gradient",
-}: ProfileAvatarProps) {
+}: ProfileAvatarProps) => {
   return (
     <span
       className={cn(
@@ -53,4 +53,4 @@ export function ProfileAvatar({
       {getProfileInitials(displayName)}
     </span>
   );
-}
+};

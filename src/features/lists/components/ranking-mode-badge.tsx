@@ -17,7 +17,7 @@ type RankingModeBadgeProps = {
   rankingMode: RankingMode;
 };
 
-export function RankingModeBadge({ rankingMode }: RankingModeBadgeProps) {
+export const RankingModeBadge = ({ rankingMode }: RankingModeBadgeProps) => {
   const normalizedRankingMode = normalizeRankingMode(rankingMode);
   const Icon = rankingModeIcons[normalizedRankingMode];
 
@@ -27,4 +27,4 @@ export function RankingModeBadge({ rankingMode }: RankingModeBadgeProps) {
       {getRankingModeLabel(normalizedRankingMode)}
     </Badge>
   );
-}
+};

@@ -12,11 +12,11 @@ type ListCardExploreFooterProps = {
   showOwner: boolean;
 };
 
-export function ListCardExploreFooter({
+export const ListCardExploreFooter = ({
   canUseSocialActions,
   list,
   showOwner,
-}: ListCardExploreFooterProps) {
+}: ListCardExploreFooterProps) => {
   const ownerHandle =
     showOwner && list.owner ? getProfileUsernameLabel(list.owner) : null;
 
@@ -49,4 +49,4 @@ export function ListCardExploreFooter({
       </div>
     </div>
   );
-}
+};

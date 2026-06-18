@@ -8,7 +8,7 @@ type ListOwnerMetadataProps = {
   profile: Profile;
 };
 
-export function ListOwnerMetadata({ profile }: ListOwnerMetadataProps) {
+export const ListOwnerMetadata = ({ profile }: ListOwnerMetadataProps) => {
   return (
     <Link
       className="text-muted-foreground hover:text-foreground inline-flex min-w-0 items-center gap-2 transition"
@@ -25,4 +25,4 @@ export function ListOwnerMetadata({ profile }: ListOwnerMetadataProps) {
       </span>
     </Link>
   );
-}
+};

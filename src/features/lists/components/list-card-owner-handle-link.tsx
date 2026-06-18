@@ -12,10 +12,10 @@ type ListCardOwnerHandleLinkProps = {
   owner: NonNullable<RankedListSummary["owner"]>;
 };
 
-export function ListCardOwnerHandleLink({
+export const ListCardOwnerHandleLink = ({
   className,
   owner,
-}: ListCardOwnerHandleLinkProps) {
+}: ListCardOwnerHandleLinkProps) => {
   const ownerHandle = getProfileUsernameLabel(owner);
 
   if (!ownerHandle) return null;
@@ -31,4 +31,4 @@ export function ListCardOwnerHandleLink({
       {ownerHandle}
     </Link>
   );
-}
+};

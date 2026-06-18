@@ -35,7 +35,7 @@ type OptimisticTierItems = {
   sourceKey: string;
 };
 
-export function useTierReorder({ items, listId }: UseTierReorderOptions) {
+export const useTierReorder = ({ items, listId }: UseTierReorderOptions) => {
   const router = useRouter();
   const sourceKey = useMemo(() => getTierItemsSourceKey(items), [items]);
   const [optimisticItems, setOptimisticItems] =
@@ -105,4 +105,4 @@ export function useTierReorder({ items, listId }: UseTierReorderOptions) {
     sensors,
     visibleGroupIds,
   };
-}
+};

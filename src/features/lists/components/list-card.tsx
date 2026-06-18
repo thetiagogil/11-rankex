@@ -25,13 +25,13 @@ type ListCardProps = {
   showOwner?: boolean;
 };
 
-export function ListCard({
+export const ListCard = ({
   cardVariant = "shadow",
   currentUserId,
   footerMode = "default",
   list,
   showOwner = false,
-}: ListCardProps) {
+}: ListCardProps) => {
   const listIcon = getListIcon(list.emoji, list.topic);
   const Icon = listIcon.Icon;
   const accent = getListCardAccent(list.id);
@@ -125,4 +125,4 @@ export function ListCard({
       </div>
     </Card>
   );
-}
+};

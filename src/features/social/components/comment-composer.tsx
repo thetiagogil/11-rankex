@@ -16,14 +16,14 @@ type CommentComposerProps = {
   onSubmit: NonNullable<ComponentProps<"form">["onSubmit"]>;
 };
 
-export function CommentComposer({
+export const CommentComposer = ({
   body,
   feedback,
   inputRef,
   isPending,
   onBodyChange,
   onSubmit,
-}: CommentComposerProps) {
+}: CommentComposerProps) => {
   const trimmedBody = body.trim();
 
   return (
@@ -57,4 +57,4 @@ export function CommentComposer({
       </form>
     </Card>
   );
-}
+};

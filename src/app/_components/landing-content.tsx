@@ -12,7 +12,7 @@ type LandingContentProps = {
   isAuthenticated: boolean;
 };
 
-export function LandingContent({ isAuthenticated }: LandingContentProps) {
+export const LandingContent = ({ isAuthenticated }: LandingContentProps) => {
   const primaryHref = isAuthenticated ? "/dashboard" : "/signup";
   const secondaryHref = isAuthenticated ? "/explore" : "/login";
   const primaryLabel = isAuthenticated ? "Go to dashboard" : "Get started";
@@ -122,4 +122,4 @@ export function LandingContent({ isAuthenticated }: LandingContentProps) {
       </Card>
     </AppMain>
   );
-}
+};

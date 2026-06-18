@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  closestCenter,
-  DndContext,
-} from "@dnd-kit/core";
+import { closestCenter, DndContext } from "@dnd-kit/core";
 import {
   SortableContext,
   verticalListSortingStrategy,
@@ -25,13 +22,13 @@ type SortableItemListProps = {
   rankingMode: RankingMode;
 };
 
-export function SortableItemList({
+export const SortableItemList = ({
   canEdit,
   canReorder,
   items,
   listId,
   rankingMode,
-}: SortableItemListProps) {
+}: SortableItemListProps) => {
   const sortable = useSortableItems({ items, listId });
 
   if (items.length === 0) {
@@ -101,4 +98,4 @@ export function SortableItemList({
       />
     </div>
   );
-}
+};

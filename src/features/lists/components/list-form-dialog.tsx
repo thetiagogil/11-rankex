@@ -18,12 +18,12 @@ type ListFormDialogProps = {
   trigger?: ReactNode;
 };
 
-export function ListFormDialog({
+export const ListFormDialog = ({
   initialList,
   onRequestDelete,
   redirectToList = false,
   trigger,
-}: ListFormDialogProps) {
+}: ListFormDialogProps) => {
   const form = useListForm({ initialList, redirectToList });
 
   return (
@@ -111,4 +111,4 @@ export function ListFormDialog({
       </Modal>
     </>
   );
-}
+};

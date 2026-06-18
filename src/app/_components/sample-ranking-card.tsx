@@ -9,10 +9,10 @@ type SampleRankingCardProps = {
   ranking: LandingSampleRanking;
 };
 
-export function SampleRankingCard({
+export const SampleRankingCard = ({
   layout,
   ranking,
-}: SampleRankingCardProps) {
+}: SampleRankingCardProps) => {
   const Icon = ranking.icon;
 
   return (
@@ -57,4 +57,4 @@ export function SampleRankingCard({
       </ol>
     </Card>
   );
-}
+};

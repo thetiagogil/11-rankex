@@ -17,10 +17,10 @@ type UseListSocialActionsOptions = {
   social: ListSocialState;
 };
 
-export function useListSocialActions({
+export const useListSocialActions = ({
   listId,
   social,
-}: UseListSocialActionsOptions) {
+}: UseListSocialActionsOptions) => {
   const router = useRouter();
   const [liked, setLiked] = useState(social.isLikedByViewer);
   const [bookmarked, setBookmarked] = useState(social.isBookmarkedByViewer);
@@ -92,4 +92,4 @@ export function useListSocialActions({
     toggleBookmark,
     toggleLike,
   };
-}
+};

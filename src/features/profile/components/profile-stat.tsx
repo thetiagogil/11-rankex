@@ -3,7 +3,7 @@ type ProfileStatProps = {
   value: number;
 };
 
-export function ProfileStat({ label, value }: ProfileStatProps) {
+export const ProfileStat = ({ label, value }: ProfileStatProps) => {
   return (
     <div className="min-w-0">
       <p className="font-display text-foreground text-xl leading-none font-bold">
@@ -14,4 +14,4 @@ export function ProfileStat({ label, value }: ProfileStatProps) {
       </p>
     </div>
   );
-}
+};

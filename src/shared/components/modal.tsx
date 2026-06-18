@@ -22,7 +22,7 @@ type ModalProps = {
   title: string;
 };
 
-export function Modal({
+export const Modal = ({
   bodyClassName,
   children,
   contentClassName,
@@ -32,7 +32,7 @@ export function Modal({
   onClose,
   open,
   title,
-}: ModalProps) {
+}: ModalProps) => {
   return (
     <Dialog
       onOpenChange={(nextOpen) => {
@@ -51,11 +51,9 @@ export function Modal({
         <ModalHeader description={description} title={title} />
         <ModalBody className={bodyClassName}>{children}</ModalBody>
         {footer ? (
-          <ModalFooter className={footerClassName}>
-            {footer}
-          </ModalFooter>
+          <ModalFooter className={footerClassName}>{footer}</ModalFooter>
         ) : null}
       </DialogContent>
     </Dialog>
   );
-}
+};

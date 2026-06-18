@@ -14,7 +14,7 @@ const envRows = [
   },
 ];
 
-export function SetupMissing() {
+export const SetupMissing = () => {
   return (
     <AppShell>
       <AppHeader
@@ -64,4 +64,4 @@ export function SetupMissing() {
       </AppMain>
     </AppShell>
   );
-}
+};

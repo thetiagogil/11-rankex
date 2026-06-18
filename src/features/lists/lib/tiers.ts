@@ -4,6 +4,6 @@ export type { Tier };
 
 export const TIERS: Tier[] = ["S", "A", "B", "C", "D"];
 
-export function isTier(value: unknown): value is Tier {
+export const isTier = (value: unknown): value is Tier => {
   return typeof value === "string" && TIERS.includes(value as Tier);
-}
+};

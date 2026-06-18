@@ -15,12 +15,12 @@ type DashboardPageViewProps = {
   social: ProfileSocialStats;
 };
 
-export function DashboardPageView({
+export const DashboardPageView = ({
   currentUserId,
   displayName,
   lists,
   social,
-}: DashboardPageViewProps) {
+}: DashboardPageViewProps) => {
   const firstName = displayName.split(" ")[0] ?? displayName;
 
   return (
@@ -72,4 +72,4 @@ export function DashboardPageView({
       </section>
     </AppMain>
   );
-}
+};

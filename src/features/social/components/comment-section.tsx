@@ -19,7 +19,10 @@ type CommentSectionProps = {
   list: RankedList;
 };
 
-export function CommentSection({ currentUserId, list }: CommentSectionProps) {
+export const CommentSection = ({
+  currentUserId,
+  list,
+}: CommentSectionProps) => {
   const router = useRouter();
   const commentInputRef = useRef<HTMLTextAreaElement>(null);
   const [body, setBody] = useState("");
@@ -135,4 +138,4 @@ export function CommentSection({ currentUserId, list }: CommentSectionProps) {
       )}
     </section>
   );
-}
+};

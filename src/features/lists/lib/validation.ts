@@ -51,9 +51,9 @@ const descriptionMaxLength = 500;
 const noteMaxLength = 800;
 const iconMaxLength = 16;
 
-export function normalizeListInput(
+export const normalizeListInput = (
   input: ListInput,
-): { ok: true; data: NormalizedListInput } | { ok: false; error: string } {
+): { ok: true; data: NormalizedListInput } | { ok: false; error: string } => {
   const title = input.title.trim();
   const topic = input.topic?.trim() || null;
   const description = input.description?.trim() || null;
@@ -100,12 +100,12 @@ export function normalizeListInput(
       topic,
     },
   };
-}
+};
 
-export function normalizeItemInput(
+export const normalizeItemInput = (
   input: ItemInput,
   rankingMode: RankingMode,
-): { ok: true; data: NormalizedItemInput } | { ok: false; error: string } {
+): { ok: true; data: NormalizedItemInput } | { ok: false; error: string } => {
   const title = input.title.trim();
   const note = input.note?.trim() || null;
   const score = normalizeScore(input.score);
@@ -190,9 +190,9 @@ export function normalizeItemInput(
       title,
     },
   };
-}
+};
 
-export function normalizeListId(value: string | number) {
+export const normalizeListId = (value: string | number) => {
   const parsed =
     typeof value === "number" ? value : Number.parseInt(value.trim(), 10);
 
@@ -201,13 +201,13 @@ export function normalizeListId(value: string | number) {
   }
 
   return parsed;
-}
+};
 
-export function normalizeTierReorderInput(
+export const normalizeTierReorderInput = (
   input: TierReorderInputItem[],
 ):
   | { ok: true; data: NormalizedTierReorderInputItem[] }
-  | { ok: false; error: string } {
+  | { ok: false; error: string } => {
   const seenIds = new Set<number>();
   const data: NormalizedTierReorderInputItem[] = [];
 
@@ -228,9 +228,9 @@ export function normalizeTierReorderInput(
   }
 
   return { ok: true, data };
-}
+};
 
-function normalizeScore(value: ItemInput["score"]): number | null | false {
+const normalizeScore = (value: ItemInput["score"]): number | null | false => {
   if (value === null || value === undefined || value === "") return null;
 
   const score = typeof value === "number" ? value : Number(value);
@@ -240,4 +240,4 @@ function normalizeScore(value: ItemInput["score"]): number | null | false {
   }
 
   return score;
-}
+};

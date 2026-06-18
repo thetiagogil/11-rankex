@@ -13,9 +13,9 @@ import { mapProfile } from "@/shared/server/mappers";
 import { revalidateRankexProfileSurface } from "@/shared/server/revalidation";
 import type { Profile } from "@/shared/types";
 
-export async function updateProfileSettingsAction(
+export const updateProfileSettingsAction = async (
   input: ProfileSettingsInput,
-): Promise<ActionResult<Profile>> {
+): Promise<ActionResult<Profile>> => {
   const normalized = normalizeProfileSettingsInput(input);
 
   if (!normalized.ok) {
@@ -55,4 +55,4 @@ export async function updateProfileSettingsAction(
   } catch (error) {
     return toActionError(error, "Could not update profile settings.");
   }
-}
+};

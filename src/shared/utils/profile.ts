@@ -1,6 +1,6 @@
 import type { Profile } from "@/shared/types";
 
-export function getProfileInitials(displayName: string) {
+export const getProfileInitials = (displayName: string) => {
   const initials = displayName
     .split(" ")
     .map((part) => part.trim()[0])
@@ -10,18 +10,16 @@ export function getProfileInitials(displayName: string) {
     .toUpperCase();
 
   return initials || "?";
-}
+};
 
-export function getProfileHandle(profile: Pick<Profile, "id" | "username">) {
+export const getProfileHandle = (profile: Pick<Profile, "id" | "username">) => {
   return profile.username ?? profile.id;
-}
+};
 
-export function getProfileHref(profile: Pick<Profile, "id" | "username">) {
+export const getProfileHref = (profile: Pick<Profile, "id" | "username">) => {
   return `/u/${encodeURIComponent(getProfileHandle(profile))}`;
-}
+};
 
-export function getProfileUsernameLabel(
-  profile: Pick<Profile, "username">,
-) {
+export const getProfileUsernameLabel = (profile: Pick<Profile, "username">) => {
   return profile.username ? `@${profile.username}` : null;
-}
+};

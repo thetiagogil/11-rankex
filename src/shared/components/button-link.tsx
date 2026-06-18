@@ -14,16 +14,16 @@ type ButtonLinkProps = LinkProps &
     variant?: ButtonVariant;
   };
 
-export function ButtonLink({
+export const ButtonLink = ({
   children,
   className,
   size = "md",
   variant = "primary",
   ...props
-}: ButtonLinkProps) {
+}: ButtonLinkProps) => {
   return (
     <Button asChild className={className} size={size} variant={variant}>
       <Link {...props}>{children}</Link>
     </Button>
   );
-}
+};

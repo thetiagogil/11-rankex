@@ -23,7 +23,7 @@ type SortableItemRowProps = {
   rankingMode: RankingMode;
 };
 
-export function SortableItemRow({
+export const SortableItemRow = ({
   canEdit,
   canReorder,
   disabled,
@@ -32,7 +32,7 @@ export function SortableItemRow({
   onDelete,
   rank,
   rankingMode,
-}: SortableItemRowProps) {
+}: SortableItemRowProps) => {
   const {
     attributes,
     isDragging,
@@ -125,4 +125,4 @@ export function SortableItemRow({
       </div>
     </Card>
   );
-}
+};

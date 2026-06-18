@@ -25,7 +25,9 @@ type ProfileSettingsFormProps = {
   currentUser: CurrentUser;
 };
 
-export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
+export const ProfileSettingsForm = ({
+  currentUser,
+}: ProfileSettingsFormProps) => {
   const form = useProfileSettingsForm(currentUser);
 
   return (
@@ -129,4 +131,4 @@ export function ProfileSettingsForm({ currentUser }: ProfileSettingsFormProps) {
       </Card>
     </form>
   );
-}
+};
