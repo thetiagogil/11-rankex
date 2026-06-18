@@ -18,15 +18,14 @@ export const landingFeatureCards: LandingFeatureCard[] = [
   {
     accent: "oklch(0.78 0.1 50)",
     description:
-      "Build lists for anything, from your favorite artists to your favorite games.",
+      "Make ranked lists for games, albums, films, food, or anything else you keep debating.",
     icon: List,
     tilt: "tilt-l",
     title: "Ranked lists",
   },
   {
     accent: "oklch(0.68 0.09 245)",
-    description:
-      "Discover your friends tastes and find new favorites through their rankings.",
+    description: "Find lists from friends and people with similar taste.",
     icon: Compass,
     tilt: "tilt-r",
     title: "Explore feed",
@@ -34,15 +33,14 @@ export const landingFeatureCards: LandingFeatureCard[] = [
   {
     accent: "oklch(0.78 0.06 320)",
     description:
-      "Follow people, like their lists, and remix them into your own canon.",
+      "Follow people, save lists, and make your own version when you disagree.",
     icon: Users,
     tilt: "tilt-l",
     title: "Follow people",
   },
   {
     accent: "oklch(0.78 0.07 150)",
-    description:
-      "Engage with the community by liking, commenting, and remixing lists you love.",
+    description: "Like, comment, and remix lists without losing your own take.",
     icon: Heart,
     tilt: "tilt-r",
     title: "Like, remix, comment",
@@ -54,8 +52,8 @@ export const landingSampleRankings: LandingSampleRanking[] = [
     accent: "oklch(0.78 0.1 50)",
     icon: Clapperboard,
     items: ["Attack on Titan", "Demon Slayer", "My Hero Academia"],
-    title: "GOTY 2025",
-    topic: "Games",
+    title: "Anime favorites",
+    topic: "Anime",
   },
   {
     accent: "oklch(0.78 0.06 320)",

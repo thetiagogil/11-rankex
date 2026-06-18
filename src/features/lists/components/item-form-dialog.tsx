@@ -98,7 +98,7 @@ export const ItemFormDialog = ({
       )}
 
       <Modal
-        description="Add or edit a ranked list item."
+        description="Add or edit an item in this list."
         footer={
           <FormActions border={false}>
             <Button

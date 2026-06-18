@@ -41,10 +41,10 @@ export const SortableItemList = ({
         }
         description={
           canEdit
-            ? "Add your first contender to start ranking."
+            ? "Add your first item to start the list."
             : "This list does not have items yet."
         }
-        title="An empty podium awaits"
+        title="No items yet"
       />
     );
   }

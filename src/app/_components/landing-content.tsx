@@ -25,8 +25,9 @@ export const LandingContent = ({ isAuthenticated }: LandingContentProps) => {
             Rank <span className="text-gradient-gold">what matters</span>
           </h1>
           <p className="text-muted-foreground mt-6 max-w-2xl text-base leading-7 sm:text-lg sm:leading-8">
-            Build top lists for anything worth ordering. Follow people, like,
-            comment, and remix the community&apos;s picks into your own canon.
+            Make ranked lists for the things you actually have opinions about.
+            Follow people, compare picks, and remix a list when you would order
+            it differently.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <ButtonLink href={primaryHref} size="lg">
@@ -89,7 +90,7 @@ export const LandingContent = ({ isAuthenticated }: LandingContentProps) => {
             Built for <span className="text-gradient-gold">opinions</span>
           </h2>
           <p className="text-muted-foreground max-w-xs text-sm leading-6">
-            Drag, drop, rank, remix. Then put it in front of people who care.
+            Drag, drop, rank, remix. Share a list when you are ready.
           </p>
         </div>
 

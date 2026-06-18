@@ -54,7 +54,7 @@ export const DashboardListBrowser = ({
       <EmptyState
         action={<ListFormDialog redirectToList />}
         className="py-20"
-        description="Create your first ranking. You can keep it private while drafting and make it public when it is ready."
+        description="Create your first list. Keep it private while drafting, then publish it when it is ready."
         title="No lists yet"
       />
     );
@@ -135,7 +135,7 @@ export const DashboardListBrowser = ({
               Reset filters
             </Button>
           }
-          description="Adjust the search, filter, or sort controls to bring more lists back into view."
+          description="Try a different search or reset your filters."
           title="No lists match that view"
         />
       )}

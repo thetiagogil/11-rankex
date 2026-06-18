@@ -12,7 +12,7 @@ export const ExplorePageView = ({
   return (
     <AppMain className="pb-20">
       <PageHeader
-        description="Browse public rankings, discover people, and follow the topics that keep showing up in the community canon."
+        description="Find public lists, follow people with similar taste, and save the rankings you want to revisit."
         title="Explore"
       />
 

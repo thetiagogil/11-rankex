@@ -12,7 +12,7 @@ export const SettingsPageView = ({ currentUser }: SettingsPageViewProps) => {
     <AppMain className="pb-20">
       <div className="mx-auto w-full max-w-3xl">
         <PageHeader
-          description="Update the profile identity that appears on Rankex lists, profile pages, and Explore."
+          description="Manage how your profile appears across Rankex."
           title="Settings"
         />
 

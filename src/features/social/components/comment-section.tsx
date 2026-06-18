@@ -129,9 +129,9 @@ export const CommentSection = ({
           description={
             list.isPublic
               ? canComment
-                ? "Be the first to leave a quick reaction."
+                ? "Be the first to comment."
                 : "Comments from other people will appear here."
-              : "Public rankings can collect a short thread of reactions."
+              : "Public lists can receive comments."
           }
           title="No comments yet"
         />

@@ -82,7 +82,7 @@ export const ListFormDialog = ({
         }
         onClose={form.closeDialog}
         open={form.open}
-        title={form.isEditing ? "Edit list" : "Start a new top list"}
+        title={form.isEditing ? "Edit list" : "Create list"}
       >
         <form
           className="flex flex-col gap-4"

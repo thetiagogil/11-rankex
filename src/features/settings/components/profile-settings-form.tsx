@@ -35,8 +35,8 @@ export const ProfileSettingsForm = ({
       <Card as="section" className="p-5 sm:p-7" variant="shadow">
         <div className="flex flex-col gap-7">
           <SettingsSection
-            description="Used only for logging in and account recovery. It is not shown on public Rankex pages."
-            title="Account anchor"
+            description="Used for login and account recovery. It does not appear on public pages."
+            title="Account"
           >
             <FormField htmlFor="email" icon={<Mail />} label="Email">
               <Input disabled id="email" value={currentUser.email ?? ""} />
@@ -44,7 +44,7 @@ export const ProfileSettingsForm = ({
           </SettingsSection>
 
           <SettingsSection
-            description="The name and handle people see before they open one of your rankings."
+            description="The name and handle people see on your profile and lists."
             title="Public profile"
           >
             <div className="grid gap-4">
@@ -85,8 +85,8 @@ export const ProfileSettingsForm = ({
           </SettingsSection>
 
           <SettingsSection
-            description="A short line that gives your rankings a recognizable point of view."
-            title="Ranking voice"
+            description="A short note about what you like, collect, or rank."
+            title="Bio"
           >
             <FormField htmlFor="bio" icon={<MessageSquareText />} label="Bio">
               <Textarea
@@ -94,7 +94,7 @@ export const ProfileSettingsForm = ({
                 id="bio"
                 maxLength={160}
                 onChange={(event) => form.setBio(event.target.value)}
-                placeholder="A short note about what you like to rank."
+                placeholder="Games, albums, places, hot takes..."
                 rows={5}
                 value={form.bio}
               />

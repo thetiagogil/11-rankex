@@ -7,7 +7,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: APP_NAME,
   description:
-    "A ranked-list workspace for building, editing, and sharing the lists that define your taste.",
+    "A place to build, edit, and share ranked lists about the things you care about.",
   icons: {
     icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
   },

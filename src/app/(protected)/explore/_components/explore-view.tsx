@@ -86,7 +86,7 @@ export const ExploreView = ({
             description={
               people.length
                 ? "Try another name, handle, or topic."
-                : "Public profiles will surface here."
+                : "Public profiles will appear here."
             }
           />
         )}
@@ -105,7 +105,7 @@ export const ExploreView = ({
             inputClassName="border-foreground/25 bg-background/35 focus-visible:border-primary/45 h-10 rounded-2xl shadow-none"
             label="Search public lists by title or category"
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search by title and/or category..."
+            placeholder="Search by title or category..."
             value={query}
           />
 
@@ -146,8 +146,8 @@ export const ExploreView = ({
           </div>
         ) : (
           <EmptyState
-            title="No public lists match that view."
-            description="Try a different title, category, or search term."
+            title="No public lists match that view"
+            description="Try another search or category."
           />
         )}
       </section>

@@ -29,8 +29,8 @@ export const TierView = ({
     return (
       <EmptyState
         action={emptyAction}
-        description="Add your first contender to start ranking."
-        title="An empty podium awaits"
+        description="Add your first item to start the list."
+        title="No items yet"
       />
     );
   }

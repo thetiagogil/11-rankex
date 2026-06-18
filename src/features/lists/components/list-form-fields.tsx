@@ -98,7 +98,7 @@ export const ListFormFields = ({
           id="list-description"
           maxLength={500}
           onChange={(event) => onDescriptionChange(event.target.value)}
-          placeholder="A short note about the ranking criteria."
+          placeholder="A short note about how you made the list."
           rows={3}
           value={description}
         />

@@ -26,7 +26,7 @@ export const DashboardPageView = ({
   return (
     <AppMain className="pb-20">
       <PageHeader
-        description="Build your canon, share with the community, and see what others are ranking."
+        description="Create lists, keep drafts private, and publish the ones you want people to see."
         title={
           <>
             Welcome back,{" "}

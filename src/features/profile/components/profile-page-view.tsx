@@ -24,11 +24,9 @@ export const ProfilePageView = ({
   const { lists, profile, social, stats } = overview;
   const usernameLabel = getProfileUsernameLabel(profile);
   const emptyCopy = isCurrentUser
-    ? "Create a list from the dashboard to start building out your public profile."
+    ? "Create a list from the dashboard to start filling out your profile."
     : "This profile has not published a list yet.";
-  const bio =
-    profile.bio ||
-    "A Rankex profile building ordered lists, tiers, and personal canon.";
+  const bio = profile.bio || "Rankex user.";
 
   return (
     <div className="flex min-w-0 flex-col gap-10">
@@ -120,7 +118,7 @@ export const ProfilePageView = ({
                 <strong className="font-display text-foreground text-lg">
                   {social.likesReceivedCount}
                 </strong>{" "}
-                likes received
+                likes
               </span>
             </div>
 
